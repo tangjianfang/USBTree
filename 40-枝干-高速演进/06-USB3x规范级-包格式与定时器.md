@@ -87,7 +87,16 @@ TP SubType（表 8-12，4 bit）：
 | 1000b | PING_RESPONSE | 对 PING 的应答（§8.5.8） |
 | 1001b~1111b | Reserved | — |
 
-## 4. LMP 子类型表与端口配置流
+## 3-bis. Gen 2 特殊符号 8bit 编码（表 6-2，evolve #29 提取）
+
+| 符号 | 名称 | Gen 1 (8b/10b K 码) | Gen 2 (128b/132b) | 说明 |
+|---|---|---|---|---|
+| SKP | Skip | K28.1 | CCh | 位率补偿，可动态插入/删除；Gen2 SSP 不加扰 |
+| SKPEND | Skip End | 不适用 | 33h | SKP OS 与后续的边界，不加扰 |
+| SDP | Start Data Packet | K28.2 | 96h | 数据包载荷开始；Gen2 加扰且仅在 data block |
+| EDB | End Bad | K28.3 | 69h | 包废止（nullified）结束 |
+
+ LMP 子类型表与端口配置流
 
 LMP SubType（表 8-3，4 bit，偏移 0:5）：
 
