@@ -276,7 +276,9 @@ HID 设备建议直接用 hidapi（`pip install hid`），免分离内核 HID �
 | 错误码 | 值 | 典型原因 | 处置 |
 |---|---|---|---|
 | `LIBUSB_SUCCESS` | 0 | — | — |
-| `LIBUSB_ERROR_IO` | -1 | 线缆差/设备死机/后端底层错误 | 重试；换线换口；抓包定位（见 [../70-枝干-调试测试与安全/01-协议分析仪与抓包.md](../70-枝干-调试测试与安全/01-协议分析仪与抓包.md)） |
+| `LIBUSB_ERROR_IO` | -1 |
+> 🔍 对抗抽查（evolve #34）：错误码数值与 libusb master `libusb.h` 枚举逐一比对一致（IO=-1/ACCESS=-3/NO_DEVICE=-4/NOT_FOUND=-5/BUSY=-6/TIMEOUT=-7/OVERFLOW=-8/PIPE=-9/NO_MEM=-11/NOT_SUPPORTED=-12）。
+ 线缆差/设备死机/后端底层错误 | 重试；换线换口；抓包定位（见 [../70-枝干-调试测试与安全/01-协议分析仪与抓包.md](../70-枝干-调试测试与安全/01-协议分析仪与抓包.md)） |
 | `LIBUSB_ERROR_ACCESS` | -3 | Linux 权限不足；Windows 句柄被占 | 补 udev 规则或 sudo；关闭占用该设备的其他程序 |
 | `LIBUSB_ERROR_NO_DEVICE` | -4 | 传输中途设备被拔出 | 释放句柄，回热插拔逻辑重新等设备 |
 | `LIBUSB_ERROR_NOT_FOUND` | -5 | 端点/接口不存在，或配置未设置 | 核对端点地址与描述符；先 `set_configuration` |
