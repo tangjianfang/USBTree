@@ -68,3 +68,4 @@
 #33 | 05-TinyUSB 宏勘误 | findings(1) | actions(1) | result(green+progress, 8/8) | diff(~6行) | 官方 tusb_option.h 证实 ENDPOINT 单P写法错误, 统一为 CFG_TUD_ENDPPOINT_MAX 并警示静默回退
 #34 | 06-libusb 错误码抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | 10 个错误码与 libusb.h 一致
 #35 | 90/03 PD 定时器 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(~5行) | 内核证实 PS_TRANSITION=500; 发现内核 SENDER_RESPONSE 用宽松 60ms(注明); FirstSourceCap 维持 ※
+#36 | 01-UVC GUID 抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | YUY2/NV12/M420/I420 GUID 逐字符一致
