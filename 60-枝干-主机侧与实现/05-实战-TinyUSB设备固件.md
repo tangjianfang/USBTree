@@ -53,7 +53,7 @@ cdc_hid_kbd/
 //---- 端点 ----
 #define CFG_TUD_ENDPOINT0_SIZE     64   // EP0 最大包：全速设备 64
 // 可用端点地址数上限；老版本该宏拼写为 CFG_TUD_ENDPPOINT_MAX（以所用版本头文件为准）
-#define CFG_TUD_ENDPOINT_MAX       8
+#define CFG_TUD_ENDPPOINT_MAX      8    // 注意官方拼写就是双 P（ENDPPOINT），见 tusb_option.h
 
 //---- 内存对齐（DMA 需按字对齐）----
 #ifndef CFG_TUSB_MEM_SECTION
@@ -389,7 +389,7 @@ int rtos_main(void) {
 |---|---|---|
 | 主机报"设备描述符请求失败"，或 `lsusb -v` 里 wTotalLength 与实际不符 | 配置描述符 `wTotalLength` ≠ 各 `bLength` 之和（手写描述符最易错） | 一律用 `TUD_CONFIG_DESC_LEN + TUD_xxx_DESC_LEN` 求和；核对方法见 [../70-枝干-调试测试与安全/01-协议分析仪与抓包.md](../70-枝干-调试测试与安全/01-协议分析仪与抓包.md) |
 | 设备枚举到一半卡死 / 枚举成功但收发全无响应 | `tud_task()` 没喂：主循环被 `while(!ready)` 死等或长 `sleep` 卡住 | 所有等待循环里必须继续调 `tud_task()`；主循环单次阻塞别超过 1ms 量级 |
-| 编译报端点不足 / 运行时分配端点失败 | `CFG_TUD_ENDPOINT_MAX` 小于实际用量，或超出芯片端点数（RP2040 每方向 16；STM32 FS 通常 8；ESP32-S2/S3 更少） | 精简功能或调大宏；非 0 端点地址按 IN/OUT 各自计数，以芯片手册为准 |
+| 编译报端点不足 / 运行时分配端点失败 | `CFG_TUD_ENDPPOINT_MAX`（官方拼写双 P）小于实际用量，或超出芯片端点数（RP2040 每方向 16；STM32 FS 通常 8；ESP32-S2/S3 更少） | 精简功能或调大宏；非 0 端点地址按 IN/OUT 各自计数，以芯片手册为准 |
 | 串口打不开、`tud_cdc_connected()` 恒为假 | 主机未拉 DTR（没真正打开串口），或没 `write_flush` | 先 `tud_cdc_write_flush()`；上位机用 pyserial 打开端口再测 |
 | 键盘一次都不上报 | 未等 `tud_hid_ready()` 就调 `tud_hid_keyboard_report`，返回 false 被丢弃 | 发送前轮询 ready；上一帧在途时新帧必须等 |
 | Windows 出现设备但找不到串口 | CDC 功能描述符/IAD 缺失或 VID/PID 驱动冲突 | 用 `TUD_CDC_DESCRIPTOR` 完整展开；UsbTreeView 检查接口类是否 0x02/0x0A |
