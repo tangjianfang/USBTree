@@ -5,7 +5,7 @@
 
 | id | lesson | how to apply | source | verified |
 |---|---|---|---|---|
-| L1 ✦ | 写规范数值必须从缓存 PDF 提取核对，记忆稿必错：本项目提示稿先后 9 处被纠（Chirp 17~20ms→TUCH 1~7ms、tErrorRecovery 25ms、ECM 包过滤 0x43、UAC1 选择子止于 0x0A、HID GET_IDLE=0x02、CCID 消息码、BT 端点映射、PD 半双工、FS 帧预算 12000 位） | 任何字段/定时器/操作码落表前，先 `pdftotext -layout` 提取缓存规范并 grep 原文 | 六个规范级子任务报告 + evolve #3 | 1 |
+| L1 ✦ | 写规范数值必须从缓存 PDF 提取核对，记忆稿必错：本项目提示稿先后 9 处被纠（Chirp 17~20ms→TUCH 1~7ms、tErrorRecovery 25ms、ECM 包过滤 0x43、UAC1 选择子止于 0x0A、HID GET_IDLE=0x02、CCID 消息码、BT 端点映射、PD 半双工、FS 帧预算 12000 位） | 任何字段/定时器/操作码落表前，先 `pdftotext -layout` 提取缓存规范并 grep 原文 | 六个规范级子任务报告 + evolve #3/#37（UAC1 请求码整组勘误） | 2 |
 
 > 🧬 **结晶（evolve #22）**：L1/L2/L3/L7 同主题（官方规范提取）合计 5 次验证 → 结晶为 `tools/spec_extract.sh`（解压/提取/检索一步完成）。四条标记 crystallized。
 | L2 ✦ | pdftotext 提取的大表格会错位、µ 等字符会变乱码、NUL 字节会让 grep 转入 binary 模式 | 提取后先 `grep -a`；表格错位处写"字段名+位宽+含义"并标"以规范原表为准"，逐位排布不硬抄 | BLE/设备类子任务报告 | 1 |

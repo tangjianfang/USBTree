@@ -77,3 +77,17 @@
 #48 | 四目录索引表核对 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 30/40/60/70 索引表行数=实际文件数
 #50b | 事故恢复 | findings(3) | actions(1) | result(green+progress, 8/8) | diff(恢复218/222/206行×3) | 12-LLCP/06-USB3x/15-A2DP 从基线 3d3272e 恢复并重放戳记/Gen2 表; L8 入库
 #53 | 图谱再生成+标记清点 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(~5行) | COVERAGE 经典蓝牙 90→93(HFP/AVRCP 已缓存); 残留 5 处标记均为合法溯源注记; 导出图再生成
+#54 | 终态统计 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(0) | 图谱再生成 86/82；残留标记均为合法溯源注记
+#55 | 回顾轮（run 1） | findings(3) | actions(4) | result(green+progress, 8/8) | diff(0) | 重放审计 2/2 通过（#33 红前绿后: 父1单P→3双P; #8 三字段注记落位）; L1 verified+1; epics.md 新建 EP-1/2/3(proposed)
+
+## Run 1 总结（#6~#55，N=50 实际执行至 #55 含回顾）
+
+- 轮次: 50（含 #55 回顾）；提交: 每 1~3 动作一提交；verify: `bash tools/validate.sh` 8/8 常绿
+- 结果: findings≈20 | fixes≈17 | regressions 1（#49 覆盖事故→#50b 恢复+L8）| blocked 2（GATT Supplement、EL 断言样本）
+- 亮点: USB4 v2 三字段重构与 TMU HiFi 配置值、UAC1 请求码整组勘误（Table A-9）、Type-C R2.5 状态机核验、OTG 定时器权威化、HFP/AVRCP/AVDTP/电气合规 4 份新缓存
+- 产出: 新叶 9 篇（12/13 树干与高速附录、40/00 与 60/70 索引、40/08 DROM、40/09 CM 指南）+ 图谱 86/82 + 结晶工具 spec_extract.sh
+- 待决 Epic: EP-1（PD 本体）、EP-2（GATT Supplement）、EP-3（命名守卫）——见 docs/epics.md，等待用户裁决
+
+## Run 2 开启（N=50，轮次 #56~#105，#105=回顾）
+
+- pointer 迁移至 #56；池: Tier4 实战篇 API 抽查系列（libusb 已证）/09-TypeC 深化/HFP eSCO 表/USB3.2 zip 附带(CRC32 等)登记/术语表二轮/一致性专项余量
