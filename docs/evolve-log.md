@@ -20,6 +20,8 @@
 - **T3 模块轮换清单**（src 等价物 = 内容目录 + 工具）
   - 90-附录/02-速查表大全（写成时间早于 5 篇规范级附录，无交叉链接，可能有过时表述）→ tools/ → graph/ → 80-参考资料/README.md
 - **T4 待办扩展**
+  - [blocked] GATT Specification Supplement 缓存：落地页为 JS 动态下载（wp-json 无直链），需浏览器人工取——evolve #21 标记
+
   - ~~AVDTP 1.3.x 规范补缓存 + 回填 15-A2DP 信令码表~~（#4 已完成：AVDTP-1.3.pdf 入缓存，Table 8.6 核对一致）
   - AVDTP 1.3.x 规范补缓存 + 回填 [15-A2DP] 的信令码值占位（对应 COVERAGE 空白 #2）
   - 30/40 目录无 00-索引页（20 目录有）
@@ -53,3 +55,4 @@
 #18 | BLE 12/14 对抗抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | 5 Opcode+灵敏度表比对一致；S=8=-82 为 6.0 正确新值
 #19 | 30/08+30/09 对抗抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | 内核宏/Accept/PS_RDY/Soft_Reset 与 tCCDebounce 一致
 #20 | CDC/UAC/UVC 三附录抽查 | findings(0) | actions(3) | result(green+no-progress, 8/8) | diff(+6行) | VS_PROBE=0x01(A-16)/CLOCK_SOURCE=0x0A/SET_LINE_CODING=20h 均证实；VS_PROBE 为提示稿另一处被纠错
+#21 | GATT Supplement 缓存 | findings(0) | actions(0) | result(blocked, 8/8) | diff(+1行) | files.bluetooth 动态下载无静态直链; 池标注需人工/浏览器
