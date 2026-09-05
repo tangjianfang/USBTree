@@ -185,6 +185,22 @@ AVRCP（Audio/Video Remote Control Profile）跑在 AVCTP（PSM **0x0017**）上
 
 > 📎 规范原文已缓存（evolve #14）：[HFP-1.10.pdf](../../80-参考资料/bluetooth/HFP-1.10.pdf)（现行最新版；AT 命令全表/eSCO 参数见原文第 4~5 章）。
 
+> 📎 规范原文已缓存（evolve #14）：[HFP-1.10.pdf](../../80-参考资料/bluetooth/HFP-1.10.pdf)（现行最新版；AT 命令全表/eSCO 参数见原文第 4~5 章）。
+
+**常用 AT 命令速查**（evolve #23 自 HFP-1.10 原文提取，数值/行为均可溯源）：
+
+| AT 命令 | 方向 | 用途 |
+|---|---|---|
+| AT+BRSF=<feat> | HF→AG | 握手第一步：上报 HF 支持特性位图，AG 回+BRSF:<AG feat>（并由此得知是否支持编解码协商） |
+| AT+BAC=<codec...> | HF→AG | 声明可用编解码（mSBC 等），触发 Codec Negotiation |
+| AT+CIND=? / AT+CIND? | HF→AG | 查询指示器定义/当前状态（call、callsetup、service…） |
+| AT+CMER | HF→AG | 订阅指示器变化上报 |
+| AT+CHLD=? / AT+CHLD=<n> | HF→AG | 三方呼叫能力查询与保持/挂断操作（n=0~4） |
+| AT+BIEV=<ind>,<val> | HF→AG | HF Indicator 状态上报（电量 2、语音识别文本 4 等） |
+| AT+BVRA=<0/1> | 双向 | 语音识别开关（AG 侧唤起语音助手） |
+| AT+NREC=<0/1> | HF→AG | 回声消除/降噪开关 |
+| AT+CCLK? / AT+CNUM | HF→AG | 取网络时间 / 本机号码 |
+
 HFP（Hands-Free Profile）管**双向语音**：**AG（Audio Gateway，音频网关——通常是手机）** 与 **HF（Hands-Free，免提设备——车载/耳机）**。语音不走 ACL，而走 **eSCO（Extended Synchronous Connection-Oriented）** 同步链路，保留时隙、带有限重传，天然抗抖动。
 
 ```mermaid
