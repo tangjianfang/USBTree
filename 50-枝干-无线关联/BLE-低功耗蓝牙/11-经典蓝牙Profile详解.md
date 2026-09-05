@@ -181,6 +181,8 @@ AVRCP（Audio/Video Remote Control Profile）跑在 AVCTP（PSM **0x0017**）上
 
 ## 七、HFP：免提
 
+> 📎 规范原文已缓存（evolve #14）：[HFP-1.10.pdf](../../80-参考资料/bluetooth/HFP-1.10.pdf)（现行最新版；AT 命令全表/eSCO 参数见原文第 4~5 章）。
+
 HFP（Hands-Free Profile）管**双向语音**：**AG（Audio Gateway，音频网关——通常是手机）** 与 **HF（Hands-Free，免提设备——车载/耳机）**。语音不走 ACL，而走 **eSCO（Extended Synchronous Connection-Oriented）** 同步链路，保留时隙、带有限重传，天然抗抖动。
 
 ```mermaid
