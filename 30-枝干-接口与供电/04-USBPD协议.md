@@ -94,9 +94,9 @@ Request 消息中的 32 位对象是 RDO (Request Data Object)，核心字段：
 | 23 | USB Comm Capable | 具备 USB 数据通信能力 |
 | 27 | GiveBack | 支持降档到最小工作电流（PD 3.0 起弱化为历史位） |
 | 26 | Capability Mismatch（能力不匹配位） | 1 = Source 无一档完全满足 Sink 需求，仅按最接近档位供电（evolve 勘误：曾误写为 B27，内核 `RDO_CAP_MISMATCH`=26） |
-| 31:28 | EPR Mode（PD 3.1） | 0001 = 请求进入 EPR 模式（仅 Fixed/PPS RDO） |
+| 31:28 | Object Position（对象位置） | 1~7：指向 Source_Capabilities 中被请求的那个 PDO（内核 `RDO_OBJ_POS_SHIFT`=28；evolve 勘误——曾误写为"EPR Mode"，进入 EPR 走 EPR_Mode Entry 消息序列，见 [08 篇](08-USBPD消息全表.md)） |
 
-**能力不匹配位**是诊断"能充但不满速"的关键证据；**EPR 模式位**说明 240 W 不是普通 Request 一步可达，需先经 EPR Mode Entry 消息序列。
+**能力不匹配位**是诊断"能充但不满速"的关键证据；Object Position 指出请求的是第几个 PDO；**240 W 不是普通 Request 一步可达**——需先经 EPR Mode Entry 消息序列进入 EPR 模式（见 [08 篇](08-USBPD消息全表.md)）。
 
 ## 六、协商流程时序
 
