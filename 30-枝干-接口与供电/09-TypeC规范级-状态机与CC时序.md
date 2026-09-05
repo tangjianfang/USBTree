@@ -238,3 +238,12 @@ Type-C→Standard-A/B/Micro-B 的 Legacy 线缆/适配器在插头内以 Rp 宣�
 - ../10-树干-USB核心/09-集线器与连接管理.md：连接/断开事件的上层处理
 - ../70-枝干-调试测试与安全/：Type-C 一致性测试（CTS）对本文定时器的验证
 - ../80-参考资料/README.md：USB-TypeC-Spec-2.5-2026.zip 缓存（本文全部数值出处）
+
+## 附：R2.5 液体腐蚀缓解机制（Liquid Corrosion Mitigation，附录 A）
+
+R2.5 移除音频配件模式的主因是**电解腐蚀**：耳机/液体残留会在 CC 引脚施加直流偏置，长期形成电蚀（附录 A.1 以电解腐蚀示例图说明）。缓解机制要点：
+
+- **进入方式**：作为替代性附件行为定义在 Source/Sink 状态机的附录 A 状态集中（原 AudioAccessory 位置）；
+- **三种液体检测方法**（A.3）：Liquid Measurement（直测法）、**Pulsed Measurement**（脉冲测量法，驱动电流脉冲测响应）、**Impedance Measurement**（阻抗测量法）；
+- **检测引脚**（A.4）：复用连接器中的 CC（及 VCONN/SBU 视实现）引脚做液体探测；
+- 工程含义：新设计按 R2.5 实现时，双 Ra 检测分支不再进入音频模式——旧转接器的兼容性需在产品层自行处理。
