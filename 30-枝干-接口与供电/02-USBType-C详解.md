@@ -94,7 +94,7 @@ DRP 切换周期与占空比规范给出范围（tDRP 约 50~100 ms 量级，具
 
 ## 六、连接状态机概述
 
-Type-C 状态机（Connection State Machine）分 Source/Sink/Audio Accessory/Debug Accessory 等状态集，核心骨架如下：
+Type-C 状态机（Connection State Machine）分 Source/Sink/Audio Accessory（R2.5 起移除，见第九节注记）/Debug Accessory 等状态集，核心骨架如下：
 
 ```mermaid
 stateDiagram-v2
@@ -143,6 +143,8 @@ sequenceDiagram
 工程后果：全功能线、充电线、雷电线的物理外形完全相同，验收必须实测（见 05 叶选购指南与排查清单）。
 
 ## 九、音频配件模式 (Audio Accessory)
+
+> ⚠️ 规范版本注记（evolve #6）：模拟音频配件模式在 **Type-C R2.5（2026-03）中已被弃用移除**（为缓解液体腐蚀问题，AudioAccessory 状态从 Source 状态机删除，改行液体检测/缓解机制，见 [09-TypeC规范级](09-TypeC规范级-状态机与CC时序.md)）。下表描述的是 R2.1 及更早版本的机制，现网旧设备/旧固件仍按此行为。
 
 模拟音频附件 (Analog Audio Accessory) 让耳机/转接器复用 Type-C 引脚：
 

@@ -1,11 +1,12 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #5（下一轮·回顾）
-- rounds done: 5（含回顾）
-- status: run-complete（N=5 收敛，可随时续跑：改 pointer 即可）
-- status: initialized
+- pointer: #6（下一轮）
+- rounds done: 5
+- status: resumed-run（N=50，轮次 #6~#55，#55=回顾）
+- checkpoint: #5 完成于 39d0aca；池已刷新（见下）
 - metrics: findings 7 | fixes 7 | regressions 0
+- pool-refresh: 2026-09-05（#6 内执行）
 - boundary: USB/BLE 领域知识系统（纯文档 + bash 工具 + 图谱/技能包）。红线：不改 80-参考资料 下规范原文内容（只增不改）；不做应用代码；不自动 push；破坏性命令需确认。
 - note: 项目无 CLAUDE.md/AGENTS.md；边界由用户会话历史确立。git 于剖析阶段初始化（协议要求每轮一提交）。
 
