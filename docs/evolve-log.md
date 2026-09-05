@@ -50,3 +50,4 @@
 #13 | 90/02 速查表扩容 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(+55行) | 新增 13/14/15 三节；数值全部 grep 自既有规范级附录文件
 #14 | HFP/HS 缓存修复 | findings(3) | actions(4) | result(green+progress, 8/8) | diff(~18行) | 发现 HID-Service 假PDF+11篇链接层级错; 建立 nonce 直链流程(L7); HFP-1.10 入缓存回链
 #16 | 20/MSC/02 对抗抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | 5 组抽样一致；加抽查戳记
+#18 | BLE 12/14 对抗抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | 5 Opcode+灵敏度表比对一致；S=8=-82 为 6.0 正确新值
