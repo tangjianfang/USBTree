@@ -48,6 +48,7 @@
 | HID-Service-1.1.pdf | HID Service (GATT) 1.1 | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hid-service-specification/) | 同上 |
 | Bluetooth-HID-Profile-1.1.1.pdf | Human Interface Device Profile 1.1.1（经典蓝牙 HID） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/human-interface-device-profile-1-1-1/) | [经典蓝牙 Profile 详解](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
 | A2DP-1.4.1.pdf | Advanced Audio Distribution Profile 1.4.1（2025-06-30） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a2dp-1-4-1/) | [A2DP 编解码与 AVDTP 参数](../50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) |
+| AVDTP-1.3.pdf | A/V Distribution Transport Protocol 1.3（Table 8.6 信令码/§8.21 编码能力） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-distribution-transport-protocol-1-3/) | 同上 |
 
 ## 四、未能直连下载的规范（门控/付费）与官方在线替代
 

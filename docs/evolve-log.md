@@ -1,10 +1,10 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #4（下一轮）
-- rounds done: 3
+- pointer: #5（下一轮·回顾）
+- rounds done: 4
 - status: initialized
-- metrics: findings 6 | fixes 6 | regressions 0
+- metrics: findings 7 | fixes 7 | regressions 0
 - boundary: USB/BLE 领域知识系统（纯文档 + bash 工具 + 图谱/技能包）。红线：不改 80-参考资料 下规范原文内容（只增不改）；不做应用代码；不自动 push；破坏性命令需确认。
 - note: 项目无 CLAUDE.md/AGENTS.md；边界由用户会话历史确立。git 于剖析阶段初始化（协议要求每轮一提交）。
 
@@ -18,6 +18,7 @@
 - **T3 模块轮换清单**（src 等价物 = 内容目录 + 工具）
   - 90-附录/02-速查表大全（写成时间早于 5 篇规范级附录，无交叉链接，可能有过时表述）→ tools/ → graph/ → 80-参考资料/README.md
 - **T4 待办扩展**
+  - ~~AVDTP 1.3.x 规范补缓存 + 回填 15-A2DP 信令码表~~（#4 已完成：AVDTP-1.3.pdf 入缓存，Table 8.6 核对一致）
   - AVDTP 1.3.x 规范补缓存 + 回填 [15-A2DP] 的信令码值占位（对应 COVERAGE 空白 #2）
   - 30/40 目录无 00-索引页（20 目录有）
   - PD EPR 消息编号（规范门控，挂起直至拿到原文）
@@ -28,3 +29,4 @@
 #1 | 09-长尾设备类 AV 小节 | findings(2) | actions(2) | result(green+progress, 4/4) | diff(~8行) | 与 10-AV详解 对齐: AVC误传→AV1.0 CBP/AVDD; 类代码表协议码 0x00→0x10
 #2 | tools/validate.sh 校验覆盖 | findings(0) | actions(2) | result(green+progress, 6/6) | diff(~40行) | 检查基线 4→6: 关系边端点⊆实体表、title≡H1；两项新检查全库即绿
 #3 | 90-附录/02 轮换审查→发现 Chirp 全库性错误 | findings(4) | actions(6) | result(green+progress, 6/6) | diff(~30行) | 04/02排查/02速查 Chirp 17~20ms/6~100ms→TUCH 1~7ms; KJ序列单位 ms→µs/拍; 02 五处交叉链接新附录; 附勘误注记
+#4 | AVDTP 补缓存+15-A2DP 回填 | findings(1) | actions(3) | result(green+progress, 6/6) | diff(~6行) | AVDTP-1.3.pdf 入缓存(缓存 33→34)；信令码表与 Table 8.6 核对全一致(0 错)；两处"未缓存"占位清除

@@ -8,7 +8,7 @@ doc-path: 50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参
 
 > 🌳 知识树位置: 树干 → 枝干[无线关联] → 分枝[BLE] → 叶[15-A2DP编解码与AVDTP参数]
 > 本文是 [11-经典蓝牙Profile详解](11-经典蓝牙Profile详解.md) 第五章（A2DP）的规范级深化：只讲"信令怎么走、参数位怎么填"。
-> 规范原文缓存: [../../80-参考资料/bluetooth/A2DP-1.4.1.pdf](../../80-参考资料/bluetooth/A2DP-1.4.1.pdf)（2025-06-30 版，含 SBC/MPEG/AAC 编码互操作全表）；编解码信息元素格式另见 AVDTP 规范 §8.21.5（A2DP 规范原文交叉引用，AVDTP PDF 未缓存，建议补）。缓存索引: [../../80-参考资料/README.md](../../80-参考资料/README.md)
+> 规范原文缓存: [../../80-参考资料/bluetooth/A2DP-1.4.1.pdf](../../80-参考资料/bluetooth/A2DP-1.4.1.pdf)（2025-06-30 版，含 SBC/MPEG/AAC 编码互操作全表）；编解码信息元素格式另见 AVDTP 规范 §8.21.5（[../../80-参考资料/bluetooth/AVDTP-1.3.pdf](../../80-参考资料/bluetooth/AVDTP-1.3.pdf) 已缓存）。缓存索引: [../../80-参考资料/README.md](../../80-参考资料/README.md)
 > 上游基础: [11-经典蓝牙Profile详解](11-经典蓝牙Profile详解.md)、[08-经典蓝牙与BLE对比](08-经典蓝牙与BLE对比.md)
 
 ## 1. AVDTP：三个信道与一套信令
@@ -21,7 +21,7 @@ AVDTP（Audio/Video Distribution Transport Protocol，L2CAP PSM **0x0019**）在
 | 媒体信道 | 动态分配 | OPEN 后建立，承载 RTP 式媒体包（版本/序号/时间戳/SSRC 头 + 编码载荷） |
 | 恢复/报告信道 | 动态分配（可选） | Recovery（丢包重传，需能力协商）/ Reporting（时间戳报告）信道；另有 Content Protection（SCMS-T 内容保护）随能力协商挂在媒体信道上 |
 
-信令命令集（Signal Identifier，命令/响应配对；数值源：AVDTP 规范信令表，AVDTP PDF 未缓存——建议补）：
+信令命令集（Signal Identifier，命令/响应配对；数值已与 AVDTP 1.3 规范 Table 8.6 逐项核对）：
 
 | 代码 | 命令 | 作用 |
 |---|---|---|
