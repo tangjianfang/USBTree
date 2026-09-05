@@ -11,6 +11,8 @@ doc-path: 20-枝干-设备类协议/Video-UVC/01-UVC规范级-控制与格式全
 > 📖 全部数值提取自 **UVC 1.5 Class specification**（附录 A 代码表、§2.4.2 状态中断、§4 控制请求）与 **UVC 1.5 各 Payload 白皮书**（Uncompressed/MJPEG/H.264/Frame-Based），缓存见 [../../80-参考资料/README.md](../../80-参考资料/README.md)。设备模型与枚举叙述见详解篇，本文只放编号。
 
 ## 1. 类代码、子类与描述符子类型（UVC 1.5 附录 A.1~A.7）
+> 🔍 对抗抽查（evolve #20）：VS_PROBE_CONTROL=0x01、VS_COMMIT_CONTROL=0x02（Table A-16）与 UVC 1.5 原文比对一致。
+
 
 | 代码名 | 值 | 用途 |
 |---|---|---|

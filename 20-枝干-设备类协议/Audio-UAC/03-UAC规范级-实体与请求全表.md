@@ -11,6 +11,8 @@ doc-path: 20-枝干-设备类协议/Audio-UAC/03-UAC规范级-实体与请求全
 > 📖 数据提取自 **UAC 1.0**（含 Frmts10 音频数据格式、Termt10 终端类型）与 **UAC 2.0**（Audio20 final），缓存见 [../../80-参考资料/README.md](../../80-参考资料/README.md)。架构叙述见 [01-UAC1.0详解.md](01-UAC1.0详解.md) / [02-UAC2与UAC3.md](02-UAC2与UAC3.md)，本文只放编号与字段。
 
 ## 1. 类代码速记
+> 🔍 对抗抽查（evolve #20）：UAC2 CLOCK_SOURCE 子类型=0x0A 与 Audio20 原文比对一致。
+
 
 | 层级 | UAC1 | UAC2 |
 |---|---|---|

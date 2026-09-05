@@ -34,6 +34,8 @@ doc-path: 20-枝干-设备类协议/CDC-通信设备类/03-CDC规范级-请求�
 **数据接口协议（Table 7 摘要）**：`00h` 无、`01h` Network Transfer Block（NCM 的 NTB，数据接口唯一类协议值）；`30h~32h+` ISDN BRI 物理层协议（I.430/HDLC 等）。
 
 ## 2. 类特定请求全表（CDC 1.2 Table 19，0x00~0x8A，按子规范归属）
+> 🔍 对抗抽查（evolve #20）：SET_LINE_CODING=20h、SET_CONTROL_LINE_STATE=22h（PSTN）、SET_ETHERNET_PACKET_FILTER=**43h**（ECM——注意常见误传 0x0E）与 CDC 1.2 原文比对一致。
+
 
 所有类请求 bmRequestType：SET=`00100001b (0x21)`，GET=`10100001b (0xA1)`；接收者为通信接口（wIndex=接口号，wValue 多为 0 或选择子）。
 
