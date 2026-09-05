@@ -22,7 +22,7 @@
 - **verification**: validate + UUID 抽样比对
 - **rollback**: 不需要
 - **预估**: 2 轮
-- **status**: approved（2026-09-05；先尝试公开直链）
+- **status**: approved → **blocked-pending-manual**（2026-09-05 复核：GSS 下载页为 JS 渲染无静态直链，需浏览器人工保存 PDF 至 80-参考资料/bluetooth/ 后告知即可完成回填）
 
 ## EP-3 · 命名规范自动化守卫（远期）
 
