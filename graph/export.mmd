@@ -1,0 +1,158 @@
+%% 由 tools/gen_graph.sh 自动生成，勿手改；数据源: graph/entities.yaml + graph/relations.yaml
+graph LR
+    usb2["USB 2.0（LS/FS/HS）"]
+    transfer-control["控制传输 (EP0)"]
+    transfer-bulk["批量传输"]
+    transfer-interrupt["中断传输"]
+    transfer-iso["同步传输"]
+    descriptors["描述符体系"]
+    enumeration["枚举流程"]
+    hub-tt["集线器与事务转换器（Split/TT）"]
+    suspend-resume["挂起/恢复与远程唤醒"]
+    data-toggle["数据触发与重传"]
+    test-mode["USB 2.0 测试模式"]
+    stall-halt["STALL/HALT 错误状态"]
+    usb3["USB 3.x（SuperSpeed）"]
+    usb3-ltssm["USB3 链路训练状态机 LTSSM"]
+    usb3-header-packet["USB3 Header Packet 与 TP/DP"]
+    credit-flow-control["USB3 信用流控与 Replay 重传"]
+    usb4["USB4（含 v2/80G）"]
+    usb4-routing["USB4 路由器拓扑与配置空间"]
+    usb4-tunneling["USB4 隧道化（USB3/PCIe/DP/H2H）"]
+    class-hid["HID 人机接口设备类 (0x03)"]
+    hid-report-descriptor["HID 报告描述符（Item/Usage 体系）"]
+    hid-usage["HID Usage 页与用法"]
+    hid-boot-protocol["HID Boot 协议"]
+    hid-i2c["HID over I2C（HIDI2C）"]
+    class-cdc["CDC 通信设备类 (0x02/0x0A)"]
+    cdc-acm["CDC-ACM 虚拟串口 (0x02/0x02)"]
+    cdc-ecm["CDC-ECM 以太网控制模型 (0x02/0x06)"]
+    cdc-ncm["CDC-NCM 网络控制模型 (0x02/0x0D)"]
+    rndis["RNDIS（微软远程 NDIS） (0xEF/0x04)"]
+    class-msc["MSC 大容量存储类 (0x08)"]
+    msc-bot["Bulk-Only Transport（CBW/CSW） (0x08/0x06/0x50)"]
+    scsi-cdb["SCSI 块命令（SBC/UFI CDB）"]
+    uas["UAS（USB Attached SCSI） (0x08/0x06/0x62)"]
+    class-uac["USB 音频类 (0x01)"]
+    uac1["UAC 1.0"]
+    uac2["UAC 2.0（Clock Source 实体）"]
+    uac3["UAC 3.0（BADD/低功耗）"]
+    class-midi["USB MIDI 类 (0x01/0x03)"]
+    class-uvc["UVC 视频类 (0x0E)"]
+    class-dfu["DFU 固件升级 (0xFE/0x01)"]
+    class-usbtmc["USBTMC 测试测量类（USB488） (0xFE/0x03)"]
+    class-ccid["CCID 智能卡类 (0x0B)"]
+    ptp["PTP 图片传输协议 (0x06)"]
+    mtp["MTP 媒体传输协议"]
+    class-printer["打印机类 (0x07)"]
+    class-billboard["Billboard 告示牌类 (0x11)"]
+    class-bt-controller["蓝牙无线控制器类（HCI over USB） (0xE0/0x01/0x01)"]
+    vendor-class["厂商自定义类 (0xFF)"]
+    webusb["WebUSB"]
+    ms-os-descriptors["Microsoft OS Descriptors（WinUSB 免驱）"]
+    typec["USB Type-C 连接器"]
+    typec-cc["Type-C CC 检测（Rp/Rd/Ra/VCONN）"]
+    typec-drp["Type-C 双角色端口 DRP"]
+    usb-pd["USB Power Delivery"]
+    pps["PD PPS 可编程电源"]
+    epr["PD EPR 扩展功率范围（240W）"]
+    bc1.2["BC 1.2 充电端口"]
+    alt-mode["Type-C Alternate Mode（DP 等）"]
+    e-marker["线缆电子标记 E-marker（SOP'）"]
+    otg-hnp["OTG 角色协商（SRP/HNP/ADP）"]
+    bluetooth-core["蓝牙核心规范（BR/EDR + BLE）"]
+    hci["HCI 主机控制器接口"]
+    ble-ll["BLE 链路层（跳频/连接事件/LLCP）"]
+    ble-adv["BLE 广播（传统+扩展）"]
+    gap["GAP 通用访问规范"]
+    att["ATT 属性协议"]
+    gatt["GATT 通用属性规范"]
+    smp["SMP 安全管理（配对/绑定）"]
+    hogp["HOGP（HID over GATT）"]
+    le-audio["LE Audio（LC3/CIS/BIG/Auracast）"]
+    ble-mesh["蓝牙 Mesh 网络"]
+    classic-a2dp["经典蓝牙 A2DP 音频"]
+    bt-classic-hid["经典蓝牙 HID Profile"]
+    xhci["xHCI 主机控制器（Streams）"]
+    tinyusb["TinyUSB 固件栈"]
+    libusb["libusb 1.0 用户态访问"]
+    linux-gadget["Linux USB Gadget（configfs）"]
+    usbip["USB over IP（usbip）"]
+    dp-protocol["DisplayPort（外部协议）"]
+    pcie["PCIe（外部协议）"]
+    class-hid -->|uses: Input/Output 报告走中断端点轮询| transfer-interrupt
+    cdc-acm -->|uses| transfer-bulk
+    msc-bot -->|uses| transfer-bulk
+    uas -->|uses: 依赖批量端点 Streams 能力| transfer-bulk
+    cdc-ncm -->|uses: NTB 聚合多帧摊薄开销| transfer-bulk
+    uac1 -->|uses| transfer-iso
+    uac2 -->|uses: HS 高带宽同步端点 ×2/×3| transfer-iso
+    class-uvc -->|uses: 亦可选批量端点| transfer-iso
+    enumeration -->|uses: 标准请求全部经默认控制管道| transfer-control
+    class-dfu -->|uses: DFU 纯控制传输类（数据也走 EP0）| transfer-control
+    class-hid -->|specifies| hid-report-descriptor
+    hid-report-descriptor -->|specifies: Item 引用 Usage Page/Usage ID| hid-usage
+    hid-boot-protocol -->|part-of: BIOS 兼容的固定报告格式| class-hid
+    cdc-acm -->|part-of| class-cdc
+    cdc-ecm -->|part-of| class-cdc
+    cdc-ncm -->|part-of| class-cdc
+    msc-bot -->|part-of| class-msc
+    uas -->|part-of| class-msc
+    uac1 -->|part-of| class-uac
+    uac2 -->|part-of| class-uac
+    uac3 -->|part-of| class-uac
+    class-midi -->|part-of: MIDI 是音频类的 0x03 子类| class-uac
+    msc-bot -->|carries: CBWCB 封装 SCSI 命令| scsi-cdb
+    uas -->|carries| scsi-cdb
+    uas -->|supersedes: 多命令并发取代 BOT 串行| msc-bot
+    xhci -->|enables: 批量端点 Streams 是 UAS 的硬件前提| uas
+    cdc-ncm -->|supersedes: NTB 聚合解决 ECM 一帧一包的性能天花板| cdc-ecm
+    cdc-ncm -->|supersedes: Android 13 起 USB 网络共享默认 NCM| rndis
+    uac2 -->|supersedes: 能力代际；UAC1 因全平台免驱仍广泛存活| uac1
+    class-bt-controller -->|carries: 命令走 EP0、事件走中断 IN、ACL/SCO 走批量/同步端点| hci
+    hci -->|carries: 经 ACL→L2CAP(0x0004) 到达 ATT/GATT| gatt
+    gatt -->|runs-on: GATT 是 ATT 上的服务/特征模型| att
+    att -->|runs-on: 经 L2CAP 固定信道承载| ble-ll
+    hogp -->|runs-on| gatt
+    hogp -->|reuses: Report Map 特征值即 USB HID 报告描述符全文（树中最重要嫁接点）| hid-report-descriptor
+    hogp -->|similar-to: Protocol Mode 特征对应 USB SET_PROTOCOL，Boot 报告同构| hid-boot-protocol
+    hid-i2c -->|reuses: 传输无关性第三例| hid-report-descriptor
+    bt-classic-hid -->|similar-to: 经典 L2CAP PSM 0x11/0x13 vs GATT 订阅| hogp
+    gap -->|uses: 广播/扫描/连接发起的角色与参数| ble-adv
+    smp -->|runs-on: 固定信道 0x0006，配对后加密链路层| ble-ll
+    le-audio -->|uses: CIS/BIG 同步流建立在链路层等时通道| ble-ll
+    le-audio -->|runs-on: ASCS/PACS/BASS 均为 GATT 服务| gatt
+    ble-mesh -->|runs-on: Advertising Bearer；另有 GATT Proxy 承载| ble-adv
+    typec-cc -->|carries: CC 线上 BMC 通信| usb-pd
+    usb-pd -->|supersedes: Type-C+PD 终结 D+/D- 协商式专有快充| bc1.2
+    pps -->|part-of| usb-pd
+    epr -->|part-of: PD 3.1 引入，48V/5A=240W| usb-pd
+    typec-drp -->|supersedes: DRP+PD PR_Swap 取代 OTG HNP 角色交换| otg-hnp
+    alt-mode -->|uses: DP Alt Mode（SVID 0xFF01）引脚重映射| dp-protocol
+    e-marker -->|extends: SOP' 通告线缆电流/速率能力| typec-cc
+    class-billboard -->|extends: 向 OS 告知设备支持的 Alt Mode 列表| alt-mode
+    usb4-tunneling -->|tunnels| usb3
+    usb4-tunneling -->|tunnels| pcie
+    usb4-tunneling -->|tunnels: USB4 时代 DP 优先走隧道而非 Alt Mode| dp-protocol
+    usb4 -->|extends: 架构范式转变（总线→路由器拓扑），向下兼容| usb3
+    usb4-routing -->|part-of| usb4
+    usb4-tunneling -->|part-of| usb4
+    usb3-ltssm -->|part-of| usb3
+    usb3 -->|extends: 独立双 Simplex 总线 + 共存兼容（非取代关系）| usb2
+    usb-pd -->|enables| epr
+    test-mode -->|part-of| usb2
+    hub-tt -->|part-of| usb2
+    data-toggle -->|part-of| usb2
+    descriptors -->|specifies: 枚举即描述符的逐级读取| enumeration
+    class-hid -->|prerequisite| enumeration
+    class-cdc -->|prerequisite| enumeration
+    class-msc -->|prerequisite| enumeration
+    class-uac -->|prerequisite| enumeration
+    class-uvc -->|prerequisite| enumeration
+    webusb -->|uses| vendor-class
+    ms-os-descriptors -->|enables: Windows 侧 WinUSB 自动绑定；libusb 同享免驱| webusb
+    tinyusb -->|specifies: 固件栈以回调形式组装描述符（实现层示例）| descriptors
+    libusb -->|uses| transfer-bulk
+    linux-gadget -->|similar-to: 主机侧模拟设备 vs 设备侧固件，两路实现同一描述符契约| tinyusb
+    usbip -->|tunnels: USB 协议封装进 TCP/IP| usb2
+    hci -->|runs-on: HCI 是 Controller(LL) 与 Host 的分界协议| ble-ll

@@ -1,0 +1,2338 @@
+Universal Serial Bus
+Device Class Definition
+for
+Audio/Video Devices
+
+(Developed pursuant to USB-IF IP agreement for Video Display and subsequently renamed as above)
+
+AVFormat 3 ­ Uncompressed Full Frame
+Isochronous Video
+
+Release 1.0
+December 07, 2011
+
+                                                                                                                             1
+Scope of This Release
+
+This document is the Release 1.0 of this AVFormat 3 ­ Uncompressed Full Frame Isochronous Video Definition.
+
+Contributors
+
+Jim Hunkins        AMD
+
+Jason Hawken       AMD
+
+Kenneth Ma         Broadcom
+
+Hans van Antwerpen Cypress Semiconductor
+
+Jitendra Kulkarni  Cypress Semiconductor
+
+Dan Ellis          DisplayLink
+
+Trevor Hall        DisplayLink
+
+Alec Cawley        DisplayLink
+
+David Dolby        Dolby Labs
+
+David Roh          Dolby Labs
+
+Tsehao Lee         Grain Media
+
+Pierre Bossart     Intel
+
+David Harriman     Intel
+
+Abdul R. Ismail (Chair) Intel
+
+J.P. Giacalone     Intel
+
+Steve McGowan      Intel
+
+Sridharan Ranganathan Intel
+
+Yoav Nissim        Jungo
+
+Ygal Blum          Jungo
+
+Max Basler         Littelfuse
+
+Paul E. Berg       MCCI
+
+Cristian Chis      MCCI
+
+John Garney        MCCI
+
+Geert Knapen (Editor) MCCI
+
+Tomi Heinonen      Nokia Corporation
+
+Richard Petrie     Nokia Corporation
+
+Yoram Rimoni       Qualcomm, Inc.
+
+Mark Bohm          SMSC
+
+John Sisto         SMSC
+
+Morgan Monks       SMSC
+
+Bruno Paillard     Soft-dB
+
+                                                                                                             3
+Will Harris  Texas Instruments
+Grant Ley    Texas Instruments
+
+4
+                                            Copyright © 2011 USB Implementers Forum, Inc.
+                                                                All rights reserved.
+
+                                                 INTELLECTUAL PROPERTY DISCLAIMER
+A LICENSE IS HEREBY GRANTED TO REPRODUCE THIS SPECIFICATION FOR INTERNAL USE ONLY. NO OTHER
+LICENSE, EXPRESS OR IMPLIED, BY ESTOPPEL OR OTHERWISE, IS GRANTED OR INTENDED HEREBY.
+USB-IF AND THE AUTHORS OF THIS SPECIFICATION EXPRESSLY DISCLAIM ALL LIABILITY FOR INFRINGEMENT OF
+INTELLECTUAL PROPERTY RIGHTS RELATING TO IMPLEMENTATION OF INFORMATION IN THIS SPECIFICATION.
+USB-IF AND THE AUTHORS OF THIS SPECIFICATION ALSO DO NOT WARRANT OR REPRESENT THAT SUCH
+IMPLEMENTATION(S) WILL NOT INFRINGE THE INTELLECTUAL PROPERTY RIGHTS OF OTHERS.
+THIS SPECIFICATION IS PROVIDED "AS IS" AND WITH NO WARRANTIES, EXPRESS OR IMPLIED, STATUTORY OR
+OTHERWISE. ALL WARRANTIES ARE EXPRESSLY DISCLAIMED. USB-IF, ITS MEMBERS AND THE AUTHORS OF THIS
+SPECIFICATION PROVIDE NO WARRANTY OF MERCHANTABILITY, NO WARRANTY OF NON-INFRINGEMENT, NO
+WARRANTY OF FITNESS FOR ANY PARTICULAR PURPOSE, AND NO WARRANTY ARISING OUT OF ANY PROPOSAL,
+SPECIFICATION, OR SAMPLE.
+IN NO EVENT WILL USB-IF, MEMBERS OR THE AUTHORS BE LIABLE TO ANOTHER FOR THE COST OF PROCURING
+SUBSTITUTE GOODS OR SERVICES, LOST PROFITS, LOSS OF USE, LOSS OF DATA OR ANY INCIDENTAL,
+CONSEQUENTIAL, INDIRECT, OR SPECIAL DAMAGES, WHETHER UNDER CONTRACT, TORT, WARRANTY, OR
+OTHERWISE, ARISING IN ANY WAY OUT OF THE USE OF THIS SPECIFICATION, WHETHER OR NOT SUCH PARTY HAD
+ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.
+All product names are trademarks, registered trademarks, or service marks of their respective owners.
+Please send comments via electronic mail to av-chair@usb.org
+
+                                                                                                                             5
+Table of Contents
+
+Scope of This Release ........................................................................................................................3
+
+Contributors .....................................................................................................................................3
+
+1. Introduction ............................................................................................................................. 13
+1.1. Scope ..............................................................................................................................................................................................13
+1.2. Purpose .........................................................................................................................................................................................13
+1.3. Related Documents ..................................................................................................................................................................13
+1.4. Terms and Abbreviations ......................................................................................................................................................14
+
+2. Fundamentals .......................................................................................................................... 19
+2.1. Transfer Delimiter....................................................................................................................................................................19
+2.2. ServiceInterval and ServiceIntervalPacket Definitions ............................................................................................19
+2.3. Video Transport.........................................................................................................................................................................19
+
+   2.3.2. VideoSubSlot......................................................................................................................................................................20
+   2.3.3. VideoSlot..............................................................................................................................................................................20
+   2.3.4. VideoBundle.......................................................................................................................................................................24
+2.4. VideoFrame .................................................................................................................................................................................24
+   2.4.1. VideoFrame Rate..............................................................................................................................................................24
+   2.4.2. VideoFrame Coordinates ..............................................................................................................................................24
+   2.4.3. VideoFrame Spatial Layout and Timing Aspects ................................................................................................25
+   2.4.4. VideoFrame Organization ............................................................................................................................................29
+   2.4.5. VideoFrame Formats......................................................................................................................................................31
+2.5. VideoSample Formats.............................................................................................................................................................32
+   2.5.1. Type I Format ....................................................................................................................................................................32
+   2.5.2. Type II Format...................................................................................................................................................................32
+   2.5.3. VideoCompression ..........................................................................................................................................................36
+2.6. VideoStreamConfig...................................................................................................................................................................37
+   2.6.1. VideoStreamConfig Description.................................................................................................................................37
+2.7. VideoStreamConfigList...........................................................................................................................................................38
+   2.7.1. VideoStreamConfigList Description.........................................................................................................................38
+2.8. Current Limitations..................................................................................................................................................................38
+
+3. Video Synchronization.............................................................................................................. 39
+3.1. Video Synchronization Types ..............................................................................................................................................40
+
+   3.1.1. Asynchronous Video Source........................................................................................................................................40
+   3.1.2. Synchronous Video Source ..........................................................................................................................................40
+   3.1.3. Adaptive Video Sink........................................................................................................................................................40
+
+4. Video Packetizing ..................................................................................................................... 41
+
+5. Examples.................................................................................................................................. 43
+5.1. AVFunction as a Video Source .............................................................................................................................................43
+5.2. AVFunction as a Video Sink ..................................................................................................................................................45
+
+6. Video Data Format ................................................................................................................... 47
+6.1. AVHeader .....................................................................................................................................................................................47
+6.2. VideoPayload..............................................................................................................................................................................48
+6.3. Error Recovery...........................................................................................................................................................................48
+
+                                                                                                                             7
+7. Support for Content Protection ................................................................................................ 49
+Appendix A. VideoFrame Format Dimensions and Timings............................................................ 51
+A.1. DTV Formats...............................................................................................................................................................................51
+A.2. Additional Formats ..................................................................................................................................................................53
+Appendix B. Calculations .............................................................................................................. 59
+
+8
+List of Tables
+
+Table 1-1: Terms and Abbreviations..................................................................................................................................................................... 14
+Table 2-1: 2D .................................................................................................................................................................................................................... 29
+Table 2-2: 3D2FP............................................................................................................................................................................................................ 29
+Table 2-3: 3D2TAB ........................................................................................................................................................................................................ 30
+Table 2-4: 3D2SHxx....................................................................................................................................................................................................... 30
+Table 2-5: RGB565 VideoSample Format............................................................................................................................................................ 33
+Table 2-6: RGB888 VideoSample Format............................................................................................................................................................ 33
+Table 2-7: RGB8888 VideoSample Format ......................................................................................................................................................... 34
+Table 2-8: IYU2 VideoSample Format................................................................................................................................................................... 34
+Table 2-9: YUY2 VideoSample Format ................................................................................................................................................................. 34
+Table 2-10: YVYU VideoSample Format .............................................................................................................................................................. 35
+Table 2-11: UYVY VideoSample Format .............................................................................................................................................................. 35
+Table 2-12: I420 VideoSample Format ................................................................................................................................................................ 36
+Table 2-13: YV12 VideoSample Format ............................................................................................................................................................... 36
+Table 2-14: Video Compression Methods ........................................................................................................................................................... 37
+Table 6-1: AVHeader Layout ..................................................................................................................................................................................... 47
+Table A-1: DTV VideoFrame Dimensions and Timings for 2D and 3D2TAB/3D2SHxx Frame Organizations..................... 51
+Table A-2: DTV VideoFrame Dimensions and Timings for the 3D2FP Frame Organization ........................................................ 52
+Table A-3: Additional VideoFrame Dimensions and Timings for 2D and 3D2TAB/3D2SHxx Frame Organizations ........ 54
+Table A-4: Additional VideoFrame Dimensions and Timings for the 3D2FP Frame Organization ........................................... 55
+
+                                                                                                                             9
+List of Figures
+
+Figure 2-1: VideoParticle Stream............................................................................................................................................................................ 21
+Figure 2-2: VideoLine Stream................................................................................................................................................................................... 22
+Figure 2-3: VideoFrame Stream .............................................................................................................................................................................. 23
+Figure 2-4: VideoBundle ............................................................................................................................................................................................. 24
+Figure 2-5: VideoFrame Coordinates .................................................................................................................................................................... 25
+Figure 2-6: 2D VideoFrame Spatial Layout and Timings ............................................................................................................................. 26
+Figure 2-7: 3D2FP VideoFrame Spatial Layout and Timings ..................................................................................................................... 28
+Figure 2-8: 3D2SHOE Frame Organization Subsampling............................................................................................................................. 31
+Figure 5-1: Video Source Packetizing Scheme .................................................................................................................................................. 44
+Figure 5-2: Video Sink Depacketizing Scheme.................................................................................................................................................. 46
+
+                                                                                                                            11
+1.    Introduction
+
+1.1.  Scope
+
+This document describes in detail the Isochronous Video-Only AV Data Formats that are supported by the AV Device
+
+Class. This document is considered an integral part of the AV Device Class Definition, although subsequent revisions of
+
+this document are independent of the revision evolution of the main USB AV Device Class Definition. This is to easily
+
+accommodate the addition of new Video-Only Data Formats without requiring changes to other USB AV documents.
+
+1.2.  Purpose
+
+The purpose of this document is to provide all necessary information a designer needs to build AVFunctions that use
+
+the Video Data Formats described here on at least one of its AVData Video Streaming Interfaces.
+
+1.3.  Related Documents
+
+ [USB2.0] ­ Universal Serial Bus Specification, Revision 2.0, April 27, 2000 (referred to in this document as the USB
+     2.0 Specification) (available at: http://www.usb.org/developers/docs).
+
+ [USB3.0] ­ Universal Serial Bus 3.0 Specification, Revision 1.0 (including errata and ECN's through May 1, 2011),
+     June 6, 2011 (referred to in this document as the USB 3.0 Specification) (available at:
+     http://www.usb.org/developers/docs.)
+
+ [AUDIO1.0] ­ Universal Serial Bus Device Class Definition for Audio Devices, Release 1.0, March 18, 1998
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [FORMATS1.0] ­ Universal Serial Bus Device Class Definition for Audio Data Formats, Release 1.0, March 18, 1998
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [TERMTYPES1.0] ­ Universal Serial Bus Device Class Definition for Terminal Types, Release 1.0, March 18, 1998
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [AUDIO2.0] ­ Universal Serial Bus Device Class Definition for Audio Devices, Release 2.0, May 31, 2006 (available
+     at: http://www.usb.org/developers/devclass_docs).
+
+ [FORMATS2.0] ­ Universal Serial Bus Device Class Definition for Audio Data Formats, Release 2.0, May 31, 2006
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [TERMTYPES2.0] ­ Universal Serial Bus Device Class Definition for Terminal Types, Release 2.0, May 31, 2006
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [USBCS] ­ Universal Serial Bus Device Class Definition for Content Security Devices ­ Content Security
+     Framework, Revision 2.0 (available at: http://www.usb.org/developers/devclass_docs).
+
+ [USBCSM-5] ­ Universal Serial Bus Device Class Definition for Content Security Devices ­ Content Security Method
+     5 ­ High-bandwidth Digital Content Protection 2.1 (HDCP 2.1) Implementation, Revision 1.0 (available at:
+     http://www.usb.org/developers/devclass_docs).
+
+ USBECNIAD ­ USB Engineering Change Notice: Interface Association Descriptors (available at:
+     http://www.usb.org/developers/docs).
+
+ [USBIADDCC] ­ USB Interface Association Descriptor Device Class Code and Use Model, Revision 1.0, July 23, 2003
+     (available at: http://www.usb.org/developers/whitepapers).
+
+ [USBLANGIDS] ­ Universal Serial Bus Language Identifiers (LANGIDs), Revision 1.0, March 29, 2000 (available at:
+     http://www.usb.org/developers/docs).
+
+ [AVFUNCTION] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ AV Device Class
+     Overview & AVFunction Definition, Release 1.0, December 07, 2011 (available at:
+     http://www.usb.org/developers/devclass_docs).
+
+ [AVFORMAT_1] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ AVFormat 1 ­ Video over
+     Bulk, Release 1.0, December 07, 2011 (available at: http://www.usb.org/developers/devclass_docs).
+
+ [AVFORMAT_2] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ AVFormat 2 ­
+     Isochronous Audio, Release 1.0, December 07, 2011 (available at:
+     http://www.usb.org/developers/devclass_docs).
+
+                                                                                                              13
+ [AVFORMAT_3] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ AVFormat 3 ­
+     Uncompressed Full Frame Isochronous Video, Release 1.0, December 07, 2011 (available at:
+     http://www.usb.org/developers/devclass_docs).
+
+ [AVSCHEMA] ­ Available at: http://avschemas.usb.org/v1/avschema.xsd
+ [BDP] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ Basic Device Profile, Release 1.0
+
+     (available at: http://www.usb.org/developers/whitepapers).
+ [ANSIS1_11] ­ ANSI S1.11-2004 (R2009) standard (available at: http://www.ansi.org).
+ [IEC11172_3] ­ MPEG-1 standard ISO/IEC 11172-3:1993 Information technology ­ Coding of moving pictures and
+
+     associated audio for digital storage media at up to about 1.5 Mbit/s ­ Part 3: Audio (available at
+     http://www.iec.ch).
+ [IEC13818_1] ­ MPEG-2 standard ISO/IEC 13818:2000 Information technology ­ Generic coding of moving
+     pictures and associated audio information ­ Part 1: Systems (available at http://www.iec.ch).
+ [IEC13818_3] ­ MPEG-2 standard ISO/IEC 13818:1998 Information technology ­ Generic coding of moving
+     pictures and associated audio information ­ Part 3: Audio" (available at http://www.iec.ch).
+ [AC_3] ­ Digital Audio Compression Standard (AC-3, Enhanced AC-3), ETSI TS 102 366 (available at
+     http://www.etsi.org).
+ [IEEE_754] ­ ANSI/IEEE-754 floating-point standard (available at http://www.ieee.org).
+ [IEC60958] ­ ISO/IEC 60958 International Standard: Digital Audio Interface and Annexes (available at:
+     http://www.iec.ch).
+ [IEC61937] ­ ISO/IEC 61937 standard (available at: http://www.iec.ch).
+ [ETSI_TS_102_114] ­ ETSI Specification TS 102 114, "DTS Coherent Acoustics; Core and Extensions" (available at
+     http://www.etsi.org).
+ [HDCP2.1] ­ High-bandwidth Digital Content Protection System. Interface Independent Adaptation. Revision 2.1,
+     July 18, 2011 (available from http://www.digital-cp.com).
+ [MLP] ­ DVD Specifications for High Definition Video: MLP Reference Information.
+ [IEC14496_3] ­ MPEG-4 Standard ISO/IEC 14496-3 ­ Information Technology ­ Coding of audio-visual objects ­
+     Part 3: Audio (available at http://www.iec.ch).
+ [IEC14496_10] ­ MPEG-4 Standard ITU-T H.264 and ISO/IEC 14496-10:2004 ­ Information Technology ­ Coding
+     of audio-visual objects ­ Part 10: Advanced Video Coding. Second Edition 2004-10-01 (available at
+     http://www.iec.ch).
+ [WMA] ­ Audio compression format from Microsoft. For technical and licensing information, contact Microsoft
+     directly (http://www.microsoft.com/windows/windowsmedia/default.aspx).
+ [HDMI] ­ The official High Definition Multimedia Interface website http://www.hdmi.org.
+ [RFC5646] ­ Tags for Identifying Languages, September 2009 (available at http://www.rfc-
+     editor.org/rfc/rfc5646.txt).
+ [KHRONOS] ­ The Khronos Group, Open Standards for Media Authoring and Acceleration (available at
+     http://www.khronos.org).
+ [CEA-861-E] ­ A DTV Profile for Uncompressed High Speed Digital Interfaces, March 2008 (available at
+     http://www.cea.org).
+ [VESA] ­ Video Electronics Standards Association (available at http://www.vesa.org).
+ [IEC10918_4] ­ JPEG Standard ISO/IEC 10918-4 ­ Information technology ­ Digital compression and coding of
+     continuous-tone still images: Registration of JPEG profiles, SPIFF profiles, SPIFF tags, SPIFF colour spaces, APPn
+     markers, SPIFF compression types and Registration Authorities (REGAUT). First Edition 1999-08-15 (available at
+     http://www.iec.ch).
+
+1.4.            Terms and Abbreviations
+
+This section defines terms used throughout this document. For additional terms that pertain to the Universal Serial
+
+Bus, see Chapter 2, "Terms and Abbreviations," in [USB2.0] and [USB3.0].
+
+    Table 1-1: Terms and Abbreviations
+
+          Term                                                                Description
+                A VideoStream consisting of a single VideoChannel, providing a monoscopic video experience.
+2D Video
+
+14
+                  Term                                                                     Description
+3D2 Video
+                             A VideoStream consisting of 2 separate VideoChannels, providing a stereoscopic 3-dimensional video
+3Dn Video                    experience. One VideoChannel is intended for the left eye, and the other VideoChannel is intended for the
+                             right eye.
+AAC
+AC-3                         A VideoStream consisting of n separate VideoChannels, providing a multiscopic 3-dimensional video
+AudioBundle                  experience. This type of VideoStream usually requires a sophisticated lenticular system in front of the
+                             display to ensure that the viewer only sees 2 (one for the left eye, one for the right eye) out of the n
+(Logical) AudioChannel       channels at the same time. Depending on the position of the viewer with respect to the display, a different
+AudioChannel Type            set of 2 VideoChannels is made visible to the viewer.
+AudioCluster
+AudioControl Property        Advanced Audio Coding.
+AudioControl
+AudioSample                  Audio compression standard from Dolby Labs.
+AudioSlot
+AudioStream                  AudioChannels are physically organized into AudioTracks, and AudioTracks are then organized into the
+                             AudioBundle where each AudioChannel has an AudioChannel Type associated with it. Very similar to the
+AudioStreamConfig            AudioCluster concept, but the physical characteristics of the audio stream, such as AudioFrame Rate and
+(AudioStream Configuration)  bit resolution, are retained in the AudioBundle.
+AudioStreamConfigList
+AudioSubSlot                 A logical transport medium for a single audio channel. Makes abstraction of the physical Properties and
+AV Description Document      formats of the connection. Is identified by AudioChannel Type.
+(AVDD)
+AV Interface Association     The spatial location of an AudioChannel. Uniquely identifies the AudioChannel. Examples are Front Left
+AV Profile                   channel (FL), Back Right channel (BR), etc.
+
+AVBundle                     The group of all the audio-only logical AudioChannels in an AVCluster.
+AVCluster
+                             A parameter of an AudioControl. Examples are Current, Next, Range Properties of a Volume Control.
+AVCore
+                             A logical object that is used to manipulate a specific audio Property. Examples are Volume Control, Mute
+AVControl Interface          Control, etc.
+AVData Entity
+AVData Streaming Interface   The basic representation of an audio signal (one channel), sampled (digitized) at a specific moment in
+                             time.
+
+                             A collection of AudioSubSlots, each containing an AudioSample of a different physical audio channel,
+                             taken at the same moment in time.
+
+                             A concatenation of a potentially very large number of AudioSlots ordered according to ascending time
+                             where the AudioSamples are formatted according to one of the Audio Formats described in this
+                             specification and where the AudioChannels are organized in an AudioBundle.
+
+                             An XML Description that provides all the information necessary to fully characterize an AudioStream.
+                             Includes an AudioBundle, AudioFrame, and AudioSample component.
+
+                             A list of AudioStreamConfig Descriptions used to indicate the different AudioStream Configurations an
+                             AVData Audio Streaming Interface supports.
+
+                             Holds a single AudioSample of a single audio channel.
+
+                             An XML-formatted document that provides a complete description of all the AV class-specific elements
+                             and features of the AVFunction.
+
+                             A grouping of a single AVControl Interface, and zero or more AVData Streaming Interfaces that together
+                             constitute a complete interface to an AVFunction.
+
+                             A set of limitations and restricting rules, bundled in a single document that applies to the AV Device Class
+                             Definition. A Profile defines a specific type of AVFunction that is guaranteed to interoperate with all
+                             Controllers that support that Profile.
+
+                             A group of physical VideoChannels AudioChannels and MetadataChannels that carry tightly related (from
+                             a content perspective) synchronous video, audio, and metadata information over a USB pipe.
+
+                             A group of logical VideoChannels AudioChannels and MetadataChannels that carry tightly related (from a
+                             content perspective) synchronous video, audio, and metadata information over an interconnect within the
+                             AVCore.
+
+                             That part of the AVFunction that contains most of the building blocks (Terminals, Units) that makes up
+                             most of the AVControl functionality of the AVFunction. Explicitly excludes the AVData Streaming Interfaces
+                             that are part of the AVFunction.
+
+                             A USB interface used to access the AVControls inside an AVFunction.
+
+                             An addressable Entity representing a source of AV data flowing into or a sink for AV data flowing out of the
+                             AVCore (including AVData Streaming Interfaces).
+
+                             A USB interface used to transport AVStreams into or out of the AVFunction.
+
+                             15
+                  Term                                                                     Description
+AVFunction
+                             An independent part of a USB device that deals with AV-related functionality. Includes the AVCore and all
+AVHeader                     AVData Entities.
+
+AVStream                     The Header preceding the AudioPayload or VideoPayload in a Command or Notify Message. Also, the
+AVStream Configuration       Header present in every SIP.
+
+BDP                          A generic name for either a VideoStream or an AudioStream. See VideoStream and AudioStream.
+BIB
+CBP                          A generic name for either a VideoStream Configuration or an AudioStream Configuration. See
+                             VideoStream Configuration and AudioStream Configuration.
+CBP Idle Condition
+                             Basic Device Profile. See [BDP]
+Channel
+Controllee                   Bus Interval Boundary ([USB3.0]).
+Controller
+                             Control Bulk Pair. A pair of one Bulk IN and one Bulk OUT endpoint in the AVControl Interface that is used
+Control Sequence             for AV class-specific messaging.
+
+Converter Unit (CU)          A condition when an AVFunction determines that it will not have data available on its CBP Bulk IN pipe for
+                             a certain amount of time (AV_CBP_IDLE_TIME) and informs the Host of this condition to avoid having the
+CUD                          Host continually issue IN tokens for that pipe.
+Description
+                             A logical channel in an AVCluster. Can be a VideoChannel, AudioChannel, or MetadataChannel.
+DTS
+DUD                          The entity that is controlled by the Controller. The AVFunction always assumes this role.
+DVD
+Effect Unit (EU)             The entity that controls the AVFunction. In this version of the specification, the USB Host assumes this
+Encoded Audio Bit Stream     role.
+
+Encoded AudioFrame           A sequence of a Command and Response Message that is used to convey or retrieve one or more control
+                             parameters to or from the AVFunction.
+Encoded VideoFrame
+Entity                       Provides the means to transform an incoming VideoTrack and/or AudioTrack into another VideoTrack
+EUD                          and/or AudioTrack with different characteristics.
+Feature Unit (FU)
+FUD                          Converter Unit Description.
+GraphicsEngine Entity (GEE)
+H.264                        Section of the AVDD (AV Description Document) that provides a detailed XML description of a specific
+HE_AAC                       Entity or other building block of the AVFunction architecture. Replaces the concept of the class-specific
+Header                       USB Descriptor.
+Input Pin
+Input Terminal (IT)          Digital Theater Systems.
+Inter-VideoFrame
+Intra-VideoFrame             Metadata Unit Description.
+
+                             Digital Versatile Disc.
+
+                             Provides advanced AV manipulation on the incoming logical AudioChannels.
+
+                             A concatenation of a potentially very large number of encoded audio frames, ordered according to
+                             ascending time.
+
+                             A sequence of bits that contains an encoded representation of AudioSamples from one or more physical
+                             audio channels taken over a fixed period of time.
+
+                             A sequence of bits that contains an encoded representation of VideoSamples from one VideoFrame.
+
+                             An addressable logical object inside an AVFunction.
+
+                             Effect Unit Description.
+
+                             Provides basic AV manipulation on the incoming logical AV channels.
+
+                             Feature Unit Description.
+
+                             An addressable Entity inside the AVCore representing a graphics subsystem of the AVFunction.
+
+                             ITU name of ISO MPEG4 part10 Advanced Video Coding standard. See [IEC14496_10].
+
+                             High Efficiency Advanced Audio Coding
+
+                             A collection of SubHeaders present in a SIP, containing Extended Audio Format data.
+
+                             A logical input connection to an Entity. Carries a single AVCluster.
+
+                             A receptacle for AV information flowing into the AVFunction.
+
+                             A VideoFrame composed of Intra-coded and Inter-coded MacroBlocks.
+
+                             A VideoFrame composed of Intra-coded MacroBlocks only.
+
+16
+                  Term                                                                   Description
+ITD                        Input Terminal Description.
+MacroBlock                 An elementary group of VideoSamples considered by an H.264 encoder.
+MetadataBundle             The group of all the metadata-only physical channels in an AVBundle.
+(Logical) MetadataChannel  A logical transport medium for a single metadata channel. Makes abstraction of the physical Properties
+                           and formats of the connection. Is identified by MetadataChannel Type.
+MetadataChannel Type       The metadata type of a MetadataChannel. Uniquely identifies the MetadataChannel. Examples are
+                           Subtitle (SUB), Commentary (COM), etc.
+MetadataCluster            The group of all the metadata-only logical channels in an AVCluster.
+MetadataControl            A logical object that is used to manipulate a specific metadata Property. Examples are Font Control, Color
+                           Control, etc.
+MetadataControl Property   Parameter of a MetadataControl. Examples are Current, Next, Range Properties of a Font Control.
+MetadataTrack              A group of MetadataChannels in a MetadataCluster that is associated with a single program.
+MetadataTrack Selector     A Control that allows indicating or selecting one MetadataTrack from the MetadataCluster. The selected
+                           MetadataTrack is called the Active MetadataTrack.
+Metadata Unit (DU)         Provides basic manipulation on the incoming logical MetadataChannels.
+Mixer Unit (MU)            Mixes a number of logical input channels into a number of logical output channels.
+MLP                        Meridian Lossless Packing
+MotionVector               A couple of coordinates (x,y) defining an offset from the current MacroBlock position in the current
+                           VideoFrame into the previous VideoFrame. The current MacroBlock position is defined by two coordinates
+MPEG                       (xMB, yMB) defining the position of the upper left pixel of that MacroBlock.
+MUD                        Moving Pictures Expert Group.
+NAL                        Mixer Unit Description.
+NAL Unit                   Network Abstraction Layer, See [IEC14496_10]
+                           An integer number of bytes, preceded by a ony-byte NAL Header indicating the type of data in the NAL
+OTD                        Unit.
+Output Pin                 Output Terminal Description.
+Output Terminal (OT)       A logical output connection to an Entity. Carries a single AVCluster.
+Processing Unit (PU)       An outlet for AV information flowing out of the AVCore.
+PUD                        Applies a predefined process to a number of logical input channels.
+Router Unit (RU)           Processing Unit Description.
+RUD                        Provides the means to assemble an outgoing AVCluster from multiple incoming AVClusters.
+Selector Unit (SU)         Router Unit Description.
+ServiceInterval            Selects from a number of input AVClusters.
+ServiceIntervalPacket      A grouping of USB (micro)frames that are related.
+SI                         A packet that contains all the VideoSamples that are transferred over the bus during a ServiceInterval.
+SIP                        ServiceInterval.
+SIPDescriptor              ServiceIntervalPacket.
+                           A 4-byte field present at the beginning of every SIP, providing information about the layout of the SIP. Only
+SOF                        present when transporting Extended Audio Format Type I data.
+Stereo 3D Video            Start of Frame ([USB2.0]).
+                           A video stream consisting of 2 separate video channels, providing a stereoscopic 3-dimensional video
+SubHeader                  experience. One video channel is intended for the left eye, and the other video channel is intended for the
+SUD                        right eye.
+Terminal                   A header containing additional information, related to the data in the SIP.
+                           Selector Unit Description.
+                           A logical object inside an AVCore that represents a connection to the AVCore's outside world.
+
+                           17
+                  Term                                                                     Description
+Transfer Delimiter
+Unit                         A unique token that indicates an interruption in an isochronous data packet stream. Can be either a zero-
+VideoBundle                  length data packet or the absence of an isochronous transfer in a certain USB (micro)frame.
+
+(Logical) VideoChannel       A logical object inside an AVCore that represents a certain AV functionality.
+
+VideoChannel Type            VideoChannels are physically organized into VideoTracks, and VideoTracks are then organized into the
+VideoCluster                 VideoBundle where each VideoVhannel has a VideoChannel Type associated with it. Very similar to the
+VideoControl                 VideoCluster concept, but the physical characteristics of the video stream, such as VideoFrame Rate are
+VideoControl Property        retained in the VideoBundle.
+VideoFrame
+VideoParticle                A logical transport medium for a single video channel. Makes abstraction of the physical Properties and
+                             formats of the connection. Is identified by VideoChannel Type: i.e. observation location. Examples are
+VideoPayload                 Channels for left eye, right eye.
+VideoSample
+VideoSequence                The observation location of a VideoChannel. Uniquely identifies the VideoChannel. Examples are
+VideoSlot                    Channels for left eye (OL001), right eye (OL002).
+VideoStream
+                             The group of all the video-only logical channels in an AVCluster.
+VideoStreamConfig
+(VideoStream Configuration)  A logical object that is used to manipulate a specific video Property. Examples are Contrast Control, Zoom
+VideoStreamConfigList        Control, etc.
+VideoSubSlot
+Viewpoint                    A parameter of a VideoControl. Examples are Current, Minimum, Maximum and Resolution Properties of a
+WMA                          Brightness Control.
+XML Descriptions
+                             One of the many still images which compose a complete moving picture or VideoSequence.
+
+                             The basic structure used to send video data over USB. Can be one VideoSample, two VideoSamples that
+                             share Chrominance information, or individual Luminance and Chrominance components of one
+                             VideoSample.
+
+                             All data bytes related to one VideoFrame. Includes NAL Headers, InfoBlock Headers, etc. The AVHeader
+                             is not part of the VideoPayload.
+
+                             The basic representation of a video signal, sampled (digitized) at a specific moment in time.
+
+                             A sequence of closely related VideoFrames that together make up a movie or video clip.
+
+                             A collection of VideoSubSlots, each containing a VideoSample of a different physical video channel, taken
+                             at the same moment in time.
+
+                             A concatenation of a potentially very large number of VideoSlots ordered according to ascending time
+                             where the VideoSamples are formatted according to one of the VideoFrame and VideoSample Formats
+                             described in this specification and where the video channels are organized in a VideoBundle.
+
+                             An XML Description that provides all the information necessary to fully characterize a VideoStream.
+                             Includes a VideoBundle, VideoFrame, and VideoSample component.
+
+                             A list of VideoStreamConfig Descriptions used to indicate the different VideoStream Configurations an
+                             AVData Entity supports.
+
+                             Holds a single VideoParticle.
+
+                             A position from which an event (program) is observed.
+
+                             Windows Media Audio.
+
+                             See Descriptions.
+
+18
+2.        Fundamentals
+
+2.1.      Transfer Delimiter
+
+Isochronous data streams are continuous in nature, although the actual number of bytes sent per packet may vary
+
+throughout the lifetime of the stream. To indicate a temporary stop in the isochronous data stream without closing the
+
+pipe (and thus relinquishing the USB bandwidth), an in-band Transfer Delimiter needs to be defined. This
+
+specification considers two situations to be a Transfer Delimiter. The first is a zero-length data packet and the second
+
+is the absence of an isochronous transfer in a ServiceInterval (see below) that would normally have an isochronous
+
+transfer. Both situations are considered equivalent and the AVFunction is expected to behave the same. In both cases,
+
+this specification considers a Transfer Delimiter to be an entity that can be signaled over the USB.
+
+2.2.      ServiceInterval and ServiceIntervalPacket Definitions
+
+To better describe packetization for video, the concept of a ServiceInterval (SI) is introduced. A ServiceInterval
+
+represents the number of USB (micro)frames or Bus Intervals within which an isochronous endpoint is serviced once.
+
+For full-/high-speed isochronous endpoints, a ServiceInterval is defined as:
+
+                                              (  )  (                         )
+
+See the [USB2.0] specification for more information on the bInterval field, its allowed values and its use.
+
+For SuperSpeed isochronous endpoints, a ServiceInterval is identical to the Service Interval as defined in the [USB3.0]
+specification:
+
+                                                                        (        )
+
+In addition, a ServiceIntervalPacket (SIP) is introduced. A ServiceIntervalPacket is defined as a packet that contains all
+the samples that are transferred over the bus during a ServiceInterval. For full-/high-speed endpoints, the SIPs are
+exactly the same as the physical packets that are transferred over USB. For high-speed high-bandwidth endpoints, the
+SIP is the concatenation of the two or three physical packets that are transferred over the bus in a microframe. For
+SuperSpeed endpoints, the SIP is the concatenation of up to the 48 physical packets (3 burst opportunities of
+maximum 16 bursts) that are transferred over the bus in a ServiceInterval.
+
+The above definitions provide a model of `one ServiceInterval packet (SIP) per ServiceInterval', irrespective of the
+actual transactions on the USB.
+
+2.3.      Video Transport
+
+When transported over USB, uncompressed VideoSamples are first segmented into VideoParticles and then
+
+packetized into an integer number of bytes, called the VideoSubSlot. Multiple VideoSlots are then packetized into SIPs.
+
+The following Sections provide more details.
+
+2.3.1.1.  VideoParticle
+
+The basic structure used to represent video data is the VideoParticle.
+
+VideoSamples are packetized into VideoParticles depending on the VideoSample Format (see Section 2.5,
+"VideoSample Formats":
+
+ For VideoSample Formats that do not involve color space compression, there is a one-to-one relationship
+     between a VideoSample and a VideoParticle. One VideoSample equals one VideoParticle. All Type I VideoSample
+     Formats (see Section 2.5.1) and the RGB565, RGB888, RGB8888, and IYU2 Type II VideoSample Formats (see
+     Sections 2.5.2.2.1, 2.5.2.2.2, 2.5.2.2.3, and 2.5.2.2.4 respectively) use this (trivial) form of packetizing.
+
+ For VideoSample Formats that involve a form of color space compression, some of the components that make up a
+     VideoSample are shared among VideoSamples:
+      The YUY2, YVYU, and UYVY VideoSample Formats (see Sections 2.5.2.2.5, 2.5.2.2.6, and 2.5.2.2.7 respectively)
+          share one and Chrominance sample between two Luminance samples; i.e. and share the same
+
+                                                                                                                    19
+         and Chrominance samples. One VideoParticle contains all the information needed to describe two
+         VideoSamples: the two Luminance values and the shared and Chrominance values for the two
+         VideoSamples.
+
+     The I420 and YV12 VideoSample Formats (see Sections 2.5.2.2.8 and 2.5.2.2.9 respectively) are planar
+         formats (Luminance and Chrominance values are sent separately and chrominance values are shared among
+         four VideoSamples) and therefore, Luminance and Chrominance values are packetized in separate
+         VideoParticles (one VideoParticle contains one component of a VideoSample) so that multiple VideoParticles
+         are required to describe one VideoSample.
+
+In summary, a VideoParticle either contains one VideoSample, two VideoSamples or a Luminance or Chrominance
+component of a VideoSample.
+
+2.3.2.  VideoSubSlot
+
+The basic structure used to transport VideoParticles over USB is the VideoSubSlot. All VideoSubSlots shall have the
+
+same VideoSubSlot size.
+
+One VideoParticle always occupies one VideoSubSlot.
+
+This specification limits the possible VideoSubSlot sizes (  ) to 1, 2, 3 or 4 bytes per VideoSubSlot. The
+
+VideoParticle that occupies the VideoSubSlot is represented using a number of bits (  ) less than or equal
+
+to the total number of bits available in the VideoSubSlot:
+
+In case                                , the actual VideoParticle is always left-justified and padded with trailing zero
+bits to fill the entire VideoSubSlot.
+
+2.3.3.  VideoSlot
+
+A VideoSlot consists of a collection of VideoSubSlots, arranged according to different interleaving schemes.
+
+20
+2.3.3.1.  VideoParticle-interleaved VideoSlots
+
+      Figure 2-1: VideoParticle Stream
+
+Each VideoSlot groups all the VideoSubslots containing the VideoParticle of a different physical video channel, taken
+at the same moment in time. The number of VideoSubSlots in a VideoSlot, , equals the total number of video channels
+in the VideoBundle. The VideoSubSlots in the VideoSlot are ordered starting with the VideoSubslot of the first video
+channel in the first VideoTrack, followed by the VideoSubSlot of the second video channel in the first VideoTrack and
+so on until the VideoSubSlot of the last video channel of the last VideoTrack is reached.
+
+There are currently no Frame Assemblies defined that use the VideoParticle-interleaved organization.
+
+                                                                                                                            21
+2.3.3.2.  VideoLine-interleaved VideoSlots
+
+      Figure 2-2: VideoLine Stream
+
+Each VideoSlot groups all the VideoSubSlots containing all the VideoParticles that belong to the same VideoLine for all
+the different physical video channels present in the VideoBundle. The number of VideoSubSlots in a VideoSlot, ,
+equals the total number of video channels in the VideoBundle times the number of VideoParticles in a VideoLine. The
+VideoSubSlots in the VideoSlot are ordered starting with all the VideoSubslots of the VideoLine (in timed order) of the
+first video channel in the first VideoTrack, followed by all the VideoSubSlots of the same VideoLine of the second video
+
+22
+channel in the first VideoTrack and so on up to all the VideoSubSlots of the same VideoLine of the last video channel of
+the last VideoTrack.
+
+All currently defined 3D2 Side-by-Side Frame Assemblies use the VideoLine-interleaved organization.
+
+2.3.3.3.  VideoFrame-interleaved VideoSlots
+
+Figure 2-3: VideoFrame Stream
+
+                                                                                                                       23
+Each VideoSlot groups all the VideoSubSlots containing all the VideoParticles that belong to the same VideoFrame for
+all the different physical video channels present in the VideoBundle. The number of VideoSubSlots in a VideoSlot, ,
+equals the total number of video channels in the VideoBundle times the number of VideoParticles in a VideoFrame.
+The VideoSubSlots in the VideoSlot are ordered starting with all the VideoSubslots of the VideoFrame (in timed order)
+of the first video channel in the first VideoTrack, followed by all the VideoSubSlots of the same VideoFrame of the
+second video channel in the first VideoTrack and so on up to all the VideoSubSlots of the same VideoFrame of the last
+video channel of the last VideoTrack.
+
+All currently defined 3D2 Top-and-Bottom Frame Assemblies and the 2D Frame Assembly use the VideoFrame-
+interleaved organization.
+
+2.3.4.    VideoBundle
+
+Video channels are transmitted over USB in a VideoBundle. The VideoBundle concept is very similar to the
+
+VideoCluster concept as defined in the USB AVCore Definition, except that a VideoBundle retains all of the physical
+
+aspects of the video stream, such as VideoSample Rate, bits per VideoSample, etc. Like a VideoCluster, a VideoBundle
+
+consists of a number of VideoTracks and each VideoTrack in turn consists of a number of physical video channels. The
+
+following figure illustrates the concept.
+
+      Figure 2-4: VideoBundle
+
+A VideoBundle is a concatenation of a potentially very large number of VideoSlots, ordered according to ascending
+time. VideoBundles are packetized when transported over USB whereby SIPs can only contain an integer number of
+VideoSlots. Each SIP always starts with the same channel, and the channel order is respected throughout the entire
+transmission. If, for any reason, there are no VideoSlots available to construct a SIP, a Transfer Delimiter shall be sent
+instead.
+
+2.3.4.1.  VideoBundle Description
+
+The VideoBundle Description is a hierarchical component of the VideoStreams Configuration Description. Refer to
+
+Section 2.7.1, "VideoStreamConfigList Description" for details.
+
+2.4.      VideoFrame
+
+A VideoFrame is a single picture that is typically shown as part of a larger sequence. Many single VideoFrames are run
+
+in succession to produce what appears to be a seamless piece of film or movie. The following sections define a number
+
+of concepts related to the VideoFrame.
+
+2.4.1.    VideoFrame Rate
+
+The VideoFrame Rate is the frequency (rate), expressed in Hertz (Hz), at which an imaging device produces unique
+
+consecutive images called VideoFrames. The term applies equally well to computer graphics, video cameras, film
+
+cameras, and motion capture systems.
+
+All video-related frequency values shall tolerate at least ±5000 PPM inaccuracy to accommodate sampling clock
+inaccuracies.
+
+2.4.2.    VideoFrame Coordinates
+
+The following VideoFrame Coordinate definitions are used in this document:
+
+24
+      Figure 2-5: VideoFrame Coordinates
+
+ The Width of the VideoFrame in VideoSamples (pixels):
+ The Height of the VideoFrame in VideoLines:
+ A particular VideoSample in the VideoFrame, indicated by:
+
+      Its horizontal coordinate:
+      Its vertical coordinate:
+ The Origin (0,0) (upper left VideoSample(0) of the VideoFrame) is on the intersection of the first VideoLine
+     (VideoLine 1) and the first VideoColumn (VideoColumn 1) of a VideoSample coordinate system oriented as
+     defined in the picture above.
+
+Note: VideoLine and VideoColumn numbers are one-based.
+
+2.4.2.1.  Subregions
+
+Within this coordinate system, rectangular subregions may be defined as follows:
+
+ Horizontal coordinate of the upper left VideoSample of the subregion in the system above, in VideoSamples:
+ Vertical coordinate of the upper left VideoSample of the subregion in the system above, in VideoLines:
+ Width of a specific rectangular area within the VideoFrame, in VideoSamples:
+ Height of a specific rectangular area within the VideoFrame, in VideoLines:
+
+The values , , , , , and shall always be multiples of two (even numbers).
+Subregions shall never overlap.
+
+2.4.3.    VideoFrame Spatial Layout and Timing Aspects
+
+The following sections describe the VideoFrame Spatial Layouts for both 2D and 3D2 Frame Organizations (see
+
+Section 2.4.4, "VideoFrame Organization" for more information).
+
+2.4.3.1.  2D VideoFrame Spatial Layout
+
+The following figure describes a typical VideoFrame Spatial Layout for the 2D (one video channel) case:
+
+                                                                                                               25
+    Figure 2-6: 2D VideoFrame Spatial Layout and Timings
+
+A VideoFrame consists of a number of horizontal progressive scan lines where each VideoLine has an active part (for
+example, the segment between A and B in Figure 2-6), containing the actual VideoSamples ( ) that make up the
+VideoLine, and an inactive part, ( ) (for example, the segment between B and C in Figure 2-6), called the Horizontal
+Blanking Interval or HBI. The HBI does not contain any VideoSamples. Following the active part of the VideoFrame
+( ­ the part that contains VideoLines with actual VideoSamples ­ the segment between A and D in Figure 2-6), there
+are a number of inactive VideoLines ( ­ the segment between D and E in Figure 2-6) that together constitute the
+Vertical Blanking Interval or VBI. The VBI does not contain any VideoSamples.
+
+The time difference between B and A is called the Active Line Time, , the time difference between C and B is called
+
+the Inactive Line Time, , and the time difference between C and A is called the Total Line Time,               .
+
+The time difference between D and A in Figure 2-6 is called the Active VideoFrame Time, , the time difference
+
+between E and D is called the Inactive VideoFrame Time, , and the time difference between E and A is called the
+
+VideoFrame Time,    .
+
+VideoSamples are numbered sequentially starting at the top left with VideoSample ( ) and ending at the bottom right
+with VideoSample ( ). If is the horizontal resolution (number of VideoSamples in the active part of a
+VideoLine) and is the vertical resolution of the VideoFrame (number of active VideoLines in the VideoFrame) then
+the total number of VideoSamples in the VideoFrame is:
+
+                                                          (  )
+
+Interlaced formats are not supported.
+
+2.4.3.2.    3D2 VideoFrame Layout
+
+When transporting 3D2 video data, consideration has been given to aligning the 3D2 Layouts, VideoFrame
+
+Organizations, and video timings so that they match as closely as possible the 2D Layout, VideoFrame Organization
+
+and video timings.
+
+2.4.3.2.1.  3D2 Half Resolution VideoFrame Spatial Layout
+
+All Half Resolution 3D2 VideoFrame Organizations (see Section 2.4.4, "VideoFrame Organization") use a VideoFrame
+
+Spatial Layout that is identical to the Full Resolution 2D VideoFrame Spatial Layout. This is accomplished by
+
+subsampling the original Full Resolution Left and Right VideoFrame by a factor of 2, either by dropping every other
+
+26
+VideoLine or every other VideoColumn of the original Left and Right VideoFrames and then recombining the resulting
+half resolution VideoFrames back into a Full Resolution resulting VideoFrame that has the exact same Spatial Layout,
+VideoFrame Organization and video timings as one of the original (Left or Right) VideoFrame. See Figure 2-6, "2D
+VideoFrame Spatial Layout". All of the Half Resolution Frame Organizations use this Spatial Layout.
+
+2.4.3.2.2.  3D2 Full Resolution VideoFrame Spatial Layout
+
+This specification supports only one Full Resolution Frame Organization (3D2FP, 3D2 Frame Packing ­ See Section
+
+2.4.4, "VideoFrame Organization").
+
+In this case, the total amount of actual video data per 3D2 VideoFrame doubles since Full Resolution Left and Right
+VideoFrames are combined by packing them together and no subsampling is performed.
+
+To keep the overall VideoFrame timing intact (3D2 VideoFrame Time = Left VideoFrame Time = Right VideoFrame
+Time), the VideoSample clock is doubled, compared to the 2D Full Resolution case. The area corresponding to the
+Vertical Blanking Interval of the Left VideoFrame is called the Active Space. The Active Space contains exactly the
+same amount of VideoLines as does the Vertical Blanking Interval. The active part of the VideoLines in the Active
+Space shall contain VideoSamples that all have a zero value.
+
+                                                                                                                     27
+      Figure 2-7: 3D2FP VideoFrame Spatial Layout and Timings
+
+In this figure, the horizontal time scale is twice as large as it is in Figure 2-6 so that it takes exactly the same time in
+both cases from the beginning of the VideoFrame (A) to the end of the VideoFrame (G). As a consequence, all other
+time values are divided by a factor of 2. The following equations hold:
+
+28
+2.4.4.         VideoFrame Organization
+
+The AVFormat 3 Definition supports 2D VideoFrames (one video channel) as well as Stereoscopic 3D2 VideoFrames
+
+(two video channels) consisting of the assembly of a Left and a Right VideoFrame. The following tables define how the
+
+Left and Right VideoFrame can be assembled in different Frame Organizations. Each of the VideoFrame Organizations
+
+is assigned a unique VideoFrame Organization ID (FOID) and a unique VideoFrame Organization Legacy View Code
+
+(FOLVC) for use while in Legacy View as indicated in the tables. All VideoFrames are progressive scan. Interlaced
+
+formats are not supported.
+
+2.4.4.1.       2D
+
+The following table describes the 2D (one video channel) Full Resolution Frame Organization.
+
+Table 2-1: 2D
+
+FOID          FOLVC VideoFrame Organization
+2D            0x0001 2D, Full Resolution.
+
+2.4.4.2.       3D2FP
+
+The following table describes the 3D2 (two video channels) Full Resolution Frame Organization. Left and Right
+
+VideoFrame are packed into a single resulting VideoFrame. When transported over USB, the VideoSamples in the
+
+Active Space ( ) are either included in the VideoPayload or they are suppressed. When included, they shall all have
+
+zero values.
+
+Table 2-2: 3D2FP
+
+FOID          FOLVC   VideoFrame Organization
+3D2FP         0x0002  3D, Full Resolution, Frame Packing.
+                      The Active Space ( ) is either included or suppressed when the VideoFrame is transported over USB.
+
+                                                                                                                          29
+2.4.4.3.  3D2TAB
+
+The following table describes the 3D2 (two video channels) Half Resolution Top and Bottom Frame Organization. Left
+
+and Right VideoFrames are subsampled by discarding every other VideoLine in both the Left and the Right
+
+VideoFrame and the subsampled VideoFrames are recombined into a single resulting VideoFrame.
+
+    Table 2-3: 3D2TAB
+
+FOID      FOLVC VideoFrame Organization
+3D2TAB    0x0003 3D, Half Vertical Resolution, Odd Line Subsampling for Left and Right VideoFrame.
+
+2.4.4.4.  3D2SHxx
+
+The following table describes the 3D2 (two video channels) Half Resolution Side-by-Side Frame Organizations. Left
+
+and Right VideoFrames are subsampled by discarding every other Column in both the Left and the Right VideoFrame
+
+and the subsampled VideoFrames are recombined into a single resulting VideoFrame. Four combinations are possible
+
+as indicated in the table.
+
+    Table 2-4: 3D2SHxx
+
+FOID      FOLVC        VideoFrame Organization
+3D2SHOE   0x0004       3D, Half Horizontal Resolution.
+3D2SHOO   0x0005       Odd Column Subsampling for Left and Even Column Subsampling for Right VideoFrame.
+3D2SHEO   0x0006       3D, Half Horizontal Resolution.
+3D2SHEE   0x0007       Odd Column Subsampling for Left and Odd Column Subsampling for Right VideoFrame.
+                       3D, Half Horizontal Resolution.
+                       Even Column Subsampling for Left and Odd Column Subsampling for Right VideoFrame.
+                       3D, Half Horizontal Resolution.
+                       Even Column Subsampling for Left and Even Column Subsampling for Right VideoFrame.
+
+    Note: "Odd" and "Even" in the tables above indicate the VideoLines or VideoColumns that are retained for creating
+            the sub-sampled regions of the Left and Right views. Columns and Lines are numbered as indicated in
+            Figure 2-6, "2D VideoFrame Spatial Layout and Timings", starting with VideoLine 1 (uppermost line) or
+            VideoColumn 1 (leftmost column). For example, the 3D2SHOE Frame Organization retains the odd
+            VideoColumns 1, 3, 5, etc. from the original Left VideoFrame, dropping the even VideoColumns 2, 4, 6, etc.
+            to create the subsampled Left View and it retains the even VideoColumns 2, 4, 6, etc. from the original Right
+            VideoFrame, dropping the odd VideoColumns 1, 3, 5, etc. to create the subsampled Right View as illustrated
+            in the following figure.
+
+30
+  Figure 2-8: 3D2SHOE Frame Organization Subsampling
+
+2.4.4.5.  VideoFrame Organization Description
+
+The VideoFrame Organization Description is a hierarchical component of the VideoStreams Configuration Description.
+
+Refer to Section 2.7.1, "VideoStreamConfigList Description" for details.
+
+2.4.5.    VideoFrame Formats
+
+This specification supports a wide variety of VideoFrame formats, either predefined by this specification or vendor-
+
+defined. The VideoFrame Rate, together with the VideoFrame Format ID (VFID), fully identifies each VideoFrame
+
+format.
+
+The following set of parameters fully defines the (2D or 3D2) VideoFrame:
+
+ : VideoFrame Rate (in Hz)
+
+ : The aspect ratio of the VideoFrame
+
+        : Active VideoFrame Width (in VideoSamples)
+
+ : Active VideoFrame Height (in VideoLines)
+
+  Note: for the 3D2FP Frame Organization, indicates the Active VideoFrame Height for each of the Left and Right
+          (Full Resolution) VideoFrame.
+
+        : Total VideoFrame Width (in VideoSamples)
+
+ : Total VideoFrame Height (in VideoLines)
+
+        : VideoSample Rate (pixelclock) (in MHz) ­ for informational purposes only
+
+For the 3D2FP Full Resolution Frame Organization, the following secondary parameters can be calculated from the
+previous parameters:
+
+ : Indicates the size of the Active Space (in VideoLines):
+
+         : Total Active VideoFrame Height (in VideoLines):
+
+Note that the VideoFrame Rate is an integral part of the VideoFrame Format definition. To fully identify one of the
+predefined VideoFrame Formats, both the VideoFrame Rate and the VideoFrame Format ID are required.
+
+This specification defines a number of common predefined VideoFrame formats. Refer to Appendix A, "VideoFrame
+Format Dimensions and Timings" for a complete list.
+
+                                                                                                                      31
+2.4.5.1.    VideoFrame Format Description
+
+The VideoFrame Format Description is a hierarchical component of the VideoStreams Configuration Description.
+
+Refer to Section 2.7.1, "VideoStreamConfigList Description" for details.
+
+2.5.        VideoSample Formats
+
+There are currently two VideoSample Format Types defined by this specification:
+
+ VideoSample Format Type I
+ VideoSample Format Type II
+
+A unique VideoSample format ID (VSID) identifies each VideoSample Format. In addition, a unique VideoSample
+Format Legacy View Code (VSLVC) is defined for use while in Legacy View.
+
+2.5.1.      Type I Format
+
+VideoSample format Type I groups the VideoSample formats that use one symbol per VideoSample. These formats are
+
+usually called RAW data formats. The following sections describe the VideoSample formats that belong to Type I.
+
+2.5.1.1.    Type I Format Type Description
+
+The VideoSample Type I Description is a hierarchical component of the VideoStreams Configuration Description. Refer
+
+to Section 2.7.1, "VideoStreamConfigList Description" for details.
+
+2.5.1.2.    Type I Supported Formats
+
+2.5.1.2.1.  RAW Format
+
+The RAW VideoSample format uses a single symbol to represent a VideoSample. To generate a color picture, the
+
+VideoSamples need to be further processed, starting from the Bayer pattern (Demosaicing, White Balance, Contrast,
+
+Color Saturation, Sharpening, ...)
+
+This specification supports a generic RAW format, ranging from 1 up to 32 bits per VideoSample. Each VideoSample is
+transported in a VideoSubSlot as described above.
+
+The              and                values shall always obey the following equation:
+
+                                       ((                                 )  )
+
+The VSID for the RAW format shall be set to "RAW". The VSLVC shall be set to 0x0001.
+
+2.5.2.      Type II Format
+
+VideoSample Type II groups the VideoSample formats that use multiple symbols per VideoSample. The Type II
+
+formats are also known as Color Spaces. Typical examples are the RGB formats and the YUV formats. The following
+
+sections describe the VideoSample Formats that belong to Type II.
+
+2.5.2.1.    Type II Format Type Description
+
+The VideoSample Type II Description is a hierarchical component of the VideoStreams Configuration Description.
+
+Refer to Section 2.7.1, "VideoStreamConfigList Description" for details.
+
+2.5.2.2.    Type II Supported Formats
+
+The Type II formats use multiple symbols to represent a VideoSample. For some of the Formats, the VideoSample
+
+concept does not really map well onto byte boundaries since Chrominance values may be shared among multiple
+
+VideoSamples and may even be arranged completely separate from the VideoSample Luminance values (planar
+
+arrangements). Therefore, the concept of the VideoParticle was introduced (see Section 2.3.1.1, "VideoParticle". In all
+
+cases there is never any padding involved when VideoSamples are first packetized into VideoParticles and then placed
+
+into VideoSubSlots since all Luminance and Chrominance values are always byte-aligned.
+
+            and         are implied by the VSID and are not reported in the AVDD.
+
+32
+The following Sections specify the VideoSample Formats allowed for use in this specification. The following notation is
+used in the tables:
+
+ The VSID value is used to uniquely identify the VideoSample Format for the purposes of this specification.
+
+ The VSLVC value is used to uniquely identify the VideoSample Format while in Legacy View.
+
+ The FourCC field indicates the four-character code by which the VideoSample Format (Color Space) is registered
+
+at www.fourcc.org.
+
+ The Type field specifies the type of the VideoSample Format: RGB, YCbCr, or YUV Planar.
+
+ The bitResolution field indicates the number of bits per VideoParticle (      ).
+
+ The subSlotSize field indicates the number of bytes per VideoSubSlot (    ).
+
+ The bits/VideoSample field indicates the (average) number of bits used for one VideoSample (informative).
+
+ In the figures, n is the horizontal resolution and m is the vertical resolution of the VideoFrame.
+
+2.5.2.2.1.  RGB565
+
+Table 2-5: RGB565 VideoSample Format
+
+VSID        VSLVC   FourCC            Type  bitResolution                  subSlotSize      bits/VS
+RGB565      0x0002  BI_RGB            RGB   16                             2                16
+
+2.5.2.2.2.  RGB888
+
+Table 2-6: RGB888 VideoSample Format
+
+VSID        VSLVC   FourCC            Type  bitResolution                  subSlotSize      bits/VS
+RGB888      0x0003  BI_RGB            RGB   24                             3                24
+
+                                                                                                             33
+2.5.2.2.3.  RGB8888
+
+    Table 2-7: RGB8888 VideoSample Format
+
+VSID        VSLVC    FourCC                Type      bitResolution  subSlotSize  bits/VS
+RGB8888     0x0004   BI_RGB                RGB       32             4            32
+
+2.5.2.2.4.  IYU2
+
+    Table 2-8: IYU2 VideoSample Format
+
+VSID        VSLVC    FourCC                Type      bitResolution  subSlotSize  bits/VS
+IYU2        0x0005   IYU2                  YCbCr444  24             3            24
+
+2.5.2.2.5.  YUY2
+
+    Table 2-9: YUY2 VideoSample Format
+
+VSID        VSLVC    FourCC                Type      bitResolution  subSlotSize  bits/VS
+YUY2        0x0006   YUY2                  YCbCr422  32             4            16
+
+34
+2.5.2.2.6.  YVYU
+
+Table 2-10: YVYU VideoSample Format
+
+VSID        VSLVC   FourCC           Type      bitResolution  subSlotSize  bits/VS
+YVYU        0x0007  YVYU             YCbCr422  32             4            16
+
+2.5.2.2.7.  UYVY
+
+Table 2-11: UYVY VideoSample Format
+
+VSID        VSLVC   FourCC           Type      bitResolution  subSlotSize  bits/VS
+UYVY        0x0008  UYVY             YCbCr422  32             4            16
+
+                                                                                    35
+2.5.2.2.8.  I420
+
+    Table 2-12: I420 VideoSample Format
+
+VSID        VSLVC   FourCC               Type           bitResolution  subSlotSize  bits/VS
+I420        0x0009  I420/IYUV            YUV420 Planar  8              1            12
+
+2.5.2.2.9.  YV12
+
+    Table 2-13: YV12 VideoSample Format
+
+VSID        VSLVC   FourCC               Type           bitResolution  subSlotSize  bits/VS
+YV12        0x000A  YV12                 YUV420 Planar  8              1            12
+
+2.5.3.      VideoCompression
+
+This specification defines several methods for compressing video content. A unique Video Compression ID (VCID)
+
+identifies each Method. There is also a unique Video Compression Legacy View Code (VCLVC) defined as follows:
+
+36
+Table 2-14: Video Compression Methods
+
+VCID      VCLVC Method                            Description
+FULL      0x0001 Uncompressed Full Frame
+                                                  All the VideoSamples that together constitute a full VideoFrame are
+PARTIAL   0x0002 Uncompressed Partial Frame       transported uncompressed from the video source to the video sink.
+
+H264BASEINTRA 0x0003 H.264 Baseline Intra         One or more subregions of a VideoFrame (see Section 2.4.2.1,
+H264BASEPRED 0x0004 H.264 Baseline Predictive     "Subregions") contain VideoSamples that have changed with respect to the
+                                                  previous VideoFrame. Only these subregions (containing the changed
+H264HiQINTRA 0x0005 H.264 High Quality Intra      VideoSamples) are transported uncompressed from the video source to the
+H264HiQPRED 0x0006 H.264 High Quality Predictive  video sink. To reconstruct the full VideoFrame, all VideoSamples outside
+                                                  the changed subregions from the previous VideoFrame are reused.
+VENDOR    0xFFFF Vendor-defined
+                                                  Full VideoFrames are compressed using H.264 Baseline Profile codec tools
+                                                  and only Intra-coded MacroBlocks. The resulting VideoFrame is called an
+                                                  Intra-VideoFrame.
+
+                                                  Full VideoFrames are compressed using H.264 Baseline Profile codec tools
+                                                  and a combination of Intra-coded and Inter-coded MacroBlocks. I-frames
+                                                  are coded using intra-coded MacroBlocks. P-frames use Intra-coded
+                                                  Macroblocks for all areas in the VideoFrame that have changed with respect
+                                                  to the previous VideoFrame. Inter-coded MacroBlocks with Zero-
+                                                  MotionVector Predictor are used for all areas that have not changed (skip
+                                                  mode). The resulting VideoFrame is called an Inter-VideoFrame.
+
+                                                  Full VideoFrames are compressed using H.264 High Profile Profile codec
+                                                  tools and only Intra-coded MacroBlocks. The resulting VideoFrame is called
+                                                  an Intra-VideoFrame.
+
+                                                  Full VideoFrames are compressed using H.264 High Profile Profile codec
+                                                  tools and a combination of Intra-coded and Inter-coded MacroBlocks. I-
+                                                  frames are coded using intra-coded MacroBlocks. P-frames use Intra-coded
+                                                  Macroblocks for all areas in the VideoFrame that have changed with respect
+                                                  to the previous VideoFrame. Inter-coded MacroBlocks with Zero-
+                                                  MotionVector Predictor are used for all areas that have not changed (skip
+                                                  mode). The resulting VideoFrame is called an Inter-VideoFrame.
+
+                                                  Vendor-defined Compression Method. Further details should be provided
+                                                  via the AVDD.
+
+The AVFormat 3 specification currently only supports the Uncompressed Full Frame Video Compression Method
+(FULL). All currently defined Video Compression Methods are supported by [AVFORMAT_1].
+
+2.5.3.1.  VideoCompression Description
+
+The VideoCompression Description is a hierarchical component of the VideoStreams Configuration Description. Refer
+
+to Section 2.7.1, "VideoStreamConfigList Description" for details.
+
+2.6.      VideoStreamConfig
+
+A VideoStream Configuration (VideoStreamConfig) in an AVData Video Streaming Interface is fully characterized by
+
+the following components:
+
+ The VideoBundle (Section 2.3.4)
+ The VideoFrame component, consisting of
+
+      The VideoFrame Rate (Section 2.4.1)
+      The VideoFrameOrganization (Section 2.4.4)
+      The VideoFrame format (Section 2.4.5)
+ The VideoSample component, consisting of
+      The VideoSample Format (Section 2.5)
+      The VideoCompression (Section 2.5.3)
+ The VideoSIPSize (Section 4)
+
+2.6.1.    VideoStreamConfig Description
+
+The VideoStreamConfig Description is a hierarchical component of the VideoStreamConfigList Description. Refer to
+
+Section 2.7.1, "VideoStreamConfigList Description" for details.
+
+                                                                                                                  37
+2.7.    VideoStreamConfigList
+
+A VideoStreamConfigList is a construct that consists of a list of VideoStreamConfig Descriptions that are supported by
+
+a particular AVData Video Streaming Interface in which the VideoStreamConfigList is advertised.
+
+2.7.1.  VideoStreamConfigList Description
+
+The VideoStreamConfigList Description can be found at: VideoIsoStreamConfigList.
+
+2.8.    Current Limitations
+
+At this time, the AVFormat 3 specification only supports VideoBundles consisting of one VideoTrack. The single
+
+VideoTrack may contain either one video channel (2D) or 2 video channels (3D2). The video data is always
+
+uncompressed (except for color space compression) and is always full Frame (no partial update support). VideoSlots
+
+are either VideoLine-interleaved (Side-by-Side frame organization) or VideoFrame-interleaved (Top-and-Bottom
+
+frame organization). VideoParticle-interleaved Streams are not used at this time.
+
+38
+3.          Video Synchronization
+
+This specification describes how VideoStreams are transported over an isochronous pipe.
+
+To keep the video source and the video sink synchronized in time, it is important that the average VideoFrame Rate
+(or VideoFrame Time) on both sides remain synchronized on average. Indeed, if the video sink consumes the
+VideoFrames at an average rate that is higher than the rate at which the video source provides the VideoFrames, then
+the video sink will inevitably run out of video data to display and buffer underruns will occur. Likewise, if the video
+sink consumes the VideoFrames at an average rate that is lower than the rate at which the video source provides the
+VideoFrames, then the video sink will inevitably run out of buffer space to store the incoming video data and buffer
+overruns will occur.
+
+To avoid any of the scenarios described above, the average VideoFrame Rate on both sides (video source and sink)
+must match. Instantaneous VideoFrame Rate may vary (drift) between video source and sink and the accumulated
+variation is limited by the amount of buffer that is available at the video sink.
+
+This specification defines the sequence of StartofVideoFrame(i) events. Each element of this sequence represents the
+exact moment in time (event) when a video Producer (such as a camera sensor or the VideoPlayer in a Controller)
+produces the first bit of the first VideoSample of VideoFrame(i). Therefore the duration of VideoFrame(i) at the
+Producer, , is given by:
+
+                                                      ()                             ()
+
+and the rate of VideoFrame(i) at the Producer, , is given by:
+
+                                                         /
+
+The average VideoFrame Time can be obtained by averaging the instantaneous VideoFrame Time during a
+sufficiently large time window :
+
+                                                               /
+
+      Note: Other, more sophisticated averaging algorithms may be used to obtain a better estimate for .
+
+It is expected that the difference between and at the Producer is very small (mostly determined by the stability
+of the local clock from which is derived).
+
+The StartofVideoFrame events are transported over USB by setting the VideoFrameStart flag in the AVHeader of each
+SIP that contains the first Video Data of a VideoFrame. Therefore, the StartofVideoFrame events can be regarded as a
+continuous signal with an amplitude of either 0 or 1 and a frequency equal to the VideoFrame Rate that is sampled
+with a clock running with a time base equal to the ServiceInterval period.
+
+As an example, consider a VideoFrame Rate             (           ) and a ServiceInterval period
+
+(           ). Thus, the StartofVideoFrame signal of     is sampled with a clock of      . There will be on average
+
+   /              /  ServiceIntervals per VideoFrame. However, due to the sampling process
+
+running at  , the spacing between StartofVideoFrame events as observed at the video Consumer after transport
+
+over USB will be either 133 ServiceIntervals or 134 Intervals. In other words, for all , the instantaneous VideoFrame
+
+Time(i), at the video Consumer is always                       . However, by averaging over a sufficiently large
+
+(sliding) time window , the video Consumer can obtain an accurate estimate for and use that as its local
+
+VideoFrame Time:
+
+                                                               /
+
+      Note: Other, more sophisticated averaging algorithms may be used to obtain a better estimate for .
+
+                                                                                                                  39
+3.1.               Video Synchronization Types
+
+An isochronous endpoint (In or Out) always belongs to one of the three synchronization types as defined in Section
+
+5.12 of [USB2.0]:
+
+ Asynchronous Source or Sink
+ Synchronous Source or Sink
+ Adaptive Source or Sink
+
+However, when used in an AVData Video Streaming Interface, this specification limits the synchronization types that
+may be used for its isochronous data endpoint to the following three cases:
+
+ Asynchronous Source
+ Synchronous Source
+ Adaptive Sink
+
+By limiting the possible variations in synchronization type to the cases above, maximum interoperability is
+guaranteed since an Adaptive Sink is always able to communicate with either an Asynchronous or a Synchronous
+Source.
+
+The following sections provide more details about the supported synchronization cases.
+
+3.1.1.             Asynchronous Video Source
+
+An asynchronous isochronous Video Source endpoint produces VideoFrames at a rate that is locked either to a clock
+
+external to the USB or to a free-running clock internal to the AVFunction. An asynchronous isochronous Video Source
+
+endpoint cannot be synchronized to a start of frame (SOF), Bus Interval Boundary (BIB), or to any other clock in the
+
+USB domain.
+
+When an AVFunction (Provider) is sending video data to the Controller over an asynchronous isochronous endpoint,
+
+is implied in the arrival time of subsequent StartofVideoFrame events at the Controller. As explained above,
+
+these StartofVideoFrame events are quantized by the ServiceInterval period (         , where m is an integer
+
+value). However, by averaging the arrival times over a sufficiently large (sliding) time window, an accurate
+
+VideoFrame Time and therefore VideoFrame Rate can be derived at the Controller (Consumer).
+
+3.1.2.             Synchronous Video Source
+
+When an AVFunction (Provider) is sending video data to the Controller over a synchronous isochronous endpoint,
+
+is tightly synchronized to the USB SOF or BIB. Therefore, the arrival time of subsequent StartofVideoFrames at the
+
+Controller (Consumer), quantized again by the ServiceInterval period, will follow a distinct repeating pattern
+
+(although the repetition period may be large). For example, if the VideoFrame Rate is 60Hz, locked to SOF or BIB, then
+
+the VideoFrame Time at the Provider, , is exactly 133.3333 ServiceInterval periods (0.016667/0.000125) and the
+
+arrival times of subsequent StartofVideoFrames at the sink will follow a repeating pattern, expressed in SI periods as
+
+follows: 133, 133, 134, 133, 133, 134, 133, ...
+
+3.1.3.             Adaptive Video Sink
+
+An adaptive isochronous Video Sink endpoint is able to sink data at any rate within its operating range. This implies
+
+that an adaptive isochronous Video endpoint runs an internal process that allows it to match its natural VideoFrame
+
+Rate to the data rate that is imposed at its interface.
+
+When an AVFunction (Consumer) is receiving video data from the Controller (Provider) over an adaptive isochronous
+
+endpoint, is implied in the arrival time of subsequent StartofVideoFrame events at the AVFunction. As explained
+
+above, these StartofVideoFrame events are quantized by the ServiceInterval period (  , where m is an
+
+integer value). However, by averaging the arrival times over a sufficiently large (sliding) time window, an accurate
+
+VideoFrame Time and therefore VideoFrame Rate can be derived at the AVFunction (Consumer).
+
+40
+4.  Video Packetizing
+
+This specification exclusively addresses VideoStreams that are comprised of uncompressed VideoSamples (pixels),
+organized in a well-defined VideoFrame Spatial Layout. Only progressively scanned VideoFrames are considered.
+
+During each VideoFrame Time , the total number of VideoSamples in a VideoFrame, , needs to be sent over the USB.
+The following rules apply:
+
+ Each SIP, associated with a VideoFrame shall contain exactly VideoSamples, except for the last SIP, which may
+     contain VideoSamples and shall always be less than or equal to .
+
+ The first VideoSample of a VideoFrame shall always be the first VideoSample in the SIP. This rule guarantees that
+     a new VideoFrame always starts at the beginning of a SIP.
+
+ There shall always be at least one Transfer Delimiter (see Section 2.1, "Transfer Delimiter") between successive
+     VideoFrames.
+
+The value is critical in the operation of the isochronous video transport.
+
+The minimum value for is largely determined by the total amount of VideoSamples in the VideoFrame, , and the
+VideoFrame Time . Indeed, shall be chosen at least large enough so that during each VideoFrame Time, there are
+enough opportunities to send the VideoSamples over the USB:
+
+                                                  ( /(     ( / ) ))
+
+where is the ServiceInterval period. The -1 in the denominator ensures that the third rule stated above is always
+satisfied.
+
+The maximum value for is determined by the available bandwidth for the isochronous pipe and the available video
+buffer space on the AVFunction. In general, consuming less bandwidth per SIP on the USB will require more video
+buffering on the AVFunction. Whenever VideoSamples are produced or consumed using customary video timings,
+there is a Vertical Blanking Interval at the end of each VideoFrame where no new VideoSamples are produced or
+consumed. This is the inactive part of the VideoFrame. In order to reclaim this `dead time' on the bus, during the active
+part of the VideoFrame, the video transmitter can send slightly less VideoSamples over the USB than it locally
+produces or consumes ( in figures Figure 5-1 and Figure 5-2 below). It can then use these accumulated VideoSamples
+to send over the USB during the inactive part of the VideoFrame, minimizing the total required bandwidth per SIP on
+the USB. Evidently, this technique requires some additional video buffer space to temporarily hold the accumulated
+VideoSamples during each VideoFrame.
+
+It should be a design goal to find the correct balance between consumed bandwidth and required video buffer space.
+From a USB bandwidth perspective, it is desirable to bring as close as possible to .
+
+Some designs may benefit from having be an integer multiple of the number of VideoSamples in a VideoLine so that
+all SIPs start with the first VideoSample of a VideoLine and contain an integer number of VideoLines.
+
+The exact formulas for calculating involve a number of different parameters and are presented in detail in Appendix
+B, "Calculations".
+
+The AVFunction indirectly advertises the value of for each supported VideoStream Configuration through the
+<videoSIPSize> element of the <videoIsoStreamConfig> Description as follows:
+
+where is the AVHeader length in bytes and                  is the VideoSubSlot size, also in bytes, for the VideoStream
+Configuration.
+The following rules apply:                              [  ])               [  ]
+ For full-/high-speed endpoints:
+
+                                               (
+
+                                                                                                                   41
+ For SuperSpeed endpoints:
+
+42
+5.    Examples
+
+The following sections are intended to illustrate the concepts defined above.
+
+5.1.  AVFunction as a Video Source
+
+For this example, it is assumed that the actual Producer of the video data (a camera sensor, for example) uses regular
+
+video timings to produce the VideoSamples and all VideoSamples are self-contained (VideoSample = VideoParticle).
+
+Therefore, there exists the notion of VideoFrame, VideoLines, Horizontal Blanking Interval (HBI), and Vertical
+
+Blanking Interval (VBI), etc. at the Producer. A typical video timing diagram is presented in the area labeled
+
+"VideoTimings" in Figure 5-1. Individual VideoSamples are grouped into VideoLines (labeled L1, L2, etc.). Horizontal
+
+Blanking Intervals (HB) separate the (active parts of) VideoLines. Vertical Blanking Intervals (VB) separate the (active
+
+parts of) VideoFrames.
+
+VideoSamples are stored in a local video buffer in the order in which they become available from the Producer. During
+
+the active part of the VideoFrame, the video Producer nominally produces       VideoSamples during each USB
+
+ServiceInterval. Each ServiceInterval, VideoSamples are sent over the USB in a single SIP, leaving excess
+
+VideoSamples that are temporarily accumulated in the local video buffer. At the end of the active part of the
+
+VideoFrame, no more new VideoSamples are produced but a number of VideoSamples (approx. , where is the
+
+number of ServiceIntervals during the active part of the videoFrame) are still available in the local video buffer. These
+
+VideoSamples are then sent during the inactive part of the VideoFrame, depleting the local video buffer before the
+
+start of a new VideoFrame is reached. In Figure 5-1, the area labeled "Buffer Management" graphically illustrates how
+
+the local video buffer is gradually filled over time until the end of the active part of the VideoFrame is reached. The
+
+local video buffer is then depleted during the inactive part of the VideoFrame. The area labeled "USB Transport"
+
+illustrates how during each ServiceInterval, VideoSamples are transported over the USB. The last SIP, associated
+
+with a VideoFrame may be of smaller size. Note also that there is at least one `empty' ServiceInterval between each
+
+VideoFrame VideoPayload. Finally, the area labeled "Application Layer" indicates when the VideoSamples that where
+
+transported over USB become available for actual processing on the receiver. Note that VideoSamples only become
+
+available for processing at each end of the ServiceInterval.
+
+                                                                                                                         43
+      Figure 5-1: Video Source Packetizing Scheme
+
+44
+5.2.  AVFunction as a Video Sink
+
+In this example, it is again assumed that all VideoSamples are self-contained (VideoSample = VideoParticle).
+
+The Application Layer presents VideoSamples to the USB transport and the USB transport consumes VideoSamples
+at the beginning of each ServiceInterval. In Figure 5-2, the area labeled "Application Layer" describes this process. The
+area labeled "USB Transport" illustrates how during each ServiceInterval, VideoSamples are transported over the
+USB in one SIP. The last SIP, associated with a VideoFrame may be of smaller size. Note also that there is at least one
+`empty' ServiceInterval between each VideoFrame VideoPayload.
+
+VideoSamples are stored in a local video buffer in the order in which they become available from the USB. During the
+
+active part of the VideoFrame, the video Consumer nominally consumes  VideoSamples during each USB
+
+ServiceInterval. Each ServiceInterval, VideoSamples are sent over the USB in a single SIP, creating a shortage of
+
+VideoSamples. To account for this shortage, the Video sink needs to buffer a number of VideoSamples (approx. ,
+
+where is the number of ServiceIntervals during the active part of the videoFrame) before it can start the
+
+VideoFrame so that the Consumer does not run out of VideoSamples before the end of the active part of the
+
+VideoFrame. In Figure 5-2, The area labeled "Buffer Management" graphically illustrates how the local video buffer is
+
+first `pre'-filled during the inactive part of the VideoFrame. The local video buffer is then gradually depleted during the
+
+active part of the VideoFrame.
+
+Finally, it is assumed that the actual Consumer of the video data (a display panel, for example) uses regular video
+timings to consume the VideoSamples. Therefore, there exists the notion of VideoFrame, VideoLines, Horizontal
+Blanking Interval (HB), and Vertical Blanking Interval (VB), etc. at the Consumer. A typical video timing diagram is
+presented in the area labeled "VideoTimings" in Figure 5-2. Individual VideoSamples are grouped into VideoLines
+(labeled L1, L2, etc.). Horizontal Blanking Intervals (HB) separate the (active parts of) the VideoLines. Vertical
+Blanking Intervals (VB) separate the (active parts of) the VideoFrames.
+      Figure 5-2: Video Sink Depacketizing Scheme
+
+46
+6.      Video Data Format
+
+The VideoStream is packetized as described in Section 4, "Video Packetizing" into one ServiceIntervalPacket (SIP) per
+ServiceInterval.
+
+Each SIP shall start with a fixed-length AVHeader, followed by the actual Video Data.
+
+6.1.    AVHeader
+
+The AVHeader is exactly 32 bytes long and has the following layout:
+
+    Table 6-1: AVHeader Layout
+
+Offset                 Field    Size   Value                                           Description
+   0                              2   Bitmap
+        wFlags                                                       D0:      VideoFrameStart
+                                  1   Number                         D1:      VideoFrameIDValid
+                                  1   Number                         D2:      HDCPOn
+                                  4   Number                         D3:      HDCPValid
+                                  8   Number                         D4:      SIPSequenceNrValid
+                                  2   Number                         D15..5:  Reserved. Shall be set to 0.
+                                 14   Number
+    2   bVideoFrameID                                                VideoFrame ID.
+
+    3   bReserved                                                    Reserved. Shall be set to zero.
+
+    4   dStreamCtr                                                   The streamCtr value as assigned by the HDPC
+                                                                     transmitter.
+
+    8   qInputCtr                                                    The inputCtr value associated with the first full 16-byte
+                                                                     encrypted data block in the SIP.
+
+    16  wSIPSequenceNr                                               Sequence Number of the SIP.
+
+    18  Reserved                                                     Reserved. Shall be set to zero.
+
+The wFlags field provides information about the subsequent fields of the AVHeader as follows:
+
+ Bit D0 (VideoFrameStart) indicates whether this SIP is the first SIP of a VideoFrame (D0=0b1) or not (D0=0b0). If
+     set, this means that the first VideoSample in the SIP corresponds to VideoSample (0) of the new VideoFrame.
+     Support for the VideoFrameStart bit is required for all implementations.
+
+ Bit D1 (VideoFrameIDValid) indicates whether the bVideoFrameID field contains a valid value (D1=0b1) or not
+     (D1=0b0). Implementations are allowed to always set the VideoFrameIDValid bit to 0b0, effectively indicating
+     that they do not support a VideoFrame ID.
+
+ Bit D2 (HDCPOn) indicates whether the current VideoStream is protected and is HDCP-encrypted (D2=0b1) or
+     not (D2=0b0).
+
+ Bit D3 (HDCPValid) indicates whether the dStreamCtr and qInputCtr fields contain valid values (D3=0b1) or not
+     (D3=0b0).
+
+ Bit D4 (SIPSequenceNrValid) indicates whether the wSIPSequenceNr field contains a valid value (D4=0b1) or not
+     (D4=0b0). Implementations are allowed to always set the SIPSequenceNrValid bit to 0b0, effectively indicating
+     that they do not support a SIP Sequence Number. However, for error recovery reasons, it is highly recommended
+     that implementations support the SIP Sequence Number feature.
+
+ Bits D15..5 are reserved and shall be set to zero.
+
+The bVideoFrameID field contains the VideoFrame ID of the current VideoFrame. The VideoFrame ID is a counter value
+that is incremented by one for every new VideoFrame and rolls over to zero (0x00) when the value 255 (0xFF) is
+reached. If the VideoFrameIDValid bit in the wFlags field is not set, then the transmitter should set the bVideoFrameID
+field to zero and the receiver shall ignore the bVideoFrameID field.
+
+The bReserved field shall be set to zero.
+
+The dStreamCtr and qInputCtr fields are used by the HDCP protection mechanism. Whenever the isochronous pipe is
+transporting protected content, the HDCPOn bit in the wFlags field shall be set in the AVHeader of every SIP containing
+
+                                                                                                                                47
+protected Video Data. When the HDCPOn bit in the wFlags field is not set, then the HDCP-related fields are irrelevant
+and the transmitter should set them to zero and the receiver shall ignore them.
+
+The HDCP-related fields shall have valid information at least at the beginning of each VideoFrame but may be valid
+more frequently. They are only relevant when the HDCPValid bit in the wFlags field is set. When the HDCPValid bit in
+the wFlags field is not set, the transmitter should set these fields to zero and the receiver shall ignore them.
+
+ The dStreamCtr field contains the streamCtr value associated with the VideoStream as assigned by the HDCP
+     transmitter.
+
+ The qInputCtr field contains the inputCtr value associated with the first full 16-byte encrypted data block in the SIP.
+
+The wSIPSequenceNr field contains the sequence number of the SIP. The SIP that contains the first Video Data
+associated with a VideoFrame shall have sequence number zero. Subsequent SIPs shall have monotonically
+incrementing (by one) sequence numbers.
+
+The Reserved field is reserved and shall be set to zero.
+
+6.2.  VideoPayload
+
+The VideoFrame VideoPayload shall be constructed according to one of the data layouts as described in Section 2.5.1,
+
+"Type I Format" and Section 2.5.2, "Type II Format. In all cases, the VideoPayload shall be 16-byte aligned. This is
+
+accomplished by zero-padding the actual VideoPayload to the nearest multiple of 16 bytes. The receiver can always
+
+calculate the number of padding bytes using the VideoFrame dimensional parameters and the value of the
+
+<videoSIPSize> element of the <videoIsoStreamConfig> Description.
+
+6.3.  Error Recovery
+
+Isochronous pipes put an emphasis on timely delivery of the data rather than guaranteed delivery. Therefore, there
+
+are no retry mechanisms in place should a USB packet get corrupted during transmission. However, since all SIPs
+
+contain the same amount of VideoSamples (except for the last SIP of a VideoFrame), a receiver may be able to
+
+calculate exactly how many VideoSamples were lost in transmission and correctly position the remaining
+
+VideoSamples in the current VideoFrame.
+
+Furthermore, each AVHeader contains a SIP sequence number so that the receiver can easily detect missing SIPs and
+can even account for a missing SIP that contains the first VideoPayload associated with a VideoFrame.
+
+The receiver can use different types of error concealment to account for the lost VideoSamples. For example, if a frame
+buffer is available, the VideoSamples of the previous VideoFrame that correspond to the lost VideoSamples may be
+used to replace the lost VideoSamples.
+
+48
+7.  Support for Content Protection
+
+This specification allows the transport of video content that is subject to Digital Right Management rules. These rules
+imply the existence of robust link protection when this type of content is transported over the USB. The USB AV
+Device Class Definition relies on the content protection framework protocol provided by the USB Content Security
+Device Class Definition ([USBCS]) and mandates HDCP 2.1 as the encryption scheme to avoid transmission of content
+in the clear. The USB version of the HDCP 2.1 implementation is fully defined in the Content Security Method #5
+specification ([USBCSM-5]). In-band provisions have been made here to allow compliant deployment of Content
+Security Method #5 (HDCP 2.1).
+
+When link protection is enabled, only the VideoPayload shall be encrypted using HDCP 2.1 tools, whereas the
+AVHeader remains in the clear. The AVHeader shall include proper settings for the HDCPOn and HDCPValid bits in the
+wFlags field, and the dStreamCtr and qInputCtr fields, as described in Section 6.1, "AVHeader".
+
+The HDCP information shall not be included unless it is certain that the receiver of the video content is HDCP-capable.
+The mechanisms for making this determination over USB are described in [USBCSM-5].
+
+Each VideoStream Configuration (see Section 2.6, "VideoStreamConfig") reports in its VideoStreamConfig Description
+whether the HDCP Protocol is supported for that VideoStream Configuration through the <@hdcp> attribute.
+
+                                    49
+Appendix A. VideoFrame Format Dimensions and Timings
+
+The following sections summarize all VideoFrame related dimensions and timings that fully describe each
+VideoFrame Format. For more details, refer to Section 2.4.3, "VideoFrame Spatial Layout and Timing Aspects" and
+Section 2.4.4, "VideoFrame Organization".
+
+A.1.  DTV Formats
+
+The following tables present the VideoFrame related dimensions and timings that fully describe the VideoFrame
+
+Format as defined by [CEA-861-E]. Note that only a subset of the [CEA-861-E]-defined formats is supported by this
+
+specification. All VideoFrame Formats are progressive scan. The Video Identification Code (VIC) as defined in [CEA-
+
+861-E] is indicated as a reference.
+
+For the 2D Frame Organization, the VideoFrame Format describes the dimensions and timings of the actual single
+channel VideoFrame.
+
+For all of the 3D2 Half Resolution Organizations (3D2TAB, 3D2SHOE, 3D2SHOO, 3D2SHEO, 3D2SHEE), the
+VideoFrame Format describes the dimensions and timings of the resulting VideoFrame after both Left and Right
+VideoFrame have been subsampled in half by either dropping every other line (3D2TAB) or by dropping every other
+column (all the 3D2SHxx Frame Organizations) and then merging the 2 subsampled VideoFrames into one resulting
+VideoFrame. Due to the subsampling by 2 and then the merging of the 2 subsampled VideoFrames into one resulting
+VideoFrame, this resulting VideoFrame has the exact same dimensions and timings as its corresponding 2D
+VideoFrame. Therefore, the same table applies to both the 2D Frame Organizations and all of the 3D Half Resolution
+Frame Organizations.
+
+The following notations are used in the table:
+
+ : VideoFrame Rate (in Hz)
+
+ VFID: VideoFrame Format ID used to identify the VideoFrame Format
+
+ VFLVC: VideoFrame Format Legacy View Code used to identify the VideoFrame Format while in Legacy View
+
+ VIC: Video Identification Code
+
+ Aspect: The aspect ratio of the VideoFrame
+
+      : Active VideoFrame Width (in VideoSamples)
+
+ : Active VideoFrame Height (in VideoLines)
+
+ : Total VideoFrame Width (in VideoSamples)
+
+ : Total VideoFrame Height (in VideoLines)
+
+ : VideoSample Rate (pixelclock) (in MHz) ­ for informational purposes only
+
+  Table A-1: DTV VideoFrame Dimensions and Timings for 2D and 3D2TAB/3D2SHxx Frame Organizations
+
+                        VFID         VFLVC VIC Aspect
+       60 640X480P
+       60 720X480P                   0x0002        1  4:3 640 480 800 525 25.200
+       60 720X480PH
+      120 720X480P                   0x0004        2   4:3 720 480 858 525    27.027
+      240 720X480P                                    16:9 720 480 858 525    27.027
+       50 720X576P                   0x0006        3
+      100 720X576P
+      200 720X576P                   0x0004 48        4:3 720 480 858 525 54.054
+       24 1280X720P                  0x0004 56        4:3 720 480 858 525 108.108
+       25 1280X720P
+       30 1280X720P                  0x0008 17        4:3 720 576 864 625 27.000
+       50 1280X720P
+                                     0x0008 42        4:3 720 576 864 625 54.000
+                                     0x0008 52        4:3 720 576 864 625 108.000
+
+                                     0x000A 60        16:9 1280 720 3300 750  59.400
+                                     0x000A 61        16:9 1280 720 3960 750  74.250
+
+                                     0x000A 62        16:9 1280 720 3300 750 74.250
+
+                                     0x000A 19        16:9 1280 720 1980 750 74.250
+
+                                                                                                                     51
+                      VFID       VFLVC             VIC    Aspect                          74.250
+     60 1280X720P                0x000A                4       16:9 1280 720 1650 750    148.500
+    100 1280X720P                0x000A                        16:9 1280 720 1980 750    148.500
+    120 1280X720P                0x000A              41        16:9 1280 720 1650 750
+     24 1920X1080P               0x000C              47        16:9 1920 1080 2750 1125   74.250
+     25 1920X1080P               0x000C              32        16:9 1920 1080 2640 1125   74.250
+     30 1920X1080P               0x000C              33        16:9 1920 1080 2200 1125   74.250
+     50 1920X1080P               0x000C              34        16:9 1920 1080 2640 1125  148.500
+     60 1920X1080P               0x000C              31        16:9 1920 1080 2200 1125  148.500
+    100 1920X1080P               0x000C              16        16:9 1920 1080 2640 1125  297.000
+    120 1920X1080P               0x000C              64        16:9 1920 1080 2200 1125  297.000
+                                                     63
+
+For the 3D2FP Frame Organization, the situation is different. The overall VideoFrame timing is maintained by
+doubling the VideoSample Rate to account for the fact that double the number of VideoSamples is present.
+
+There are two possible VideoFormat representations when transporting the 3D2FP Frame Organization over USB:
+
+ The Active Space is suppressed and is not sent over USB (  ).
+
+ The Active Space is included in the VideoPayload sent over USB. The VFIDs reflect this through the ­AS suffix.
+
+The following table contains the detailed VideoFrame dimensions and timings. Note that the values for are double
+those of the previous table.
+
+The following notations are used in the table:
+
+ : VideoFrame Rate (in Hz)
+
+ VFID: VideoFrame Format ID used to identify the VideoFrame Format
+
+ VFLVC: VideoFrame Format Legacy View Code used to identify the VideoFrame Format while in Legacy View
+
+ VIC: Video Identification Code
+
+ Aspect: The aspect ratio of the VideoFrame
+
+    : Active VideoFrame Width (in VideoSamples)
+
+ : Active VideoFrame Height (in VideoLines) for the Left and the Right VideoFrame
+
+ : Indicates the size of the Active Space (in VideoLines)
+
+    : Total Active VideoFrame Height (in VideoLines):
+
+ : Total VideoFrame Width (in VideoSamples)
+
+ : Total VideoFrame Height (in VideoLines)
+
+    : VideoSample Rate (pixelclock) (in MHz) ­ for informational purposes only
+
+    Table A-2: DTV VideoFrame Dimensions and Timings for the 3D2FP Frame Organization
+
+                      VFID       VFLVC VIC Aspect
+     60 640X480P
+     60 640X480PAS               0x0002         1         4:3 640 480   0 960          800 1050   50.400
+     60 720X480P                                          4:3 640 480  45 1005         800 1050   50.400
+     60 720X480PAS               0x0003         1                                      858 1050   54.054
+     60 720X480PH                                                       0 960          858 1050   54.054
+     60 720X480PHAS              0x0004         2         4:3 720 480  45 1005         858 1050   54.054
+    120 720X480P                                                                       858 1050   54.054
+    120 720X480PAS               0x0005         2   4:3 720 480         0 960          858 1050  108.108
+    240 720X480P                                   16:9 720 480        45 1005         858 1050  108.108
+    240 720X480PAS               0x0006         3                                      858 1050  216.216
+                                                                        0 960          858 1050  216.216
+                                 0x0007         3  16:9 720 480        45 1005
+
+                                 0x0004 48                4:3 720 480   0 960
+                                 0x0005 48                4:3 720 480  45 1005
+
+                                 0x0006 56                4:3 720 480
+                                 0x0007 56                4:3 720 480
+
+52
+                        VFID  VFLVC    VIC    Aspect                0 1152 864 1250    54.000
+       50 720X576P             0x0008    17         4:3 720 576    49 1201 864 1250    54.000
+       50 720X576PAS           0x0009    17         4:3 720 576                       108.000
+      100 720X576P             0x0008    42         4:3 720 576     0 1152 864 1250   108.000
+      100 720X576PAS           0x0009    42         4:3 720 576    49 1201 864 1250   216.000
+      200 720X576P             0x0008    52         4:3 720 576                       216.000
+      200 720X576PAS           0x0009    52         4:3 720 576     0 1152 864 1250   118.800
+       24 1280X720P           0x000A     60                        49 1201 864 1250   118.800
+       24 1280X720PAS         0x000B     60        16:9 1280 720                      148.500
+       25 1280X720P           0x000A     61        16:9 1280 720    0 1440 3300 1500  148.500
+       25 1280X720PAS         0x000B     61        16:9 1280 720   30 1470 3300 1500  148.500
+       30 1280X720P           0x000A     62        16:9 1280 720                      148.500
+       30 1280X720PAS         0x000B     62        16:9 1280 720    0 1440 3960 1500  148.500
+       50 1280X720P           0x000A     19        16:9 1280 720   30 1470 3960 1500  148.500
+       50 1280X720PAS         0x000B     19        16:9 1280 720                      148.500
+       60 1280X720P           0x000A       4       16:9 1280 720    0 1440 3300 1500  148.500
+       60 1280X720PAS         0x000B       4       16:9 1280 720   30 1470 3300 1500  297.000
+      100 1280X720P           0x000A     41        16:9 1280 720                      297.000
+      100 1280X720PAS         0x000B     41        16:9 1280 720    0 1440 1980 1500  297.000
+      120 1280X720P           0x000A     47        16:9 1280 720   30 1470 1980 1500  297.000
+      120 1280X720PAS         0x000B     47        16:9 1280 720                      148.500
+       24 1920X1080P          0x000C     32        16:9 1280 720    0 1440 1650 1500  148.500
+       24 1920X1080PAS        0x000D     32        16:9 1920 1080  30 1470 1650 1500  148.500
+       25 1920X1080P          0x000C     33        16:9 1920 1080                     148.500
+       25 1920X1080PAS        0x000D     33        16:9 1920 1080   0 1440 1980 1500  148.500
+       30 1920X1080P          0x000C     34        16:9 1920 1080  30 1470 1980 1500  148.500
+       30 1920X1080PAS        0x000D     34        16:9 1920 1080                     297.000
+       50 1920X1080P          0x000C     31        16:9 1920 1080   0 1440 1650 1500  297.000
+       50 1920X1080PAS        0x000D     31        16:9 1920 1080  30 1470 1650 1500  297.000
+       60 1920X1080P          0x000C     16        16:9 1920 1080                     297.000
+       60 1920X1080PAS        0x000D     16        16:9 1920 1080   0 2160 2750 2250  594.000
+      100 1920X1080P          0x000C     64        16:9 1920 1080  45 2205 2750 2250  594.000
+      100 1920X1080PAS        0x000D     64        16:9 1920 1080                     594.000
+      120 1920X1080P          0x000C     63        16:9 1920 1080   0 2160 2640 2250  594.000
+      120 1920X1080PAS        0x000D     63        16:9 1920 1080  45 2205 2640 2250
+                                                   16:9 1920 1080
+                                                                    0 2160 2200 2250
+                                                                   45 2205 2200 2250
+
+                                                                    0 2160 2640 2250
+                                                                   45 2205 2640 2250
+
+                                                                    0 2160 2200 2250
+                                                                   45 2205 2200 2250
+
+                                                                    0 2160 2640 2250
+                                                                   45 2205 2640 2250
+
+                                                                    0 2160 2200 2250
+                                                                   45 2205 2200 2250
+
+A.2.  Additional Formats
+
+The following table presents the VideoFrame related dimensions and timings that fully describe each VideoFrame
+
+Format that are commonly used in PC Monitor environments. All VideoFrame Formats are progressive scan.
+
+For the 2D Frame Organization, the VideoFrame Format describes the dimensions and timings of the actual single
+channel VideoFrame.
+
+For all of the 3D2 Half Resolution Organizations (3D2TAB, 3D2SHOE, 3D2SHOO, 3D2SHEO, 3D2SHEE), the
+VideoFrame Format describes the dimensions and timings of the resulting VideoFrame after both Left and Right
+VideoFrame have been subsampled in half by either dropping every other line (3D2TAB) or by dropping every other
+
+                                                                                                                53
+column (all the 3D2SHxx Frame Organizations) and then merging the 2 subsampled VideoFrames into one resulting
+VideoFrame. Due to the subsampling by 2 and then the merging of the 2 subsampled VideoFrames into one resulting
+VideoFrame, this resulting VideoFrame has the exact same dimensions and timings as its corresponding 2D
+VideoFrame. Therefore, the same table applies to both the 2D Frame Organizations and all of the 3D Half Resolution
+Frame Organizations.
+
+The following notations are used in the table:
+
+ : VideoFrame Rate (in Hz)
+
+ VFID: VideoFrame Format ID used to identify the VideoFrame Format
+
+ VFLVC: VideoFrame Format Legacy View Code used to identify the VideoFrame Format while in Legacy View
+
+ Aspect: The aspect ratio of the VideoFrame
+
+    : Active VideoFrame Width (in VideoSamples)
+
+ : Active VideoFrame Height (in VideoLines)
+
+    : Total VideoFrame Width (in VideoSamples)
+
+ : Total VideoFrame Height (in VideoLines)
+
+    : VideoSample Rate (pixelclock) (in MHz) ­ for informational purposes only
+
+    Table A-3: Additional VideoFrame Dimensions and Timings for 2D and 3D2TAB/3D2SHxx Frame Organizations
+
+                      VFID  VFLVC                Aspect
+    100 640X480P             0x0002
+                            0x000E               4:3 640 480 848 509                   43.160
+     60 768X576P            0x000E                                                     34.960
+    100 768X576P             0x0010              4:3 768 576 976 597                   62.570
+                             0x0010              4:7 768 576 1024 611                  40.000
+     60 800X600P             0x0012                                                    68.180
+    100 800X600P             0x0012              4:3 800 600 1056 628                  65.000
+                             0x0014              4:3 800 600 1072 636                 113.310
+     60 1024X768P            0x0014                                                    81.620
+    100 1024X768P            0x0016              4:3 1024 768 1344 806                143.470
+                             0x0018              4:3 1024 768 1392 814                 79.672
+     60 1152X864P           0x001A                                                     83.460
+    100 1152X864P           0x001C               4:3 1152 864 1520 895                102.100
+                            0x001A                                                    108.000
+     60 1280X768P           0x001E               4:3 1152 864 1568 915                178.990
+     60 1280X800P           0x001E               5:3 1280 768 1664 798                108.000
+     60 1280X960P            0x0020                                                   190.960
+     60 1280X960P_1          0x0022              16:10 1280 800 1680 828               85.860
+    100 1280X960P            0x0024               16:9 1280 960 1712 994              122.000
+     60 1280X1024P           0x0022                                                   122.610
+    100 1280X1024P           0x0026              16:9 1280 960 1800 1000              214.390
+     60 1368X768P            0x0028                                                   106.470
+     60 1400X1050P          0x002A               16:9 1280 960 1760 1017              118.998
+     60 1400X1050P_1        0x002C                5:3 1280 1024 1688 1066             144.000
+    100 1400X1050P          0x002A                                                    162.000
+     60 1440X900P           0x002E                5:3 1280 1024 1760 1085             280.640
+     60 1600X900P            0x0030              16:9 1368 768 1800 795               147.140
+     60 1600X1200P           0x0032                                                   204.800
+     60 1600X1200P_1                             4:3 1400 1050 1880 1082              218.300
+    100 1600X1200P                               4:3 1400 1050 1880 1087
+     60 1680X1050P
+     60 1792X1344P                                  4:3  1400  1050  1928       1112
+     60 1856X1392P                               16:10   1440   900  1904        932
+                                                         1600   900  2128        932
+                                                  16:9
+
+                                                 4:3 1600 1200 1920 1250
+                                                 4:3 1600 1200 2160 1250
+
+                                                    4:3  1600  1200  2208       1271
+                                                 16:10   1680  1050  2256       1087
+                                                         1792  1344  2448       1394
+                                                    4:3
+
+                                                 4:3 1856 1392 2528 1439
+
+54
+                            VFID    VFLVC Aspect
+
+                     60 1920X1200P              0x0034  16:10    1920    1200    2592    1242    193.160
+                     60 1920X1440P              0x0036     4:3   1920    1440    2600    1500    234.000
+                                                0xFFFE        *
+                       * VENDOR                                       *       *       *       *           *
+
+* Defined by Vendor
+
+For the 3D2FP Frame Organization, the situation is different. The overall VideoFrame timing is maintained by
+doubling the VideoSample Rate to account for the fact that double the number of VideoSamples is present.
+
+There are two possible VideoFormat representaions when transporting the 3D2FP Frame Organization over USB:
+
+ The Active Space is suppressed and is not sent over USB (       ).
+
+ The Active Space is included in the VideoPayload sent over USB. The VFIDs reflect this through the ­AS suffix.
+
+The following table contains the detailed VideoFrame dimensions and timings. Note that the values for are double
+those of the previous table.
+
+The following notations are used in the table:
+
+ : VideoFrame Rate (in Hz)
+
+ VFID: VideoFrame Format ID used to identify the VideoFrame Format
+
+ VFLVC: VideoFrame Format Legacy View Code used to identify the VideoFrame Format while in Legacy View
+
+ Aspect: The aspect ratio of the VideoFrame
+
+  : Active VideoFrame Width (in VideoSamples)
+
+ : Active VideoFrame Height (in VideoLines) for the Left and the Right VideoFrame
+
+ : Indicates the size of the Active Space (in VideoLines)
+
+  : Total Active VideoFrame Height (in VideoLines):
+
+ : Total VideoFrame Width (in VideoSamples)
+
+ : Total VideoFrame Height (in VideoLines)
+
+ : VideoSample Rate (pixelclock) (in MHz) ­ for informational purposes only
+
+  Table A-4: Additional VideoFrame Dimensions and Timings for the 3D2FP Frame Organization
+
+                    VFID            VFLVC Aspect
+  100 640X480P
+  100 640X480PAS                    0x0002              4:3 640 480       0 960 848 1018          86.320
+                                    0x0003              4:3 640 480      29 989 848 1018          86.320
+   60 768X576P                      0x000E              4:3 768 576                               69.920
+   60 768X576PAS                    0x000F              4:3 768 576       0 1152 976 1194         69.920
+  100 768X576P                                                           21 1173 976 1194        125.140
+  100 768X576PAS                    0x000E              4:7 768 576                              125.140
+   60 800X600P                      0x000F              4:7 768 576       0 1152 1024 1222        80.000
+   60 800X600PAS                                                         35 1187 1024 1222        80.000
+  100 800X600P                      0x0010              4:3 800 600                              136.360
+  100 800X600PAS                    0x0011              4:3 800 600       0 1200 1056 1256       136.360
+   60 1024X768P                                                          28 1228 1056 1256       130.000
+   60 1024X768PAS                   0x0010              4:3 800 600                              130.000
+  100 1024X768P                                                           0 1200 1072 1272       226.620
+  100 1024X768PAS                   0x0011              4:3 800 600      36 1236 1072 1272       226.620
+   60 1152X864P                     0x0012              4:3 1024 768                             163.240
+   60 1152X864PAS                                                         0 1536 1344 1612       163.240
+  100 1152X864P                     0x0013              4:3 1024 768     38 1574 1344 1612       286.940
+                                    0x0012              4:3 1024 768
+                                                                          0 1536 1392 1628
+                                    0x0013              4:3 1024 768     46 1582 1392 1628
+                                    0x0014              4:3 1152 864
+                                                                          0 1728 1520 1790
+                                    0x0015              4:3 1152 864     31 1759 1520 1790
+                                    0x0014              4:3 1152 864
+                                                                          0 1728 1568 1830
+
+                                                                                                                 55
+                      VFID  VFLVC    Aspect               51 1779 1568 1830  286.940
+    100 1152X864PAS          0x0015        4:3 1152 864    0 1536 1664 1596  159.344
+                             0x0016        5:3 1280 768                      159.344
+     60 1280X768P            0x0017        5:3 1280 768   30 1566 1664 1596  166.920
+     60 1280X768PAS          0x0018                        0 1600 1680 1656  166.920
+     60 1280X800P            0x0019     16:10 1280 800                       204.200
+     60 1280X800PAS         0x001A      16:10 1280 800    28 1628 1680 1656  204.200
+     60 1280X960P           0x001B                         0 1920 1712 1988  216.000
+     60 1280X960PAS         0x001C        16:9 1280 960                      216.000
+     60 1280X960P_1         0x001D        16:9 1280 960   34 1954 1712 1988  357.980
+     60 1280X960P_1AS       0x001A        16:9 1280 960    0 1920 1800 2000  357.980
+    100 1280X960P           0x001B        16:9 1280 960                      216.000
+    100 1280X960PAS         0x001E        16:9 1280 960   40 1960 1800 2000  216.000
+     60 1280X1024P           0x001F       16:9 1280 960    0 1920 1760 2034  381.920
+     60 1280X1024PAS        0x001E                                           381.920
+    100 1280X1024P           0x001F        5:3 1280 1024  57 1977 1760 2034  171.720
+    100 1280X1024PAS         0x0020        5:3 1280 1024   0 2048 1688 2122  171.720
+     60 1368X768P            0x0021        5:3 1280 1024                     244.000
+     60 1368X768PAS          0x0022        5:3 1280 1024  42 2090 1688 2122  244.000
+     60 1400X1050P           0x0023       16:9 1368 768    0 2048 1760 2170  244.320
+     60 1400X1050PAS         0x0024       16:9 1368 768                      244.320
+     60 1400X1050P_1         0x0025        4:3 1400 1050  61 3009 1760 2170  428.780
+     60 1400X1050P_1AS       0x0022        4:3 1400 1050   0 1536 1800 1590  428.780
+    100 1400X1050P           0x0023        4:3 1400 1050                     212.940
+    100 1400X1050PAS         0x0026        4:3 1400 1050  27 1563 1800 1590  212.940
+     60 1440X900P            0x0027        4:3 1400 1050   0 2100 1880 2164  237.996
+     60 1440X900PAS          0x0028        4:3 1400 1050                     237.996
+     60 1600X900P            0x0029     16:10 1440 900    32 2132 1880 2164  288.000
+     60 1600X900PAS         0x002A      16:10 1440 900     0 2100 1880 1087  288.000
+     60 1600X1200P          0x002B        16:9 1600 900                      324.000
+     60 1600X1200PAS        0x002C        16:9 1600 900   37 2137 1880 1087  324.000
+     60 1600X1200P_1        0x002D         4:3 1600 1200   0 2100 1928 1112  561.280
+     60 1600X1200P_1AS      0x002A         4:3 1600 1200                     561.280
+    100 1600X1200P          0x002B         4:3 1600 1200  62 2162 1928 1112  294.280
+    100 1600X1200PAS        0x002E         4:3 1600 1200   0 1800 1904 1864  294.280
+     60 1680X1050P           0x002F        4:3 1600 1200                     409.600
+     60 1680X1050PAS         0x0030        4:3 1600 1200  32 1832 1904 1864  409.600
+     60 1792X1344P           0x0031     16:10 1680 1050    0 1800 2128 1864  436.600
+     60 1792X1344PAS         0x0032     16:10 1680 1050                      436.600
+     60 1856X1392P           0x0033        4:3 1792 1344  32 1832 2128 1864  386.320
+     60 1856X1392PAS         0x0034        4:3 1792 1344   0 2400 1920 2500  386.320
+     60 1920X1200P           0x0035        4:3 1856 1392                     468.000
+     60 1920X1200PAS         0x0036        4:3 1856 1392  50 2450 1920 2500
+     60 1920X1440P                      16:10 1920 1200    0 2400 2160 2500
+                                        16:10 1920 1200
+                                           4:3 1920 1440  50 2450 2160 2500
+                                                           0 2400 2208 2542
+
+                                                          71 2471 2208 2542
+                                                           0 2100 2256 2174
+
+                                                          37 2137 2256 2174
+                                                           0 2688 2448 2788
+
+                                                          50 2738 2448 2788
+                                                           0 2784 2528 2878
+
+                                                          47 2831 2528 2878
+                                                           0 2400 2592 2484
+
+                                                          42 2442 2592 2484
+                                                           0 2880 2600 3000
+
+56
+                                       VFID  VFLVC    Aspect
+                       60 1920X1440PAS        0x0037
+                                             0xFFFE   4:3 1920 1440  60 2940 2600 3000  468.000
+                         * VENDOR            0xFFFF                                              *
+                         * VENDORAS                   *       *  *   *  *  *  *                  *
+
+* Defined by Vendor                                   *       *  *   *  *  *  *
+
+                                                                                                    57
+Appendix B. Calculations
+
+These calculations relate to the "Video & USB Timings" spreadsheet, that is an integral part of this document. The
+spreadsheet contains two separate tables, one for the 2D ad all 3D2 Half Resolution Frame Organizations, and one for
+the 3D2FP Frame Organization.
+
+The numbers between brackets are repeated in the corresponding headers of the columns in the spreadsheet.
+
+(0.1) VideoFrame Rate (in Hz):
+
+(0.2) VideoFrame Time (in seconds):        /
+
+(0.3) Service Interval (in seconds):
+
+(0.4) Bits per VideoSample:
+
+(0.5) Bytes per VideoSample:
+
+(1) Active VideoFrame Width (in VideoSamples):
+
+(2a) Active VideoFrame Height (in VideoLines) for both Left and Right VideoFrame (if applicable):
+
+(2b) Active Space (in VideoLines):
+
+(2) Total Active VideoFrame Height (in VideoLines):
+
+(3) Total (active) VideoSamples in the VideoFrame:
+
+(4) Inactive VideoSamples in a VideoLine:
+
+(5) Total VideoSamples in a VideoLine:
+
+(6) Inactive VideoLines in a VideoFrame:
+
+(7) Total VideoLines in a VideoFrame:
+
+(8) Total (active+inactive) VideoSamples in the VideoFrame:
+
+(9) Ratio Active Total VideoSamples/VideoLine:
+
+(10) Ratio Active Total VideoLines/VideoFrame:
+
+(11) VideoSample Time (in seconds):           /
+
+(12) VideoSample Frequency (Pixelclock) (in Hz):        /
+
+(13) Active Line Time (in seconds):
+
+(14) Inactive Line Time (in seconds) i.e. Horizontal Blanking (HB):
+
+(15) Total Line Time (in seconds):                  (        )
+
+(16) Active VideoFrame Time (in seconds):
+
+(17) Inactive VideoFrame Time (in seconds) i.e. Vertical Blanking (VB):
+
+(18) Number of SI during the VideoFrame:             /
+
+(19) Useable Integer Number of SI during the VideoFrame (taking into account the required Transfer delimiter):
+
+()
+
+(20) VideoPayload per useable SI (in VideoSamples and rounded up):           (/ )
+
+(21) VideoPayload per VideoFrame (in Bytes):
+(22) Header Length (in Bytes):
+Option 1: Derive Desired VideoPayload per SI from Minimum BW considerations
+
+                                                                                                                59
+ Spread total VideoPayload as evenly as possible over useable SIs.
+ Include Safety guardband for fluctuations in VideoFrame Rate (in %):
+ (23.1a) Option 1: Desired VideoPayload per SI (rounded down to a complete VideoSample:
+
+                       (             )
+
+                (                    )
+
+ (23.1b) Desired VideoPayload per SI (including AVHeader):
+
+    ()
+
+Option 2: Derive Desired VideoPayload per SI from an integer (minimum) number of VideoLines per SI
+
+ (23.2a) Average VideoLines per SI:
+
+ (23.2b) Full VideoLines per SI:                    (        )
+
+ (23.2c) Manually adjust number of lines:
+
+ (23.2d) Associated VideoPayload per SI:
+
+ (23.2e) Total (Including AVHeader) Payload per SI (in Bytes): ( )
+
+(23) Desired VideoPayload per SI: ( )
+(24) Overflow Indicator colors those entries that surpass USB3.0 bandwidth possibilities red
+
+(25) SI needed to transport VideoFrame:                ()
+
+(26) Integer SI needed to transport VideoFrame:              ()
+
+(27) Remaining Bytes in last SI:                 (                )
+
+(28) Bus Transactions needed for full-length Total Payload:               (( )  )
+
+(29) Mult:         ((             )         )
+
+(30) MaxBurst:                           (       )
+
+(31) Active part of a VideoFrame (in seconds):
+ (Recovering the Horizontal Blanking time from the last active VideoLine ­ probably does not matter)
+
+(32) Number of Full SI during the active part of the VideoFrame:          ()
+
+(33) Outgoing VideoPayload during active part of the VideoFrame:
+
+(34) Buffer requirement due to spreading:
+
+IF                 THEN
+
+ELSE                                                                 (2*  )
+
+(35) Buffer requirements due to SI processing:
+ Estimated at 2*SI
+(37) Total buffer requirements:
+
+60
+

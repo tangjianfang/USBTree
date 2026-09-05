@@ -1,0 +1,1688 @@
+Universal Serial Bus
+Device Class Definition
+for
+Audio/Video Devices
+
+Basic Device Profile (BDP)
+
+Release 1.0
+June 12th, 2012
+
+                                                                                                                                        1
+Scope of This Release
+
+This document is the Release 1.0 of the Basic Profile Definition.
+
+Contributors
+
+Jim Hunkins        AMD
+
+Jason Hawken       AMD
+
+Kenneth Ma         Broadcom
+
+Hans van Antwerpen Cypress Semiconductor
+
+Jitendra Kulkarni  Cypress Semiconductor
+
+Dan Ellis          DisplayLink
+
+Trevor Hall        DisplayLink
+
+Alec Cawley        DisplayLink
+
+David Dolby        Dolby Labs
+
+David Roh          Dolby Labs
+
+Tsehao Lee         Grain Media
+
+Pierre Bossart     Intel
+
+David Harriman     Intel
+
+Abdul R. Ismail (Chair) Intel
+
+J.P. Giacalone     Intel
+
+Steve McGowan      Intel
+
+Sridharan Ranganathan Intel
+
+Yoav Nissim        Jungo
+
+Ygal Blum          Jungo
+
+Max Basler         Littelfuse
+
+Paul E. Berg       MCCI
+
+John Garney        MCCI
+
+Geert Knapen (Editor) MCCI
+
+Richard Petrie     Nokia Corporation
+
+Yoram Rimoni       Qualcomm, Inc.
+
+Yoni Shternhell    Sandisk
+
+Mark Bohm          SMSC
+
+John Sisto         SMSC
+
+Morgan Monks       SMSC
+
+Bruno Paillard     Soft-dB
+
+Will Harris        Texas Instruments
+
+Grant Ley          Texas Instruments
+
+2
+                                            Copyright © 2012 USB Implementers Forum, Inc.
+                                                                All rights reserved.
+
+                                                 INTELLECTUAL PROPERTY DISCLAIMER
+A LICENSE IS HEREBY GRANTED TO REPRODUCE THIS SPECIFICATION FOR INTERNAL USE ONLY. NO OTHER
+LICENSE, EXPRESS OR IMPLIED, BY ESTOPPEL OR OTHERWISE, IS GRANTED OR INTENDED HEREBY.
+USB-IF AND THE AUTHORS OF THIS SPECIFICATION EXPRESSLY DISCLAIM ALL LIABILITY FOR INFRINGEMENT OF
+INTELLECTUAL PROPERTY RIGHTS RELATING TO IMPLEMENTATION OF INFORMATION IN THIS SPECIFICATION.
+USB-IF AND THE AUTHORS OF THIS SPECIFICATION ALSO DO NOT WARRANT OR REPRESENT THAT SUCH
+IMPLEMENTATION(S) WILL NOT INFRINGE THE INTELLECTUAL PROPERTY RIGHTS OF OTHERS.
+THIS SPECIFICATION IS PROVIDED "AS IS" AND WITH NO WARRANTIES, EXPRESS OR IMPLIED, STATUTORY OR
+OTHERWISE. ALL WARRANTIES ARE EXPRESSLY DISCLAIMED. USB-IF, ITS MEMBERS AND THE AUTHORS OF THIS
+SPECIFICATION PROVIDE NO WARRANTY OF MERCHANTABILITY, NO WARRANTY OF NON-INFRINGEMENT, NO
+WARRANTY OF FITNESS FOR ANY PARTICULAR PURPOSE, AND NO WARRANTY ARISING OUT OF ANY PROPOSAL,
+SPECIFICATION, OR SAMPLE.
+IN NO EVENT WILL USB-IF, MEMBERS OR THE AUTHORS BE LIABLE TO ANOTHER FOR THE COST OF PROCURING
+SUBSTITUTE GOODS OR SERVICES, LOST PROFITS, LOSS OF USE, LOSS OF DATA OR ANY INCIDENTAL,
+CONSEQUENTIAL, INDIRECT, OR SPECIAL DAMAGES, WHETHER UNDER CONTRACT, TORT, WARRANTY, OR
+OTHERWISE, ARISING IN ANY WAY OUT OF THE USE OF THIS SPECIFICATION, WHETHER OR NOT SUCH PARTY HAD
+ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.
+All product names are trademarks, registered trademarks, or service marks of their respective owners.
+Please send comments via electronic mail to av-chair@usb.org
+
+                                                                                                                                        3
+Table of Contents
+
+Scope of This Release ........................................................................................................................2
+
+Contributors .....................................................................................................................................2
+
+Revision History ..................................................................................... Error! Bookmark not defined.
+
+1. Introduction ..............................................................................................................................6
+1.1. Scope ............................................................................................................................................................................................. 6
+1.2. Purpose ........................................................................................................................................................................................ 6
+1.3. Related Documents ................................................................................................................................................................. 6
+
+2. Management Overview .............................................................................................................8
+
+3. Basic Device Profile Characteristics ............................................................................................9
+3.1. Basic Device Profile Configuration ................................................................................................................................... 9
+3.2. Basic Device Profile Requirements .................................................................................................................................. 9
+
+   3.2.1. General Requirements........................................................................................................................................................ 10
+   3.2.2. AVControl Interface ID1 Requirements ..................................................................................................................... 10
+   3.2.3. AVData FrameBuffer-In/Video Streaming-InEntity ID2 Requirements..................................................... 11
+   3.2.4. AVData Audio Streaming In Interface ID3 Requirements................................................................................. 11
+   3.2.5. AVData Generic-In Entity ID4 Requirements .......................................................................................................... 11
+   3.2.6. Input Terminal ID5 Requirements ............................................................................................................................... 11
+   3.2.7. Input Terminal ID6 Requirements ............................................................................................................................... 12
+   3.2.8. Input Terminal ID7 Requirements ............................................................................................................................... 12
+   3.2.9. Router Unit ID8 Requirements....................................................................................................................................... 12
+   3.2.10. Converter Unit ID9 and ID10 Requirements............................................................................................................ 12
+   3.2.11. Feature Unit ID11 Requirements .................................................................................................................................. 13
+   3.2.12. Mixer Unit ID12 Requirements....................................................................................................................................... 13
+   3.2.13. Feature Unit ID13 Requirements .................................................................................................................................. 14
+   3.2.14. Feature Unit ID14 Requirements .................................................................................................................................. 14
+   3.2.15. Feature Unit ID15 Requirements .................................................................................................................................. 14
+   3.2.16. Output Terminal ID16 Requirements ......................................................................................................................... 15
+   3.2.17. Output Terminal ID17 Requirements ......................................................................................................................... 15
+   3.2.18. Output Terminal ID18 Requirements ......................................................................................................................... 15
+   3.2.19. Output Terminal ID19 Requirements ......................................................................................................................... 15
+   3.2.20. AVData Generic-Out Entity/AVData HDMI-Out Entity ID20 Requirements............................................. 15
+   3.2.21. AVData Generic-Out Entity ID21 Requirements .................................................................................................... 15
+   3.2.22. AVData Audio Streaming Out Interface ID22 Requirements........................................................................... 16
+   3.2.23. AVData FrameBuffer-Out/Video Streaming-Out Entity ID23 Requirements .......................................... 16
+   3.2.24. Clock Source Entity ID25 and ID26 Requirements ............................................................................................... 16
+
+4. Topology ................................................................................................................................. 17
+4.1. Fully Populated BDP Topology ........................................................................................................................................17
+
+   4.1.1. Output Functionality........................................................................................................................................................... 18
+   4.1.2. Input Functionality.............................................................................................................................................................. 18
+   4.1.3. Input-to-Output Functionality ....................................................................................................................................... 18
+   4.1.4. Clock Functionality.............................................................................................................................................................. 19
+4.2. Variations on the BDP Topology .....................................................................................................................................19
+   4.2.1. Basic Display Example ....................................................................................................................................................... 19
+
+4
+List of Tables
+
+Table 3-1: General Requirements ..............................................................................................................................................................................10
+Table 3-2: AVData FrameBuffer-In/Video Streaming-InEntity ID2 Requirements ...............................................................................11
+Table 3-3: AVData Audio Streaming In Interface ID3 Requirements..........................................................................................................11
+Table 3-4: AVData Generic-In Entity ID4 Requirements ..................................................................................................................................11
+Table 3-5: Input Terminal ID5 Requirements.......................................................................................................................................................11
+Table 3-6: Input Terminal ID6 Requirements.......................................................................................................................................................12
+Table 3-7: Input Terminal ID7 Requirements.......................................................................................................................................................12
+Table 3-8: Router Unit ID8 Requirements ..............................................................................................................................................................12
+Table 3-9: Converter Unit ID9 and ID10 Requirements ....................................................................................................................................12
+Table 3-10: Feature Unit ID11 Requirements.......................................................................................................................................................13
+Table 3-11: Mixer Unit ID12 Requirements ...........................................................................................................................................................13
+Table 3-12: Feature Unit ID13 Requirements.......................................................................................................................................................14
+Table 3-13: Feature Unit ID14 Requirements.......................................................................................................................................................14
+Table 3-14: Feature Unit ID15 Requirements.......................................................................................................................................................14
+Table 3-15: Output Terminal ID16 Requirements ..............................................................................................................................................15
+Table 3-16: Output Terminal ID17 Requirements ..............................................................................................................................................15
+Table 3-17: Output Terminal ID18 Requirements ..............................................................................................................................................15
+Table 3-18: Output Terminal ID19 Requirements ..............................................................................................................................................15
+Table 3-19: AVData Generic-Out Entity/ AVData HDMI-Out Entity ID20 Requirements ...................................................................15
+Table 3-20: AVData Generic-Out Entity ID21 Requirements..........................................................................................................................15
+Table 3-21: AVData Audio Streaming Out Interface ID22 Requirements .................................................................................................16
+Table 3-22: AVData FrameBuffer-Out/Video Streaming-OutEntity ID23 Requirements ...................................................................16
+Table 3-23: Clock Source Entity ID25 and ID26 Requirements .....................................................................................................................16
+
+List of Figures
+
+Figure 4-1: Example of a Fully Populated BDP Topology ................................................................................................................................17
+Figure 4-2: Basic PC Monitor Topology...................................................................................................................................................................19
+
+                                                                                                                                        5
+1.    Introduction
+
+1.1.  Scope
+
+The Basic Device Profile (BDP) Definition is entirely based and compliant with the Audio/Video (AV) Device Class
+
+Definition. It is specifically targeted to Devices that incorporate an AVFunction as defined in [AVFUNCTION] (see
+
+below) and that are able to exchange audio/video content over USB or other external interfaces (such as HDMI).
+
+Furthermore, these Devices typically also expose some control facilities that allow the Controller (USB Host) to
+
+influence certain aspects of the video and audio streams that flow through the AVFunction. Typical examples are a PC
+
+monitor; a TV set that has USB Device capabilities; a webcam with built-in microphone, or a cell phone that has USB
+
+Device capabilities.
+
+1.2.  Purpose
+
+The purpose of this document is to describe the minimum capabilities and characteristics a compliant BDP Device
+
+shall support. This document also provides recommendations for optional features.
+
+1.3.  Related Documents
+
+ [USB2.0] ­ Universal Serial Bus Specification, Revision 2.0, April 27, 2000 (referred to in this document as the USB
+     2.0 Specification) (available at: http://www.usb.org/developers/docs).
+
+ [USB3.0] ­ Universal Serial Bus 3.0 Specification, Revision 1.0 (including errata and ECN's through May 1, 2011),
+     June 6, 2011 (referred to in this document as the USB 3.0 Specification) (available at:
+     http://www.usb.org/developers/docs.)
+
+ [AUDIO1.0] ­ Universal Serial Bus Device Class Definition for Audio Devices, Release 1.0, March 18, 1998
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [FORMATS1.0] ­ Universal Serial Bus Device Class Definition for Audio Data Formats, Release 1.0, March 18, 1998
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [TERMTYPES1.0] ­ Universal Serial Bus Device Class Definition for Terminal Types, Release 1.0, March 18, 1998
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [AUDIO2.0] ­ Universal Serial Bus Device Class Definition for Audio Devices, Release 2.0, May 31, 2006 (available
+     at: http://www.usb.org/developers/devclass_docs).
+
+ [FORMATS2.0] ­ Universal Serial Bus Device Class Definition for Audio Data Formats, Release 2.0, May 31, 2006
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [TERMTYPES2.0] ­ Universal Serial Bus Device Class Definition for Terminal Types, Release 2.0, May 31, 2006
+     (available at: http://www.usb.org/developers/devclass_docs).
+
+ [USBCS] ­ Universal Serial Bus Device Class Definition for Content Security Devices ­ Content Security
+     Framework, Revision 2.0 (available at: http://www.usb.org/developers/devclass_docs).
+
+ [USBCSM-5] ­ Universal Serial Bus Device Class Definition for Content Security Devices ­ Content Security Method
+     5 ­ High-bandwidth Digital Content Protection 2.1 (HDCP 2.1) Implementation, Revision 1.0 (available at:
+
+    http://www.usb.org/developers/devclass_docs).
+
+ USBECNIAD ­ USB Engineering Change Notice: Interface Association Descriptors (available at:
+     http://www.usb.org/developers/docs).
+
+ [USBIADDCC] ­ USB Interface Association Descriptor Device Class Code and Use Model, Revision 1.0, July 23, 2003
+     (available at: http://www.usb.org/developers/whitepapers).
+
+ [USBLANGIDS] ­ Universal Serial Bus Language Identifiers (LANGIDs), Revision 1.0, March 29, 2000 (available at:
+     http://www.usb.org/developers/docs).
+
+ [AVFUNCTION] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ AV Device Class
+     Overview & AVFunction Definition, Release 1.0, December 07, 2011 (available at:
+
+    http://www.usb.org/developers/devclass_docs).
+
+ [AVFORMAT_1] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ AVFormat 1 ­ Video over
+     Bulk, Release 1.0, December 07, 2011 (available at: http://www.usb.org/developers/devclass_docs).
+
+6
+ [AVFORMAT_2] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ AVFormat 2 ­
+     Isochronous Audio, Release 1.0, December 07, 2011 (available at:
+     http://www.usb.org/developers/devclass_docs).
+
+ [AVFORMAT_3] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ AVFormat 3 ­
+     Uncompressed Full Frame Isochronous Video, Release 1.0, December 07, 2011 (available at:
+     http://www.usb.org/developers/devclass_docs).
+
+ [AVSCHEMA] ­ Available at: http://avschemas.usb.org/v1/avschema.xsd
+ [BDP] ­ Universal Serial Bus Device Class Definition for Audio/Video Devices ­ Basic Device Profile, Release 1.0,
+
+     (available at: http://www.usb.org/developers/whitepapers).
+ [ANSIS1_11] ­ ANSI S1.11-2004 (R2009) standard (available at: http://www.ansi.org).
+ [IEC11172_3] ­ MPEG-1 standard ISO/IEC 11172-3:1993 Information technology ­ Coding of moving pictures and
+
+     associated audio for digital storage media at up to about 1.5 Mbit/s ­ Part 3: Audio (available at
+     http://www.iec.ch).
+ [IEC13818_1] ­ MPEG-2 standard ISO/IEC 13818:2000 Information technology ­ Generic coding of moving
+     pictures and associated audio information ­ Part 1: Systems (available at http://www.iec.ch).
+ [IEC13818_3] ­ MPEG-2 standard ISO/IEC 13818:1998 Information technology ­ Generic coding of moving
+     pictures and associated audio information ­ Part 3: Audio" (available at http://www.iec.ch).
+ [AC_3] ­ Digital Audio Compression Standard (AC-3, Enhanced AC-3), ETSI TS 102 366 (available at
+     http://www.etsi.org).
+ [IEEE_754] ­ ANSI/IEEE-754 floating-point standard (available at http://www.ieee.org).
+ [IEC60958] ­ ISO/IEC 60958 International Standard: Digital Audio Interface and Annexes (available at:
+     http://www.iec.ch).
+ [IEC61937] ­ ISO/IEC 61937 standard (available at: http://www.iec.ch).
+ [ETSI_TS_102_114] ­ ETSI Specification TS 102 114, "DTS Coherent Acoustics; Core and Extensions" (available at
+     http://www.etsi.org).
+ [HDCP2.1] ­ High-bandwidth Digital Content Protection System. Interface Independent Adaptation. Revision 2.1,
+     July 18, 2011 (available from http://www.digital-cp.com).
+ [MLP] ­ DVD Specifications for High Definition Video: MLP Reference Information.
+ [IEC14496_3] ­ MPEG-4 Standard ISO/IEC 14496-3 ­ Information Technology ­ Coding of audio-visual objects ­
+     Part 3: Audio (available at http://www.iec.ch).
+ [IEC14496_10] ­ MPEG-4 Standard ITU-T H.264 and ISO/IEC 14496-10:2004 ­ Information Technology ­ Coding
+     of audio-visual objects ­ Part 10: Advanced Video Coding. Second Edition 2004-10-01 (available at
+     http://www.iec.ch).
+ [WMA] ­ Audio compression format from Microsoft. For technical and licensing information, contact Microsoft
+     directly (http://www.microsoft.com/windows/windowsmedia/default.aspx).
+ [HDMI] ­ The official High Definition Multimedia Interface website http://www.hdmi.org.
+ [RFC5646] ­ Tags for Identifying Languages, September 2009 (available at http://www.rfc-
+     editor.org/rfc/rfc5646.txt).
+ [KHRONOS] ­ The Khronos Group, Open Standards for Media Authoring and Acceleration (available at
+     http://www.khronos.org).
+ [CEA-861-E] ­ A DTV Profile for Uncompressed High Speed Digital Interfaces, March 2008 (available at
+     http://www.cea.org).
+ [VESA] ­ Video Electronics Standards Association (available at http://www.vesa.org).
+ [IEC10918_4] ­ JPEG Standard ISO/IEC 10918-4 ­ Information technology ­ Digital compression and coding of
+     continuous-tone still images: Registration of JPEG profiles, SPIFF profiles, SPIFF tags, SPIFF colour spaces, APPn
+     markers, SPIFF compression types and Registration Authorities (REGAUT). First Edition 1999-08-15 (available at
+     http://www.iec.ch).
+
+                                                                                                                                        7
+2.  Management Overview
+
+The Universal Serial Bus Device Class Definition for AV Devices (AV Device Class Definition) is a very extensive
+specification that provides all the features and tools necessary to describe and design virtually any USB-based AV
+device of any complexity. As a consequence, designing a class driver that encompasses and supports the total richness
+offered by the AV Device Class Definition is a very complex task.
+
+In many cases, depending upon the application, an AV device will only need to implement a small subset of the AV
+Device Class Definition to perform the tasks for which it has been designed. It would therefore be too much of an
+overhead to require any USB Host that wants to take advantage of the services offered by such a device, to have to
+implement a class driver that is able to handle all feature and topology combinations that a full AV Device Class
+Definition-compliant device may present.
+
+By introducing the concept of a Profile, complexity can be greatly reduced. Indeed, an AV device that complies with the
+Profile Definition shall expose and use a small well-defined subset of the full AV Device Class Definition. Vendor-
+specific extensions may be present but they shall never interfere with the basic Profile-compliant operation of the
+Device. Specific USB Hosts can now be designed to only handle the features and topologies allowed by the Profile and
+claim compliance to the Profile rather than to the full AV Device Class Definition.
+
+Since the Profile Definition is a compliant subset of the full AV Device Class Definition, AV devices designed to the
+Profile Definition are guaranteed to interoperate with a Host that does implement a class driver for the full AV Device
+Class Definition.
+
+This Basic Device Profile (BDP) Definition addresses devices that have limited capabilities. The BDP supports devices
+that offer the following resources:
+
+ Video rendering (display)
+ Audio rendering (speakers, headphones)
+ Video generation (webcam, cell phone generating a UI)
+ Audio generation (microphone)
+
+The BDP definition supports AVFunctions that expose combinations of the above-mentioned resources. In this
+specification we only describe the parts of the deivce that are exposed to the host system, some of which may only
+report notifications and others that allow control by the host.
+
+8
+3.    Basic Device Profile Characteristics
+
+The Basic Device Profile (BDP) adheres to the AV Device Class Definition but imposes certain restrictions on the
+allowable building blocks and the allowed topologies.
+
+The BDP shall only use the following building blocks:
+
+ Input Terminal
+ Output Terminal
+ Mixer Unit (Audio-only)
+ Feature Unit
+ Converter Unit
+ Router Unit
+ AVData FrameBuffer-In Entity or AVData VideoStreaming-In Interface
+ AVData FrameBuffer-Out Entity or AVData VideoStreaming-Out Interface
+ AVData Streaming Audio In Entity
+ AVData Streaming Audio Out Entity
+ AVData Generic-In Entity (e.g. Camera/Microphone)
+ AVData Generic-Out Entity (e.g. Display/Speakers) or AVData HDMI-Out Entity
+ AVData Generic-Out Entity (e.g. Headphones)
+
+The BDP defines a general AVFunction topology as specified in Section 4.1, "Fully Populated BDP Topology". The
+general AVFunction topology describes a `full-functionality' topology that is targeted by this Profile. A BDP compliant
+AVFunction may choose to implement just those parts of the general topology that it needs to expose its desired
+functionality. Several examples of such derived topologies can be found in Section 4.2, "Variations on the BDP
+Topology". Alternatively, vendors may extend the general topology (by adding additional building blocks, for
+example) but these extensions shall not interfere with the basic Profile-compliant operation of the Device.
+
+Note that a device may support more than one alternate setting for the AVControl Interface but a host compliant to
+this version of the BDP specification will only select the first alternate setting.
+
+3.1.  Basic Device Profile Configuration
+
+A BDP-compliant USB Device shall expose in its Default1 Device Configuration at least one AVFunction through a single
+
+Control interface, zero or more AVData Video Streaming interfaces, and zero or more AVData Audio Streaming
+
+interfaces, bundled into an Interface Association. Exposing additional independent AVFunctions is allowed. Additional
+
+Device Configurations besides the Default Device Configuration are allowed but not recommended.
+
+Vendors may choose to extend the baseline behavior by defining additional USB functions besides those defined by
+this specification and add them to the Default Device Configuration. It is also allowed to extend or modify the Default
+Device Configuration by adding basic building blocks (Entities/Units/Terminals) to the topology or by adding
+additional AVControls to existing building blocks of the AVFunction, as long as the AVFunction can still be controlled
+and can correctly operate without these additions and/or extensions needing intervention from the Controller. In
+other words, a modified AVFunction shall be able to operate and be controlled by Controller software that is designed
+to operate an AVFunction that strictly adheres to the BDP Definition. Controller software shall gracefully ignore any
+AVControls or basic building blocks that it does not recognize.
+
+3.2.  Basic Device Profile Requirements
+
+The following tables summarize the features and their related requirements.
+
+Requirements are organized by basic building blocks that may be present in a BDP-compliant AVFunction. Since all of
+the building blocks are optional, the requirements for a particular building block only apply when an AVFunction uses
+that building block. The tables reference the building blocks and their IDs as defined in Section 4.1, "Fully Populated
+
+1 The Default Device Configuration is the Device Configuration that is returned in response of a
+GetDescriptor(CONFIGURATION, 0) request.
+
+                                                                                                                                        9
+BDP Topology". Note that ID number values can be chosen arbitrarily (except for the AVControl interface ID, which
+shall be one). All IDs within the AVFunction shall be unique. An implementation shall be one of the topologies
+decribed in Section 4.2 or a superset of one of the topologies, which means it is the topology plus additional
+components (additional topologies may be added in the future). The ID numbers used in the following tables and in
+Section 4.1, "Fully Populated BDP Topology" are therefore example values and only used to create a one-to-one
+relationship between the tables and the building blocks used in Figure 4-1, "Example of a Fully Populated BDP
+Topology".
+
+In general, the following tables only list requirements and restrictions that are not already expressed in the AV Device
+Class Definition. As such, they impose additional requirements and restrictions beyond what may be allowed by the
+AV Device Class Definition. However, if there are requirements listed in this document that are in contradiction with
+statements in the AV Device Class Definition, the AV Device Class Defintion always takes precedence. Features that are
+allowed by the AV Class Definition and that are not mentioned in the following tables are considered to be optional for
+the BDP. Vendors may choose to include optional features in their particular implementation. Any driver software
+should expect the presence of optional features but does not have to be able to control them.
+
+The following abbreviations are used in the column labeled AVF (AVFunction):
+
+ R: The feature is required when the building block is implemented.
+ CR: The feature is conditionally required when the building block is implemented. The condition is stated in the
+
+     Comments column of the table.
+ P: The feature is defined in the AVFunction Definition but its use is prohibited when the building block is
+
+     implemented in a BDP compliant AVFunction.
+
+        3.2.1. General Requirements
+
+    Table 3-1: General Requirements
+
+General                              AVF Comments
+
+    1 AVFunction Compliance          R    The AVFunction shall expose a topology that is identical to
+
+                                         the topology described in Section 4.1, "Fully Populated BDP
+
+                                         Topology" or a subset of that topology. Examples of the
+
+                                         various derived topologies can be found in Section 4.2,
+
+                                         "Variations on the BDP Topology" of this document. Vendor
+
+                                         extensions are allowed as long as the AVFunction can
+
+                                         operate as expected by this specification.
+
+    2 Single VideoTrack              CR   The AVFunction shall only support single VideoTrack
+
+                                         VideoClusters and VideoBundles. As a consequence,
+
+                                         VideoTrack Selectors shall not be present in the
+
+                                         AVFunction.
+
+    3 Single AudioTrack              CR   The AVFunction shall only support single AudioTrack
+
+                                         AudioClusters and AudioBundles. As a consequence,
+
+                                         AudioTrack Selectors shall not be present in the
+
+                                         AVFunction.
+
+Note: While both Single Video Track and Single Audio Track are conditionally required, at least one of them must be implemented in the
+device.
+
+         3.2.2. AVControl Interface ID1 Requirements
+
+AVControl ID1 should conform to the [AVFUNCTION] specification.
+
+10
+           3.2.3. AVData FrameBuffer-In/Video Streaming-InEntity ID2 Requirements
+
+       Table 3-2: AVData FrameBuffer-In/Video Streaming-InEntity ID2 Requirements
+
+AVData FrameBuffer-In/Video Streaming-        AVF  Comments
+INEntity ID2                                  R
+                                              R     The AVData FrameBuffer-In/Video Streaming-In Entity ID2
+4      Terminal Association                              shall be associated with Input Terminal ID5.
+                                              R
+5      Active Alternate Setting               R     The AVData FrameBuffer-In/Video Streaming-In Entity shall
+                                                         implement the Active Alternate Setting Control if it is an
+5.1    SourceData                             R          AVData Frame Buffer-In Entity. If it is a VideoStreaming-In
+5.2                                                      Entity this control is prohibited because alternate setting
+5.2.1  Bitmap Formats in Alternate Setting 1             changes are performed through standard USB requests.
+
+5.3     Uncompressed, partial bitmap                The SourceData Control shall be WO.
+             update (RGB 888)
+5.3.1                                               See [AVFORMAT_1]
+       VideoFrame Dimensions and Timings
+       in Alternate Setting 1                       See [AVFORMAT_1]
+
+        640X480P, 60Hz
+
+           3.2.4. AVData Audio Streaming In Interface ID3 Requirements
+
+       Table 3-3: AVData Audio Streaming In Interface ID3 Requirements
+
+AVData Audio Streaming In Interface ID3       AVF  Comments
+                                              R
+6      Terminal Association                         The AVData Audio Streaming In interface ID3 shall be
+                                                         associated with Input Terminal ID6.
+
+7      Audio in Alternate Setting 1
+
+7.1    PCM Audio                                    This is the baseline requirement. See [AVFORMAT_2]. See
+                                                         Section 4.1, "Type I Formats" for more details.
+
+7.1.1   PCM-encoded Audio                     R     The AVData Audio Streaming interface shall support this
+        2 audio channels
+        16 bits per audio sample                   audio format.
+        48 kHz sampling frequency
+
+           3.2.5. AVData Generic-In Entity ID4 Requirements
+
+       Table 3-4: AVData Generic-In Entity ID4 Requirements
+
+AVData Generic-In Entity ID4                  AVF  Comments
+                                              R
+8      Terminal Association                         The AVData Generic-In Entity ID4 shall be associated with
+                                                         Input Terminal ID7.
+
+           3.2.6. Input Terminal ID5 Requirements
+
+       Table 3-5: Input Terminal ID5 Requirements
+
+Input Terminal ID5                            AVF  Comments
+                                              R
+9      AVData Entity Association                    The Input Terminal ID5 shall be associated with AVData
+                                              P          Entity ID2.
+10     Clock Input Connected
+                                                    The Clock Input Pin shall not be connected to an explicit
+                                                         Clock Domain.
+
+11     Output Channel Configuration
+
+11.1    Video: 2D                             R     The Input Terminal shall support 2D video (single video
+
+                                                   channel ­ OL001).
+
+                                                                                                                      11
+          3.2.7. Input Terminal ID6 Requirements
+
+      Table 3-6: Input Terminal ID6 Requirements
+
+Input Terminal ID6                  AVF        Comments
+                                    R
+12    AVData Entity Association                 The Input Terminal ID6 shall be associated with AVData
+                                    R                Entity ID3.
+13    Clock Input Connected
+                                                The Clock Input Pin shall be connected to an explicit Clock
+                                                     Domain.
+
+14    Output Channel Configuration
+
+14.1   Audio: 2.0                   R           The Input Terminal shall support stereo audio (FL and FR).
+
+          3.2.8. Input Terminal ID7 Requirements
+
+      Table 3-7: Input Terminal ID7 Requirements
+
+Input Terminal ID7                  AVF Comments
+
+15    AVData Entity Association     R           The Input Terminal ID7 shall be associated with AVData
+
+                                                  Entity ID4.
+
+16    Output Channel Configuration
+
+16.1   Video: 2D                    CR          If Video is supported, then the Input Terminal shall support
+
+                                                  2D video (single video channel ­ OL001).
+
+16.2   Audio: 1.0 or 2.0            CR          If Audio is supported, then the Input Terminal shall support
+
+                                                  either mono audio (1.0 - FC) or stereo audio (2.0 - FL and
+
+                                                  FR).
+
+Note: While both Video: 2D and Audio: 1.0 or 2.0 are conditionally required, atleast one of them must be implemented in the device.
+
+          3.2.9. Router Unit ID8 Requirements
+
+      Table 3-8: Router Unit ID8 Requirements
+
+Router Unit ID8                     AVF Comments
+
+17    Input Configuration
+
+17.1   2 Input Pins                 R           The Router Unit shall support at least 2 Input Pins. A path
+
+                                                  shall exist between Input Pin 1 and the Output Pin of Input
+
+                                                  Terminal ID5. Also, a path shall exist between Input Pin 2
+
+                                                  and the Output Pin of Input Terminal ID6.
+
+18    Video Input Pin Selector      R           The Router Unit shall support only one Video Input Pin
+
+                                                  Selector. As a consequence, the outgoing VideoCluster can
+
+                                                  at most contain one VideoTrack.
+
+19    Audio Input Pin Selector      R           The Router Unit shall support only one Audio Input Pin
+
+                                                  Selector. As a consequence, the outgoing AudioCluster can
+
+                                                  at most contain one AudioTrack.
+
+Note: A Router Unit that supports more than 2 input pinsshall always route the outputs of ID5 (Video) and ID6 (Audio) to the output Pin of ID8.
+
+          3.2.10. Converter Unit ID9 and ID10 Requirements
+
+      Table 3-9: Converter Unit ID9 and ID10 Requirements
+
+Converter Unit ID9 and ID10         AVF Comments
+
+20    Input Channel Configuration
+
+20.1   Video                        P           Video is not supported
+
+20.2   Audio                        R           The Audio Input Channel Configuration shall be identical to
+
+                                                  the Audio Output Channel Configuration of the Entity to
+
+                                                  which this Feature Unit is connected.
+
+21    Output Channel Configuration
+
+12
+Converter Unit ID9 and ID10         AVF         Comments
+                                    P
+21.1   Video                        R            Video is not supported
+
+21.2   Audio: Headphones            R            The Converter Unit shall support the (Stereo) HPL and HPR
+                                    R                 Channel Configuration.
+22    Cluster Control
+                                                 The Converter Unit shall support the Cluster Control.
+23    AudioMode Control
+                                                 The Converter Unit shall support at least one AudioMode
+                                                      (AudioMode(0)) whereby the incoming AudioCluster is
+                                                      converted into a 2-channel (HPL, HPR) AudioCluster. In this
+                                                      case, the Control is Single Value Read-Only and the
+                                                      AVFunction may choose not to physically implement the
+                                                      Control but only report its existence.
+
+          3.2.11. Feature Unit ID11 Requirements
+
+      Table 3-10: Feature Unit ID11 Requirements
+
+Feature Unit ID11                   AVF Comments
+
+24    Input Channel Configuration
+
+24.1   Video                        R            The Video Input Channel Configuration shall be identical to
+
+                                                  the Video Output Channel Configuration of the Entity to
+
+                                                  which this Feature Unit is connected. The incoming
+
+                                                  VideoCluster, if any, is passed unaltered as the outgoing
+
+                                                  VideoCluster (no video processing).
+
+24.2   Audio                        R            The Audio Input Channel Configuration shall be identical to
+
+                                                  the Audio Output Channel Configuration of the Entity to
+
+                                                  which this Feature Unit is connected.
+
+25    Delay Control
+
+25.1   Master                       R            The Master Delay Control shall be RW.
+
+          3.2.12. Mixer Unit ID12 Requirements
+
+      Table 3-11: Mixer Unit ID12 Requirements
+
+Mixer Unit ID12                     AVF         Comments
+                                    P
+26    Video                         R            Video Mixer functionality shall not be supported.
+                                    R
+27    Audio                         R            Audio Mixer functionality shall be supported.
+
+28    Input Pins                    R            The Mixer Unit shall support 2 Input Pins only.
+
+29    Input Channel Configuration                The Input Channel Configuration shall be indentical for both
+                                                      Input Pins.
+29.1   Audio
+                                                 The Audio Input Channel Configuration shall be identical to
+                                                      the Audio Output Channel Configuration of the Entity to
+                                                      which this Input Pin of the Mixer Unit is connected.
+
+30    Output Channel Configuration
+
+30.1   Audio                        R            The Audio Output Channel Configuration shall be indentical
+
+                                                  to the Audio Input Channel Configurations (of both Input
+
+                                                  Pins).
+
+31    Level Control                 R            The Audio Mixer Unit shall implement a Level Control on
+
+                                                  each crossing of an input and output channel of the same
+
+                                                  Channel Type (ICN=OCN). The Audio Mixer Unit shall not
+
+                                                  implement a Level Control on any crossing of an input and
+
+                                                  output channel of different Channel Type (ICN<>OCN).
+
+                                                                                                                   13
+          3.2.13. Feature Unit ID13 Requirements
+
+      Table 3-12: Feature Unit ID13 Requirements
+
+Feature Unit ID13                  AVF Comments
+
+32    Input Channel Configuration
+
+32.1   Video                       R    The Video Input Channel Configuration shall be identical to
+
+                                                  the Video Output Channel Configuration of the Entity to
+
+                                                  which this Feature Unit is connected.
+
+32.2   Audio                       CR   The Audio Input Channel Configuration shall be identical to
+
+                                                  the Audio Output Channel Configuration of the Entity to
+
+                                                  which this Feature Unit is connected.
+
+33    Mute Control
+
+33.1   Master                      CR   The Master Mute Control shall be RW.
+
+34    Volume Control
+
+34.1   Master                      CR   The Master Volume Control shall be RW.
+
+35    Brightness Control
+
+35.1   Master                      R    The Master Brightness Control shall be RoW.
+
+          3.2.14. Feature Unit ID14 Requirements
+
+      Table 3-13: Feature Unit ID14 Requirements
+
+Feature Unit ID14                  AVF Comments
+
+36    Input Channel Configuration
+
+36.1   Video                       P    Video is not supported
+
+36.2   Audio                       R    The Audio Input Channel Configuration shall be identical to
+
+                                                  the Audio Output Channel Configuration of the Entity to
+
+                                                  which this Feature Unit is connected.
+
+37    Mute Control
+
+37.1   Master                      R    The Master Mute Control shall be RW.
+
+38    Volume Control
+
+38.1   Master                      R    The Master Volume Control shall be RW.
+
+          3.2.15. Feature Unit ID15 Requirements
+
+      Table 3-14: Feature Unit ID15 Requirements
+
+Feature Unit ID15                  AVF Comments
+
+39    Input Channel Configuration
+
+39.1   Video                       R    The Video Input Channel Configuration shall be identical to
+
+                                                  the Video Output Channel Configuration of the Entity to
+
+                                                  which this Feature Unit is connected.
+
+39.2   Audio                       R    The Audio Input Channel Configuration shall be identical to
+
+                                                  the Audio Output Channel Configuration of the Entity to
+
+                                                  which this Feature Unit is connected.
+
+40    Mute Control
+
+40.1   Master                      R    The Master Mute Control shall be RW.
+
+41    Volume Control
+
+41.1   Master                      R    The Master Volume Control shall be RW.
+
+14
+        3.2.16. Output Terminal ID16 Requirements
+
+    Table 3-15: Output Terminal ID16 Requirements
+
+Output Terminal ID16                       AVF  Comments
+                                           R
+42  AVData Entity Association                    The Output Terminal ID16 shall be associated with AVData
+                                                      Entity ID20.
+
+        3.2.17. Output Terminal ID17 Requirements
+
+    Table 3-16: Output Terminal ID17 Requirements
+
+Output Terminal ID17                       AVF  Comments
+                                           R
+43  AVData Entity Association                    The Output Terminal ID17 shall be associated with AVData
+                                                      Entity ID21.
+
+        3.2.18. Output Terminal ID18 Requirements
+
+    Table 3-17: Output Terminal ID18 Requirements
+
+Output Terminal ID18                       AVF  Comments
+                                           R
+44  AVData Entity Association                    The Output Terminal ID18 shall be associated with AVData
+                                           R          Entity ID22.
+45  Clock Input Connected
+                                                 Shall be connected to an explicit Clock Domain.
+
+        3.2.19. Output Terminal ID19 Requirements
+
+    Table 3-18: Output Terminal ID19 Requirements
+
+Output Terminal ID19                       AVF  Comments
+                                           R
+46  AVData Entity Association                    The Output Terminal ID19 shall be associated with AVData
+                                           P          Entity ID23.
+47  Clock Input Connected
+                                                 Shall not be connected to an explicit Clock Domain.
+
+        3.2.20. AVData Generic-Out Entity/AVData HDMI-Out Entity ID20 Requirements
+
+    Table 3-19: AVData Generic-Out Entity/ AVData HDMI-Out Entity ID20 Requirements
+
+AVData Generic-Out Entity/AVData HDMI-Out  AVF Comments
+Entity ID20
+
+48  Terminal Association                   R     The AVData Generic-Out Entity/ AVData HDMI-Out Entity
+
+                                                ID20 shall be associated with Output Terminal ID16.
+
+        3.2.21. AVData Generic-Out Entity ID21 Requirements
+
+    Table 3-20: AVData Generic-Out Entity ID21 Requirements
+
+AVData Generic-Out Entity ID21             AVF  Comments
+                                           R
+49  Terminal Association                         The AVData Generic-Out Entity ID21 shall be associated
+                                                      with Output Terminal ID17.
+
+                                                                                                           15
+          3.2.22. AVData Audio Streaming Out Interface ID22 Requirements
+
+      Table 3-21: AVData Audio Streaming Out Interface ID22 Requirements
+
+AVData Audio Streaming Out Interface ID22  AVF
+
+50    Terminal Association                 R     The AVData Audio Streaming Out interface ID22 shall be
+
+                                                associated with Input Terminal ID18.
+
+51    AudioStream Configurations
+
+51.1  AudioStreamConfig 1                        This is the baseline requirement. See [AVFORMAT_2]. See
+                                                      Section 4.1, "Type I Formats" for more details.
+
+51.1.1  PCM-encoded Audio                  R     The AVData Audio Streaming interface shall support this
+              2 audio channels (FL, FR)
+              Single AudioTrack                 audio format.
+              16 bits per audio sample
+              48 kHz sampling frequency
+
+          3.2.23. AVData FrameBuffer-Out/Video Streaming-Out Entity ID23 Requirements
+
+      Table 3-22: AVData FrameBuffer-Out/Video Streaming-OutEntity ID23 Requirements
+
+AVData FrameBuffer-Out/Video Streaming-    AVF Comments
+OutEntity ID23
+
+52    Terminal Association                 R     The AVData FrameBuffer-Out/Video Streaming-Out Entity
+
+                                                ID23 shall be associated with Output Terminal ID19.
+
+53    Active Alternate Setting             R     The AVData FrameBuffer-Out/Video Streaming-OutEntity
+
+                                                shall implement the Active Alternate Setting Control if it is an
+
+                                                AVData Frame Buffer-OutEntity. If it is a VideoStreaming-In
+
+                                                Entity this control is prohibited because alternate setting
+
+                                                changes are performed through standard USB requests.
+
+          3.2.24. Clock Source Entity ID25 and ID26 Requirements
+
+      Table 3-23: Clock Source Entity ID25 and ID26 Requirements
+
+Clock Source Entity ID25 and ID26          AVF  Comments
+                                           P     The Clock Source Entity shall not support a video clock.
+54    Video Sampling Frequency Control
+
+55    Audio Sampling Frequency Control
+
+55.1   Single Frequency                    R     The Clock Source Entity shall support one sampling
+
+                                                frequency of 48 kHz. If it only supports this frequency then
+
+                                                the AVFunction may choose not to physically implement the
+
+                                                Control but only report its existence in the AVDD.
+
+56    ClocksValid Control                  R     The Clock Source Entity shall support the ClocksValid
+
+                                                Control.
+
+16
+4.    Topology
+
+To support the features and characteristics listed above, a fully populated BDP AVFunction topology is defined in the
+following section. Subsequent sections define various variations on that fully populated topology by omitting one or
+more optional components of the fully populated BDP AVFunction topology.
+
+4.1.  Fully Populated BDP Topology
+
+The BDP Topology describes an AVFunction that optionally includes:
+
+ A main video/audio output, such as a built-in screen and speakers, or an HDMI-Out, or any type of AVData
+     Generic-Out Entity
+
+ A Headphone output
+ A main video/audio input, such as a built-in camera and microphone
+ Provisions for sidetone mixing
+
+The following figure presents a topology overview.
+
+    Figure 4-1: Example of a Fully Populated BDP Topology
+
+    Note 1: Entity ID2 can be either an AVData FrameBuffer-In Entity or an AVData Video Streaming-In interface. In
+            the former case, VideoStreams are transported over the CBP and the hatched connection arrow is not
+            present. In the latter case, VideoStreams are transported via the dedicated isochronous data endpoint of the
+            AVData Video Streaming In interface.
+
+    Note 2: Entity ID23 can be either an AVData FrameBuffer-Out Entity or an AVData Video Streaming-Out interface.
+            In the former case, VideoStreams are transported over the CBP and the hatched connection arrow is not
+            present. In the latter case, VideoStreams are transported via the dedicated isochronous data endpoint of the
+            AVData Video Streaming Out interface.
+
+                                                                                                                                      17
+In Figure 4-1, the upper part of the diagram represents the output functionality of the BDP AVFunction whereas the
+lower part represents the input functionality.
+
+         4.1.1. Output Functionality
+
+AV content is delivered from the Controller to the AVFunction through the AVData FrameBuffer-InEntity ID2 via the
+CBP for video content. Alternatively Entity ID2 could be an AV Data Video Streaming In Interface using the
+Isochronous endpoints for receiving the video content. Additionally, the AVData Audio Streaming In interface Entity
+ID 3 may be used for audio content.
+
+The Controller packetizes the video content (if present) as defined in the [AVFORMAT_1] specification for
+transporting via Bulk and in the [AVFORMAT_3] for transporting via Isochronous. The Controller sends audio content
+(if present) via the isochronous pipe that is part of the AVData Audio Streaming In interface using one of the Audio
+Formats described in [AVFORMAT_2].
+
+After decoding and converting the video data into a proper single VideoTrack 2D or 3D2 VideoCluster, the
+VideoCluster enters the AVCore via Input Terminal ID5. After decoding and converting the audio data into a proper
+single AudioTrack AudioCluster, the AudioCluster enters the AVCore via Input Terminal ID6. Router Unit ID8 then
+combines the VideoCluster and AudioCluster into a single AVCluster.
+
+The resulting AVCluster is then routed into Feature Unit ID11. Feature Unit ID11 contains an AVControl to allow for
+audio delay compensation. After this compensation, the AVCluster flows into the main output path. This path consists
+of Feature Unit ID13, which provides manipulation of the VideoCluster (Brightness) and the AudioCluster (Mute,
+Volume) before leaving the AVCore through Output Terminal ID16 and, after proper encoding and conversion, on to
+AVData Entity ID20, which represents the main output facility of the AVFunction (either a built-in screen and/or
+speakers or an HDMI-Out connection, or any type of AVData Generic-Out Entity).
+
+The AVCluster from Feature Unit ID11 may also be routed to Converter Unit ID9. The Converter Unit converts the
+AudioCluster from multi-channel into 2 channels, specifically prepared for headphone use. (The algorithms to do this
+are implementation-dependent.) The resulting 2-channel AudioCluster is then routed to Audio Mixer Unit ID12. The
+Audio Mixer Unit ID12 can be used to locally mix the audio content from the input path into the headphone audio path
+(sidetone mixing). The mixed AudioCluster is then routed to Feature Unit ID14, which contains separate Mute and
+Volume Controls for the headphone. The output of Feature Unit ID14 flows into Output Terminal ID17 and, after
+proper encoding and conversion, on to AVData Sink Entity ID21, the headphone connection on the AVFunction.
+
+         4.1.2. Input Functionality
+
+AVData Source Entity ID4 represents the main input facility of the AVFunction (either an internal or external
+microphone and/or a camera). After proper decoding and conversion of the video (if present) and audio (if present)
+streams, the resulting AVCluster enters the AVCore through Input Terminal ID7 and is routed into Feature Unit ID15.
+Feature Unit ID15 contains some AVControls to allow for simple audio corrections (Mute, Volume). After those
+modifications are applied, the AVCluster flows into Output Terminals ID18 and ID19.
+
+Output Terminal ID18 selects the AudioCluster only and, after proper encoding and conversion, sends the result to
+AVData Audio Streaming Out interface ID22. The audio stream is formatted using one of the methods described in the
+[AVFORMAT_2] document and streamed up to the Controller.
+
+Output Terminal ID19 selects the VideoCluster only and, after proper encoding and conversion, sends the result to
+AVData FrameBuffer-OutEntity (or AVData Video Streaming-Out Interface) ID23.
+
+AVData FrameBuffer-OutEntity (or AVData Video Streaming-Out Interface) ID23 packetizes the video content (if
+present) as specified in [AVFORMAT_1] specification for transporting via Bulk and in the [AVFORMAT_3] for
+transporting via Isochronous.
+
+         4.1.3. Input-to-Output Functionality
+
+The output of Input Terminal ID7 can also be routed to Converter Unit ID10. The Converter Unit selects the
+AudioCluster and converts it from multi-channel into 2 channels, specifically prepared for headphone use. (The
+algorithms to do this are implementation-dependent.) The resulting 2-channel AudioCluster is then routed to the
+Audio Mixer Unit ID12 where it can be mixed with the main headphone audio content.
+
+18
+         4.1.4. Clock Functionality
+
+Clock Source Entity ID25 drives the audio Out clock domain of the AVFunction. Input Terminal ID6 and optionally,
+Output Terminal ID17 are connected to this Clock Source Entity. Clock Source Entity ID26 drives the audio IN clock
+domain of the AVFunction. Output Terminal ID18 and optionally, Input Terminal ID7 are connected to this Clock
+Source Entity. Implementations are also allowed to only implement a single audio clock domain for the entire
+AVFunction. In this case, Input Terminals ID6 and ID7, and Output Terminals ID17 and ID18 can be connected to the
+single Clock Source Entity ID25.
+
+4.2.      Variations on the BDP Topology
+
+The BDP Topology as presented above provides the maximum AV functionality that is targeted by the Basic Device
+
+Profile. However, virtually all components of this topology are optional for a device to implement. This way, many
+
+different types of AVFunctions with reduced functionality can be derived from this single Basic Device Profile while
+
+still being fully compliant with the Basic Device Profile. As mentioned before, vendors may choose to extend the
+
+functionality of the AVFunction as long as those extensions do not interfere with the basic operation of the Device.
+
+The following section provides one variation on the BDP Topology. Other variations are possible but are not explicitly
+documented here. The variation was named after its most common use. Other usages may re-use the named
+variations for slightly different purposes.
+
+          4.2.1. Basic Display Example
+
+4.2.1.1.  Topology
+
+This profile describes the basic building blocks that are necessary to implement a Basic Display.
+
+Figure 4-2: Basic PC Monitor Topology
+
+4.2.1.2.  AVDD Document
+
+The AVDD document has been generated using AVDD_Creator V1.0. At the time of this writing this is the latest version.
+
+The project file for this document - BasicDisplay.avd - is part of the Basic Device Profile documentation.
+
+<?xml version="1.0" encoding="UTF-8"?>
+<avConfiguration
+
+   xsi:schemaLocation=" http://avschemas.usb.org/v1/AVSchema http://avschemas.usb.org/v1/AVSchema.xsd"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://avschemas.usb.org/v1/AVSchema">
+   <specVersion>
+
+      <major>1</major>
+      <minor>0</minor>
+   </specVersion>
+   <avControlInterface id="1">
+
+                                                                                                                      19
+      <avddInfo/>
+      <avddContent/>
+      <alternateSetting>
+
+         <inputTerminal id="5" avDataId="2">
+            <outputPin>
+               <outputChannelConfig>
+                  <videoPath>
+                     <channels>
+                        <OL001/>
+                     </channels>
+                  </videoPath>
+               </outputChannelConfig>
+               <cluster/>
+            </outputPin>
+
+         </inputTerminal>
+         <outputTerminal id="16" avDataId="20">
+
+            <inputPin>
+               <sourceID>13</sourceID>
+
+            </inputPin>
+         </outputTerminal>
+         <featureUnit id="13">
+
+            <inputPin>
+               <sourceID>5</sourceID>
+               <inputChannelConfig>
+                  <videoPath>
+                     <channels>
+                        <OL001/>
+                     </channels>
+                  </videoPath>
+               </inputChannelConfig>
+
+            </inputPin>
+            <video>
+
+               <brightness rw="RW">
+                  <channels>
+                     <MASTER/>
+                  </channels>
+                  <ranges>
+                     <range>
+                        <min>0</min>
+                        <max>100</max>
+                        <res>1</res>
+                     </range>
+                  </ranges>
+
+               </brightness>
+            </video>
+            <audio/>
+         </featureUnit>
+         <avDataGeneric-OutEntity id="20" terminalID="16">
+            <genericType>
+
+               <videoType>DISPLAY</videoType>
+               <audioType>NONE</audioType>
+            </genericType>
+            <activeAltSetting rw="RW"/>
+            <alternateSetting/>
+         </avDataGeneric-OutEntity>
+         <avDataFrameBuffer-InEntity id="2" terminalID="5">
+            <activeAltSetting rw="RW"/>
+            <edid/>
+            <sourceData wr="WO"/>
+            <streamSelector rw="RW"/>
+            <videoBulkStreamConfigList>
+               <videoBulkStreamConfig hdcp="false">
+
+                  <videoBundle>
+                     <videoTrack>
+                        <channels>
+                           <OL001/>
+                        </channels>
+                     </videoTrack>
+
+                  </videoBundle>
+                  <videoFrame>
+
+20
+                     <clock>
+                        <frequency>60</frequency>
+
+                     </clock>
+                     <foid2D>
+
+                        <vfid640X480P/>
+                     </foid2D>
+                  </videoFrame>
+                  <videoSampleTypeII>
+                     <vsidRGB888>
+
+                        <vcidPARTIAL/>
+                     </vsidRGB888>
+                  </videoSampleTypeII>
+               </videoBulkStreamConfig>
+            </videoBulkStreamConfigList>
+            <alternateSetting/>
+         </avDataFrameBuffer-InEntity>
+      </alternateSetting>
+   </avControlInterface>
+</avConfiguration>
+
+4.2.1.3.            Legacy-View Descriptors
+
+4.2.1.3.1.          Device Descriptor
+
+Offset                  Field                       Size                    Value
+                                                   1
+0         bLength                                  1      18
+                                                   2      DEVICE(1)
+1         bDescriptorType                          1      Device-Specific
+                                                   1      0xEF
+2         bcdUSB                                   1      0x02
+                                                   1      0x01
+4         bDeviceClass                             2      Device-Specific
+                                                   2      Device-Specific
+5         bDevice SubClass                         2      Device-Specific
+                                                   1      Device-Specific
+6         bDeviceProtocol                          1      Device-Specific
+                                                   1      Device-Specific
+7         bMaxPacketSize                           1      Device-Specific
+                                                          Device-Specific
+8         idVendor
+
+10        idProduct
+
+12        bcdDevice
+
+14        iManufacturer
+
+15        iProduct
+
+16        iSerialNumber
+
+17        bNumConfigurations
+
+4.2.1.3.2.          Configuration Descriptor
+
+Offset                  Field                      Size                     Value
+
+0         bLength                                  1      9
+                                                          CONFIGURATION(2)
+1         bDescriptorType                          1      227
+                                                          1
+2         wTotalLength                             2      1
+                                                          0
+4         bNumInterfaces                           1      0x80
+                                                          Device-Specific
+5         bConfigurationValue                      1
+
+6         iConfiguration                           1
+
+7         bmAttributes                             1
+
+8         bMaxPower                                1
+
+                                                                                   21
+4.2.1.3.2.1.     Interface Association Descriptor
+
+Offset              Field   Size                                            Value
+                                                                            Value
+0       bLength             1                      8                        Value
+                                                                            Value
+1       bDescriptorType     1                      IAD(11)                  Value
+
+2       bFirstInterface     1                      0
+
+3       bInterfaceCount     1                      1
+
+4       bFunctionClass      1                      0x10
+
+5       bFunctionSubClass   1                      0x00
+
+6       bFunctionProtocol   1                      0x00
+
+7       iFunction           1                      0
+
+4.2.1.3.2.2.     Control Interface Descriptor (Inactive Alternate Setting)
+
+Offset              Field   Size
+
+0       bLength             1                      9
+
+1       bDescriptorType     1                      INTERFACE(4)
+
+2       bInterfaceNumber    1                      0
+
+3       bAlternateSetting   1                      0
+
+4       bNumEndpoints       1                      0
+
+5       bInterfaceClass     1                      0x10
+
+6       bInterfaceSubClass  1                      0x00
+
+7       bInterfaceProtocol  1                      0x00
+
+8       iInterface          1                      0
+
+4.2.1.3.2.3.     Control Interface Descriptor (Active Alternate Setting)
+
+Offset              Field   Size
+
+0       bLength             1                      9
+
+1       bDescriptorType     1                      INTERFACE(4)
+
+2       bInterfaceNumber    1                      0
+
+3       bAlternateSetting   1                      1
+
+4       bNumEndpoints       1                      2
+
+5       bInterfaceClass     1                      0x10
+
+6       bInterfaceSubClass  1                      0x00
+
+7       bInterfaceProtocol  1                      0x00
+
+8       iInterface          1                      0
+
+4.2.1.3.2.4.     AV Control Interface Descriptor
+
+Offset              Field   Size
+
+0       bLength             1                      4
+                                                   AVCONTROL_IF (0x21)
+1       bDescriptorType     1                      0x100
+
+2       bcdAVFunction       2
+
+4.2.1.3.2.5.     AVDD Info Control Descriptor
+Offset
+                    Field   Size
+
+22
+Offset                  Field   Size                                          Value
+0       bLength                1
+1       bDescriptorType        1                  6
+2       wControlSelector       2                  AVCONTROL (0x25)
+4       wRWN                   2                  AC_AVDD_INFO (1)
+                                                  Read-Only (0)
+
+4.2.1.3.2.6.     AVDD Content Control Descriptor
+
+Offset             Field                    Size                              Value
+
+0       bLength                1                  6
+
+1       bDescriptorType        1                  AVCONTROL (0x25)
+
+2       wControlSelector       2                  AC_AVDD_CONTENT (2)
+
+4       wRWN                   2                  Read-Only (0)
+
+4.2.1.3.2.7.     Input Terminal Descriptor
+
+Offset             Field                    Size                              Value
+
+0       bLength                1                  8
+                                                  TERMINAL (0x22)
+1       bDescriptorType        1                  INPUT (1)
+                                                  5
+2       wTerminalType          2                  2
+
+4       wEntityID              2
+
+6       wAssocEntityID         2
+
+4.2.1.3.2.8.     Input Terminal Output Pin Descriptor
+
+Offset             Field                    Size                              Value
+
+0       bLength                1                  2
+
+1       bDescriptorType        1                  OUTPUT_PIN (0x2A)
+
+4.2.1.3.2.9.     Input Terminatl Output Pin Channel Configuration Descriptor
+
+Offset             Field                    Size                              Value
+
+0       bLength                1                  10
+
+1       bDescriptorType        1                  CH_CFG (0x2C)
+
+2       bNrAudioChannel        1                  0
+
+3       bNrVideoChannels       1                  1
+
+4       wAudioChannelConfig    2                  0
+
+6       wVideoChannelConfig    2                  OL001(0x1)
+
+8       iAudioChannelNames     1                  0
+
+9       iVideoChannelNames     1                  0
+
+                                                                                     23
+4.2.1.3.2.10. Cluster Control Descriptor
+
+Offset             Field                  Size                    Value
+
+0       bLength           1                     6
+                                                AVCONTROL (0x25)
+1       bDescriptorType   1                     TE_CLUSTER (1)
+                                                RO (0)
+2       wControlSelector  2
+
+4       wRWN              2
+
+4.2.1.3.2.11. Output Terminal Descriptor
+
+Offset             Field                  Size                    Value
+
+0       bLength           1                     8
+                                                TERMINAL (0x22)
+1       bDescriptorType   1                     OUTPUT (2)
+                                                16
+2       wTerminalType     2                     20
+
+4       wEntityID         2
+
+6       wAssocEntityID    2
+
+4.2.1.3.2.12. Output Terminal Source Pin Descriptor
+
+Offset             Field                  Size                    Value
+                                                                  Value
+0       bLength           1                     4                 Value
+
+1       bDescriptorType   1                     INPUT_PIN (0x2A)
+
+2       wSourceID         2                     13
+
+4.2.1.3.2.13. Video Control Feature Unit Descriptor
+
+Offset             Field                  Size
+
+0       bLength           1                     6
+
+1       bDescriptorType   1                     UNIT (0x23)
+
+2       wUnitType         2                     FEATURE (3)
+
+4       wEntityID         2                     13
+
+4.2.1.3.2.14. Video Control Feature Unit Source Pin Descriptor
+
+Offset             Field                  Size
+
+0       bLength           1                     4
+
+1       bDescriptorType   1                     INPUT_PIN (0x2A)
+
+2       wSourceID         2                     5
+
+24
+4.2.1.3.2.15. Video Control Feature Unit Source Pin Channel Configuration Descriptor
+
+Offset               Field   Size                                    Value
+
+0       bLength              1               10
+
+1       bDescriptorType      1               CH_CFG (0x2C)
+
+2       bNrAudioChannel      1               0
+
+3       bNrVideoChannels     1               1
+
+4       wAudioChannelConfig  2               0
+
+6       wVideoChannelConfig  2               OL001(0x1)
+
+8       iAudioChannelNames   1               0
+
+9       iVideoChannelNames   1               0
+
+4.2.1.3.2.16. Brightness Control Descriptor
+
+Offset               Field   Size                                    Value
+
+0       bLength              1               6
+                                             AVCONTROL (0x25)
+1       bDescriptorType      1               FU_BRIGHTNESS (2)
+                                             RW (1)
+2       wControlSelector     2
+
+4       wRWN                 2
+
+4.2.1.3.2.17. Brightness Range Descriptor
+
+Offset               Field   Size                                    Value
+
+0       bLength              1               16
+                                             RANGES (0x26)
+1       bDescriptorType      1               RANGE (1)
+                                             0
+2       wRangeType           2               100
+                                             1
+4       dwMin                4
+
+8       dwMax                4
+
+12      dwResolution         4
+
+4.2.1.3.2.18. AVData Generic Out Descriptor
+
+Offset               Field   Size                                    Value
+
+0       bLength              1               10
+                                             AVDATA (0x24)
+1       bDescriptorType      1               GENERIC (1)
+                                             20
+2       wEntityType          2               No Affiliation (0)
+                                             0
+4       wEntityID            2
+
+6       wClockDomain         2
+
+8       wClockDomainID       2
+
+4.2.1.3.2.19. Active Alternate Control Descriptor
+
+Offset               Field   Size                                    Value
+
+0       bLength              1               6
+
+1       bDescriptorType      1               AVCONTROL (0x25)
+
+2       wControlSelector     2               AD_ACT_ALT_SETTING (3)
+
+4       wRWN                 2               RW (1)
+
+                                                                                      25
+4.2.1.3.2.20. AVData Framebuffer Descriptor
+
+Offset               Field             Size                           Value
+
+0       bLength                        1      10
+                                              AVDATA (0x24)
+1       bDescriptorType                1      FRAMEBUFFER (2)
+                                              2
+2       wEntityType                    2      No Affiliation (0)
+                                              0
+4       wEntityID                      2
+
+6       wClockDomain                   2
+
+8       wClockDomainID                 2
+
+4.2.1.3.2.21. Active Alternate Setting Control Descriptor
+
+Offset               Field             Size                           Value
+
+0       bLength                        1      6
+
+1       bDescriptorType                1      AVCONTROL (0x25)
+
+2       wControlSelector               2      AD_ACT_ALT_SETTING (3)
+
+4       wRWN                           2      RW (1)
+
+4.2.1.3.2.22. EDID Control Descriptor
+
+Offset               Field             Size                           Value
+
+0       bLength                        1      6
+                                              AVCONTROL (0x25)
+1       bDescriptorType                1      AD_EDID (0x000C)
+                                              RO (0)
+2       wControlSelector               2
+
+4       wRWN                           2
+
+4.2.1.3.2.23. Source Data Control Descriptor
+
+Offset               Field             Size                           Value
+
+0       bLength                        1      6
+                                              AVCONTROL (0x25)
+1       bDescriptorType                1      AD_SOURCEDATA (9)
+                                              WO (2)
+2       wControlSelector               2
+
+4       wRWN                           2
+
+4.2.1.3.2.24. Stream Selector Descriptor
+
+Offset               Field             Size                                    Value
+                                              6
+0       bLength                        1      AVCONTROL (0x25)
+                                              AD_STREAM_SELECTOR (0x000B)
+1       bDescriptorType                1      RW (1)
+
+2       wControlSelector               2
+
+4       wRWN                           2
+
+26
+4.2.1.3.2.25. Video Bulk Stream Config Descriptor
+
+Offset                Field      Size                           Value
+
+0       bLength                  1      20
+
+1       bDescriptorType          1      VIDEOBULK (0x27)
+
+2       bmAttributes             2      HDCP Not Supported (0)
+
+4       wChannels                2      OL001 (1)
+
+6       wVideoFrameRate          2      60
+
+8       wFrameOrganization       2      2D (1)
+
+10      wFrameFormat             2      640x480P (2)
+
+12      wVideoSampleFormat       2      RGB888 (3)
+
+14      wSubSlotSize             2      0
+
+16      wBitResolution           2      0
+
+18      wVideoCompression        2      PARTIAL (2)
+
+4.2.1.3.2.26. Bulk OUT Endpoint
+
+Offset                Field       Size                          Value
+                                 1
+0       bLength                  1      7
+                                 1      ENDPOINT (0x5)
+1       bDescriptorType          1      EP1-OUT (0x01)
+                                 2      BULK (2)
+2       bEndpointAddress         1      Device-Specific
+                                        0
+3       bmAttributes
+
+4       wMaxPacketSize
+
+6       bInterval
+
+4.2.1.3.2.27. Bulk OUT Endpoint Companion (SuperSpeed Only)
+
+Offset                Field      Size                           Value
+
+0       bLength                  1      6
+
+1       bDescriptorType          1      SUPERSPEED_USB_ENDPOINT_COMPANION (0x30)
+
+2       bMaxBurst                1      Device-Specific
+
+3       bmAttributes             1      No Streams Defined (0)
+
+4       wBytesPerInterval        2      Device-Specific
+
+4.2.1.3.2.28. Bulk IN Endpoint
+
+Offset                Field       Size                          Value
+                                 1
+0       bLength                  1      7
+                                 1      ENDPOINT (0x5)
+1       bDescriptorType          1      EP2-IN (0x82)
+                                 2      BULK (2)
+2       bEndpointAddress         1      Device-Specific
+                                        0
+3       bmAttributes
+
+4       wMaxPacketSize
+
+6       bInterval
+
+                                                                                  27
+4.2.1.3.2.29. Bulk IN Endpoint Companion (SuperSpeed Only)
+
+Offset             Field            Size                          Value
+
+0       bLength                     1     6
+
+1       bDescriptorType             1     SUPERSPEED_USB_ENDPOINT_COMPANION (0x30)
+
+2       bMaxBurst                   1     Device-Specific
+
+3       bmAttributes                1     No Streams Defined (0)
+
+4       wBytesPerInterval           2     Device-Specific
+
+4.2.1.3.3.       Other Descriptors
+
+BOS, String, Device_Qualifier and Other_Speed_Configuration descriptors are not affected by this specification and
+
+shall be reported depending on speed and USB specification number, as they would for any device.
+
+28
+

@@ -1,0 +1,361 @@
+# USBTree 知识图谱 · 实体表
+# id: ASCII 稳定标识（被 relations.yaml 引用，勿随意改名）
+# type: protocol / device-class / profile / transfer-type / mechanism / standard / tool / external-protocol
+# docs: 知识树中承载该实体的主文档（相对仓库根，由 tools/validate.sh 校验存在性）
+# code: USB-IF 官方类/子类/协议编码（如适用）
+
+entities:
+  # ── 树干：USB 2.0 核心机制 ──
+  - id: usb2
+    type: protocol
+    name: USB 2.0（LS/FS/HS）
+    docs: 10-树干-USB核心/01-概述与版本演进.md
+  - id: transfer-control
+    type: transfer-type
+    name: 控制传输
+    code: "EP0"
+    docs: 10-树干-USB核心/06-四种传输类型.md
+  - id: transfer-bulk
+    type: transfer-type
+    name: 批量传输
+    docs: 10-树干-USB核心/06-四种传输类型.md
+  - id: transfer-interrupt
+    type: transfer-type
+    name: 中断传输
+    docs: 10-树干-USB核心/06-四种传输类型.md
+  - id: transfer-iso
+    type: transfer-type
+    name: 同步传输
+    docs: 10-树干-USB核心/06-四种传输类型.md
+  - id: descriptors
+    type: mechanism
+    name: 描述符体系
+    docs: 10-树干-USB核心/07-描述符详解.md
+  - id: enumeration
+    type: mechanism
+    name: 枚举流程
+    docs: 10-树干-USB核心/08-枚举流程与标准请求.md
+  - id: hub-tt
+    type: mechanism
+    name: 集线器与事务转换器（Split/TT）
+    docs: 10-树干-USB核心/09-集线器与连接管理.md
+  - id: suspend-resume
+    type: mechanism
+    name: 挂起/恢复与远程唤醒
+    docs: 10-树干-USB核心/10-电源管理与挂起唤醒.md
+  - id: data-toggle
+    type: mechanism
+    name: 数据触发与重传
+    docs: 10-树干-USB核心/11-错误处理与可靠性.md
+  - id: test-mode
+    type: mechanism
+    name: USB 2.0 测试模式
+    docs: 10-树干-USB核心/12-TestMode与调试模式.md
+  - id: stall-halt
+    type: mechanism
+    name: STALL/HALT 错误状态
+    docs: 10-树干-USB核心/11-错误处理与可靠性.md
+
+  # ── 树干延伸：USB 3.x / USB4 ──
+  - id: usb3
+    type: protocol
+    name: USB 3.x（SuperSpeed）
+    docs: 40-枝干-高速演进/01-USB3x与SuperSpeed.md
+  - id: usb3-ltssm
+    type: mechanism
+    name: USB3 链路训练状态机 LTSSM
+    docs: 40-枝干-高速演进/04-USB3x包格式与LTSSM.md
+  - id: usb3-header-packet
+    type: mechanism
+    name: USB3 Header Packet 与 TP/DP
+    docs: 40-枝干-高速演进/04-USB3x包格式与LTSSM.md
+  - id: credit-flow-control
+    type: mechanism
+    name: USB3 信用流控与 Replay 重传
+    docs: 40-枝干-高速演进/04-USB3x包格式与LTSSM.md
+  - id: usb4
+    type: protocol
+    name: USB4（含 v2/80G）
+    docs: 40-枝干-高速演进/02-USB4与雷电整合.md
+  - id: usb4-routing
+    type: mechanism
+    name: USB4 路由器拓扑与配置空间
+    docs: 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md
+  - id: usb4-tunneling
+    type: mechanism
+    name: USB4 隧道化（USB3/PCIe/DP/H2H）
+    docs: 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md
+
+  # ── 枝干：设备类 ──
+  - id: class-hid
+    type: device-class
+    name: HID 人机接口设备类
+    code: "0x03"
+    docs: 20-枝干-设备类协议/HID-人机接口设备/00-HID概述与定位.md
+  - id: hid-report-descriptor
+    type: mechanism
+    name: HID 报告描述符（Item/Usage 体系）
+    docs: 20-枝干-设备类协议/HID-人机接口设备/02-报告描述符与Item编码.md
+  - id: hid-usage
+    type: mechanism
+    name: HID Usage 页与用法
+    docs: 20-枝干-设备类协议/HID-人机接口设备/03-Usage体系与集合.md
+  - id: hid-boot-protocol
+    type: mechanism
+    name: HID Boot 协议
+    docs: 20-枝干-设备类协议/HID-人机接口设备/05-键盘详解.md
+  - id: hid-i2c
+    type: protocol
+    name: HID over I2C（HIDI2C）
+    docs: 20-枝干-设备类协议/HID-人机接口设备/10-HID跨传输I2C与BLE.md
+  - id: class-cdc
+    type: device-class
+    name: CDC 通信设备类
+    code: "0x02/0x0A"
+    docs: 20-枝干-设备类协议/CDC-通信设备类/00-CDC概述.md
+  - id: cdc-acm
+    type: protocol
+    name: CDC-ACM 虚拟串口
+    code: "0x02/0x02"
+    docs: 20-枝干-设备类协议/CDC-通信设备类/01-虚拟串口ACM.md
+  - id: cdc-ecm
+    type: protocol
+    name: CDC-ECM 以太网控制模型
+    code: "0x02/0x06"
+    docs: 20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-RNDIS.md
+  - id: cdc-ncm
+    type: protocol
+    name: CDC-NCM 网络控制模型
+    code: "0x02/0x0D"
+    docs: 20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-RNDIS.md
+  - id: rndis
+    type: protocol
+    name: RNDIS（微软远程 NDIS）
+    code: "0xEF/0x04"
+    docs: 20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-RNDIS.md
+  - id: class-msc
+    type: device-class
+    name: MSC 大容量存储类
+    code: "0x08"
+    docs: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+  - id: msc-bot
+    type: protocol
+    name: Bulk-Only Transport（CBW/CSW）
+    code: "0x08/0x06/0x50"
+    docs: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+  - id: scsi-cdb
+    type: mechanism
+    name: SCSI 块命令（SBC/UFI CDB）
+    docs: 20-枝干-设备类协议/MSC-大容量存储/01-SCSI命令与UFI.md
+  - id: uas
+    type: protocol
+    name: UAS（USB Attached SCSI）
+    code: "0x08/0x06/0x62"
+    docs: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+  - id: class-uac
+    type: device-class
+    name: USB 音频类
+    code: "0x01"
+    docs: 20-枝干-设备类协议/Audio-UAC/00-UAC概述.md
+  - id: uac1
+    type: protocol
+    name: UAC 1.0
+    docs: 20-枝干-设备类协议/Audio-UAC/01-UAC1.0详解.md
+  - id: uac2
+    type: protocol
+    name: UAC 2.0（Clock Source 实体）
+    docs: 20-枝干-设备类协议/Audio-UAC/02-UAC2与UAC3.md
+  - id: uac3
+    type: protocol
+    name: UAC 3.0（BADD/低功耗）
+    docs: 20-枝干-设备类协议/Audio-UAC/02-UAC2与UAC3.md
+  - id: class-midi
+    type: protocol
+    name: USB MIDI 类
+    code: "0x01/0x03"
+    docs: 20-枝干-设备类协议/其他设备类/07-MIDI类.md
+  - id: class-uvc
+    type: device-class
+    name: UVC 视频类
+    code: "0x0E"
+    docs: 20-枝干-设备类协议/Video-UVC/00-UVC详解.md
+  - id: class-dfu
+    type: protocol
+    name: DFU 固件升级
+    code: "0xFE/0x01"
+    docs: 20-枝干-设备类协议/其他设备类/01-DFU固件升级.md
+  - id: class-usbtmc
+    type: protocol
+    name: USBTMC 测试测量类（USB488）
+    code: "0xFE/0x03"
+    docs: 20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md
+  - id: class-ccid
+    type: protocol
+    name: CCID 智能卡类
+    code: "0x0B"
+    docs: 20-枝干-设备类协议/其他设备类/02-CCID智能卡.md
+  - id: ptp
+    type: protocol
+    name: PTP 图片传输协议
+    code: "0x06"
+    docs: 20-枝干-设备类协议/其他设备类/03-PTP与MTP.md
+  - id: mtp
+    type: protocol
+    name: MTP 媒体传输协议
+    docs: 20-枝干-设备类协议/其他设备类/03-PTP与MTP.md
+  - id: class-printer
+    type: protocol
+    name: 打印机类
+    code: "0x07"
+    docs: 20-枝干-设备类协议/其他设备类/04-Printer打印机类.md
+  - id: class-billboard
+    type: device-class
+    name: Billboard 告示牌类
+    code: "0x11"
+    docs: 20-枝干-设备类协议/其他设备类/09-长尾设备类-AV-Billboard-Healthcare-I3C.md
+  - id: class-bt-controller
+    type: device-class
+    name: 蓝牙无线控制器类（HCI over USB）
+    code: "0xE0/0x01/0x01"
+    docs: 20-枝干-设备类协议/其他设备类/05-蓝牙控制器类-HCIoverUSB.md
+  - id: vendor-class
+    type: device-class
+    name: 厂商自定义类
+    code: "0xFF"
+    docs: 20-枝干-设备类协议/其他设备类/06-WebUSB与厂商自定义类.md
+  - id: webusb
+    type: standard
+    name: WebUSB
+    docs: 20-枝干-设备类协议/其他设备类/06-WebUSB与厂商自定义类.md
+  - id: ms-os-descriptors
+    type: standard
+    name: Microsoft OS Descriptors（WinUSB 免驱）
+    docs: 20-枝干-设备类协议/其他设备类/06-WebUSB与厂商自定义类.md
+
+  # ── 枝干：接口与供电 ──
+  - id: typec
+    type: standard
+    name: USB Type-C 连接器
+    docs: 30-枝干-接口与供电/02-USBType-C详解.md
+  - id: typec-cc
+    type: mechanism
+    name: Type-C CC 检测（Rp/Rd/Ra/VCONN）
+    docs: 30-枝干-接口与供电/02-USBType-C详解.md
+  - id: typec-drp
+    type: mechanism
+    name: Type-C 双角色端口 DRP
+    docs: 30-枝干-接口与供电/02-USBType-C详解.md
+  - id: usb-pd
+    type: protocol
+    name: USB Power Delivery
+    docs: 30-枝干-接口与供电/04-USBPD协议.md
+  - id: pps
+    type: mechanism
+    name: PD PPS 可编程电源
+    docs: 30-枝干-接口与供电/04-USBPD协议.md
+  - id: epr
+    type: mechanism
+    name: PD EPR 扩展功率范围（240W）
+    docs: 30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md
+  - id: bc1.2
+    type: standard
+    name: BC 1.2 充电端口
+    docs: 30-枝干-接口与供电/03-BC1.2与专有快充.md
+  - id: alt-mode
+    type: mechanism
+    name: Type-C Alternate Mode（DP 等）
+    docs: 30-枝干-接口与供电/05-AlternateMode与E-marker.md
+  - id: e-marker
+    type: mechanism
+    name: 线缆电子标记 E-marker（SOP'）
+    docs: 30-枝干-接口与供电/05-AlternateMode与E-marker.md
+  - id: otg-hnp
+    type: mechanism
+    name: OTG 角色协商（SRP/HNP/ADP）
+    docs: 30-枝干-接口与供电/06-OTG与角色切换-HNP-SRP.md
+
+  # ── 枝干：蓝牙 ──
+  - id: bluetooth-core
+    type: protocol
+    name: 蓝牙核心规范（BR/EDR + BLE）
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/00-BLE概述.md
+  - id: hci
+    type: mechanism
+    name: HCI 主机控制器接口
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/01-蓝牙体系架构与HCI.md
+  - id: ble-ll
+    type: mechanism
+    name: BLE 链路层（跳频/连接事件/LLCP）
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/02-链路层与物理层.md
+  - id: ble-adv
+    type: mechanism
+    name: BLE 广播（传统+扩展）
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/03-广播与连接.md
+  - id: gap
+    type: profile
+    name: GAP 通用访问规范
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/05-GAP与连接管理.md
+  - id: att
+    type: protocol
+    name: ATT 属性协议
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/04-ATT与GATT.md
+  - id: gatt
+    type: profile
+    name: GATT 通用属性规范
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/04-ATT与GATT.md
+  - id: smp
+    type: protocol
+    name: SMP 安全管理（配对/绑定）
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/06-SMP安全与配对.md
+  - id: hogp
+    type: profile
+    name: HOGP（HID over GATT）
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md
+  - id: le-audio
+    type: profile
+    name: LE Audio（LC3/CIS/BIG/Auracast）
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/09-LEAudio与LC3.md
+  - id: ble-mesh
+    type: profile
+    name: 蓝牙 Mesh 网络
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/10-Mesh网络概述.md
+  - id: classic-a2dp
+    type: profile
+    name: 经典蓝牙 A2DP 音频
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md
+  - id: bt-classic-hid
+    type: profile
+    name: 经典蓝牙 HID Profile
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md
+
+  # ── 枝干：主机侧实现与工具 ──
+  - id: xhci
+    type: mechanism
+    name: xHCI 主机控制器（Streams）
+    docs: 60-枝干-主机侧与实现/01-主机控制器栈全景.md
+  - id: tinyusb
+    type: tool
+    name: TinyUSB 固件栈
+    docs: 60-枝干-主机侧与实现/05-实战-TinyUSB设备固件.md
+  - id: libusb
+    type: tool
+    name: libusb 1.0 用户态访问
+    docs: 60-枝干-主机侧与实现/06-实战-libusb主机程序.md
+  - id: linux-gadget
+    type: mechanism
+    name: Linux USB Gadget（configfs）
+    docs: 60-枝干-主机侧与实现/07-实战-LinuxGadget与usbip.md
+  - id: usbip
+    type: protocol
+    name: USB over IP（usbip）
+    docs: 60-枝干-主机侧与实现/07-实战-LinuxGadget与usbip.md
+
+  # ── 外部协议（被 USB 隧道/重映射承载） ──
+  - id: dp-protocol
+    type: external-protocol
+    name: DisplayPort（外部协议）
+    docs: 30-枝干-接口与供电/05-AlternateMode与E-marker.md
+  - id: pcie
+    type: external-protocol
+    name: PCIe（外部协议）
+    docs: 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md

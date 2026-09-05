@@ -1,0 +1,469 @@
+# USBTree 知识图谱 · 关系边表
+# 每条边四要素：from / type / to / evidence（知识树中陈述该关系的文档，validate.sh 校验存在性）
+# 关系类型词汇表（保持克制，新增类型需先在此登记）：
+#   part-of       组成关系（子协议 ∈ 协议族）
+#   carries       承载（某通道/端点/协议承载另一协议的数据）
+#   runs-on       运行于（协议栈上下层）
+#   uses          使用（机制/传输类型的消费方）
+#   specifies     规定（规范定义机制）
+#   reuses        跨传输/跨协议复用（关键嫁接点）
+#   supersedes    取代（代际或产业更替）
+#   enables       使能（没有它就不可能）
+#   prerequisite  前置（运行前必须完成的树干流程）
+#   tunnels       隧道化（USB4 特有承载方式）
+#   similar-to    对照（语义相近便于迁移理解）
+#   extends       扩展演进（向后兼容的能力延伸）
+
+relations:
+  # ── 传输类型与消费方 ──
+  - id: rel-001
+    from: class-hid
+    type: uses
+    to: transfer-interrupt
+    evidence: 20-枝干-设备类协议/HID-人机接口设备/04-传输与类特定请求.md
+    note: Input/Output 报告走中断端点轮询
+  - id: rel-002
+    from: cdc-acm
+    type: uses
+    to: transfer-bulk
+    evidence: 20-枝干-设备类协议/CDC-通信设备类/01-虚拟串口ACM.md
+  - id: rel-003
+    from: msc-bot
+    type: uses
+    to: transfer-bulk
+    evidence: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+  - id: rel-004
+    from: uas
+    type: uses
+    to: transfer-bulk
+    evidence: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+    note: 依赖批量端点 Streams 能力
+  - id: rel-005
+    from: cdc-ncm
+    type: uses
+    to: transfer-bulk
+    evidence: 20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-RNDIS.md
+    note: NTB 聚合多帧摊薄开销
+  - id: rel-006
+    from: uac1
+    type: uses
+    to: transfer-iso
+    evidence: 20-枝干-设备类协议/Audio-UAC/01-UAC1.0详解.md
+  - id: rel-007
+    from: uac2
+    type: uses
+    to: transfer-iso
+    evidence: 20-枝干-设备类协议/Audio-UAC/02-UAC2与UAC3.md
+    note: HS 高带宽同步端点 ×2/×3
+  - id: rel-008
+    from: class-uvc
+    type: uses
+    to: transfer-iso
+    evidence: 20-枝干-设备类协议/Video-UVC/00-UVC详解.md
+    note: 亦可选批量端点
+  - id: rel-009
+    from: enumeration
+    type: uses
+    to: transfer-control
+    evidence: 10-树干-USB核心/08-枚举流程与标准请求.md
+    note: 标准请求全部经默认控制管道
+  - id: rel-010
+    from: class-dfu
+    type: uses
+    to: transfer-control
+    evidence: 20-枝干-设备类协议/其他设备类/01-DFU固件升级.md
+    note: DFU 纯控制传输类（数据也走 EP0）
+
+  # ── HID 体系内部 ──
+  - id: rel-011
+    from: class-hid
+    type: specifies
+    to: hid-report-descriptor
+    evidence: 20-枝干-设备类协议/HID-人机接口设备/01-HID描述符.md
+  - id: rel-012
+    from: hid-report-descriptor
+    type: specifies
+    to: hid-usage
+    evidence: 20-枝干-设备类协议/HID-人机接口设备/02-报告描述符与Item编码.md
+    note: Item 引用 Usage Page/Usage ID
+  - id: rel-013
+    from: hid-boot-protocol
+    type: part-of
+    to: class-hid
+    evidence: 20-枝干-设备类协议/HID-人机接口设备/05-键盘详解.md
+    note: BIOS 兼容的固定报告格式
+
+  # ── 设备类组成 ──
+  - id: rel-014
+    from: cdc-acm
+    type: part-of
+    to: class-cdc
+    evidence: 20-枝干-设备类协议/CDC-通信设备类/00-CDC概述.md
+  - id: rel-015
+    from: cdc-ecm
+    type: part-of
+    to: class-cdc
+    evidence: 20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-RNDIS.md
+  - id: rel-016
+    from: cdc-ncm
+    type: part-of
+    to: class-cdc
+    evidence: 20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-RNDIS.md
+  - id: rel-017
+    from: msc-bot
+    type: part-of
+    to: class-msc
+    evidence: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+  - id: rel-018
+    from: uas
+    type: part-of
+    to: class-msc
+    evidence: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+  - id: rel-019
+    from: uac1
+    type: part-of
+    to: class-uac
+    evidence: 20-枝干-设备类协议/Audio-UAC/01-UAC1.0详解.md
+  - id: rel-020
+    from: uac2
+    type: part-of
+    to: class-uac
+    evidence: 20-枝干-设备类协议/Audio-UAC/02-UAC2与UAC3.md
+  - id: rel-021
+    from: uac3
+    type: part-of
+    to: class-uac
+    evidence: 20-枝干-设备类协议/Audio-UAC/02-UAC2与UAC3.md
+  - id: rel-022
+    from: class-midi
+    type: part-of
+    to: class-uac
+    evidence: 20-枝干-设备类协议/其他设备类/07-MIDI类.md
+    note: MIDI 是音频类的 0x03 子类
+
+  # ── MSC 命令承载与代际 ──
+  - id: rel-023
+    from: msc-bot
+    type: carries
+    to: scsi-cdb
+    evidence: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+    note: CBWCB 封装 SCSI 命令
+  - id: rel-024
+    from: uas
+    type: carries
+    to: scsi-cdb
+    evidence: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+  - id: rel-025
+    from: uas
+    type: supersedes
+    to: msc-bot
+    evidence: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+    note: 多命令并发取代 BOT 串行
+  - id: rel-026
+    from: xhci
+    type: enables
+    to: uas
+    evidence: 60-枝干-主机侧与实现/01-主机控制器栈全景.md
+    note: 批量端点 Streams 是 UAS 的硬件前提
+
+  # ── CDC/RNDIS 代际 ──
+  - id: rel-027
+    from: cdc-ncm
+    type: supersedes
+    to: cdc-ecm
+    evidence: 20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-RNDIS.md
+    note: NTB 聚合解决 ECM 一帧一包的性能天花板
+  - id: rel-028
+    from: cdc-ncm
+    type: supersedes
+    to: rndis
+    evidence: 20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-RNDIS.md
+    note: Android 13 起 USB 网络共享默认 NCM
+
+  # ── 音频代际 ──
+  - id: rel-029
+    from: uac2
+    type: supersedes
+    to: uac1
+    evidence: 20-枝干-设备类协议/Audio-UAC/02-UAC2与UAC3.md
+    note: 能力代际；UAC1 因全平台免驱仍广泛存活
+
+  # ── USB ↔ 蓝牙（关键嫁接） ──
+  - id: rel-030
+    from: class-bt-controller
+    type: carries
+    to: hci
+    evidence: 20-枝干-设备类协议/其他设备类/05-蓝牙控制器类-HCIoverUSB.md
+    note: 命令走 EP0、事件走中断 IN、ACL/SCO 走批量/同步端点
+  - id: rel-031
+    from: hci
+    type: carries
+    to: gatt
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/01-蓝牙体系架构与HCI.md
+    note: 经 ACL→L2CAP(0x0004) 到达 ATT/GATT
+  - id: rel-032
+    from: gatt
+    type: runs-on
+    to: att
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/04-ATT与GATT.md
+    note: GATT 是 ATT 上的服务/特征模型
+  - id: rel-033
+    from: att
+    type: runs-on
+    to: ble-ll
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/02-链路层与物理层.md
+    note: 经 L2CAP 固定信道承载
+  - id: rel-034
+    from: hogp
+    type: runs-on
+    to: gatt
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md
+  - id: rel-035
+    from: hogp
+    type: reuses
+    to: hid-report-descriptor
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md
+    note: Report Map 特征值即 USB HID 报告描述符全文（树中最重要嫁接点）
+  - id: rel-036
+    from: hogp
+    type: similar-to
+    to: hid-boot-protocol
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md
+    note: Protocol Mode 特征对应 USB SET_PROTOCOL，Boot 报告同构
+  - id: rel-037
+    from: hid-i2c
+    type: reuses
+    to: hid-report-descriptor
+    evidence: 20-枝干-设备类协议/HID-人机接口设备/10-HID跨传输I2C与BLE.md
+    note: 传输无关性第三例
+  - id: rel-038
+    from: bt-classic-hid
+    type: similar-to
+    to: hogp
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md
+    note: 经典 L2CAP PSM 0x11/0x13 vs GATT 订阅
+
+  # ── 蓝牙栈内部 ──
+  - id: rel-039
+    from: gap
+    type: uses
+    to: ble-adv
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/05-GAP与连接管理.md
+    note: 广播/扫描/连接发起的角色与参数
+  - id: rel-040
+    from: smp
+    type: runs-on
+    to: ble-ll
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/06-SMP安全与配对.md
+    note: 固定信道 0x0006，配对后加密链路层
+  - id: rel-041
+    from: le-audio
+    type: uses
+    to: ble-ll
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/09-LEAudio与LC3.md
+    note: CIS/BIG 同步流建立在链路层等时通道
+  - id: rel-042
+    from: le-audio
+    type: runs-on
+    to: gatt
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/09-LEAudio与LC3.md
+    note: ASCS/PACS/BASS 均为 GATT 服务
+  - id: rel-043
+    from: ble-mesh
+    type: runs-on
+    to: ble-adv
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/10-Mesh网络概述.md
+    note: Advertising Bearer；另有 GATT Proxy 承载
+
+  # ── 供电与接口 ──
+  - id: rel-044
+    from: typec-cc
+    type: carries
+    to: usb-pd
+    evidence: 30-枝干-接口与供电/04-USBPD协议.md
+    note: CC 线上 BMC 通信
+  - id: rel-045
+    from: usb-pd
+    type: supersedes
+    to: bc1.2
+    evidence: 30-枝干-接口与供电/03-BC1.2与专有快充.md
+    note: Type-C+PD 终结 D+/D- 协商式专有快充
+  - id: rel-046
+    from: pps
+    type: part-of
+    to: usb-pd
+    evidence: 30-枝干-接口与供电/04-USBPD协议.md
+  - id: rel-047
+    from: epr
+    type: part-of
+    to: usb-pd
+    evidence: 30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md
+    note: PD 3.1 引入，48V/5A=240W
+  - id: rel-048
+    from: typec-drp
+    type: supersedes
+    to: otg-hnp
+    evidence: 30-枝干-接口与供电/06-OTG与角色切换-HNP-SRP.md
+    note: DRP+PD PR_Swap 取代 OTG HNP 角色交换
+  - id: rel-049
+    from: alt-mode
+    type: uses
+    to: dp-protocol
+    evidence: 30-枝干-接口与供电/05-AlternateMode与E-marker.md
+    note: DP Alt Mode（SVID 0xFF01）引脚重映射
+  - id: rel-050
+    from: e-marker
+    type: extends
+    to: typec-cc
+    evidence: 30-枝干-接口与供电/05-AlternateMode与E-marker.md
+    note: SOP' 通告线缆电流/速率能力
+  - id: rel-051
+    from: class-billboard
+    type: extends
+    to: alt-mode
+    evidence: 20-枝干-设备类协议/其他设备类/09-长尾设备类-AV-Billboard-Healthcare-I3C.md
+    note: 向 OS 告知设备支持的 Alt Mode 列表
+
+  # ── USB4 隧道 ──
+  - id: rel-052
+    from: usb4-tunneling
+    type: tunnels
+    to: usb3
+    evidence: 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md
+  - id: rel-053
+    from: usb4-tunneling
+    type: tunnels
+    to: pcie
+    evidence: 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md
+  - id: rel-054
+    from: usb4-tunneling
+    type: tunnels
+    to: dp-protocol
+    evidence: 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md
+    note: USB4 时代 DP 优先走隧道而非 Alt Mode
+  - id: rel-055
+    from: usb4
+    type: extends
+    to: usb3
+    evidence: 40-枝干-高速演进/02-USB4与雷电整合.md
+    note: 架构范式转变（总线→路由器拓扑），向下兼容
+  - id: rel-056
+    from: usb4-routing
+    type: part-of
+    to: usb4
+    evidence: 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md
+  - id: rel-057
+    from: usb4-tunneling
+    type: part-of
+    to: usb4
+    evidence: 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md
+  - id: rel-058
+    from: usb3-ltssm
+    type: part-of
+    to: usb3
+    evidence: 40-枝干-高速演进/04-USB3x包格式与LTSSM.md
+  - id: rel-059
+    from: usb3
+    type: extends
+    to: usb2
+    evidence: 40-枝干-高速演进/01-USB3x与SuperSpeed.md
+    note: 独立双 Simplex 总线 + 共存兼容（非取代关系）
+  - id: rel-060
+    from: usb-pd
+    type: enables
+    to: epr
+    evidence: 30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md
+
+  # ── 树干机制归属 ──
+  - id: rel-061
+    from: test-mode
+    type: part-of
+    to: usb2
+    evidence: 10-树干-USB核心/12-TestMode与调试模式.md
+  - id: rel-062
+    from: hub-tt
+    type: part-of
+    to: usb2
+    evidence: 10-树干-USB核心/09-集线器与连接管理.md
+  - id: rel-063
+    from: data-toggle
+    type: part-of
+    to: usb2
+    evidence: 10-树干-USB核心/11-错误处理与可靠性.md
+  - id: rel-064
+    from: descriptors
+    type: specifies
+    to: enumeration
+    evidence: 10-树干-USB核心/07-描述符详解.md
+    note: 枚举即描述符的逐级读取
+
+  # ── 枚举前置（代表性强依赖；原则适用于全部设备类） ──
+  - id: rel-065
+    from: class-hid
+    type: prerequisite
+    to: enumeration
+    evidence: 20-枝干-设备类协议/HID-人机接口设备/00-HID概述与定位.md
+  - id: rel-066
+    from: class-cdc
+    type: prerequisite
+    to: enumeration
+    evidence: 20-枝干-设备类协议/CDC-通信设备类/00-CDC概述.md
+  - id: rel-067
+    from: class-msc
+    type: prerequisite
+    to: enumeration
+    evidence: 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+  - id: rel-068
+    from: class-uac
+    type: prerequisite
+    to: enumeration
+    evidence: 20-枝干-设备类协议/Audio-UAC/00-UAC概述.md
+  - id: rel-069
+    from: class-uvc
+    type: prerequisite
+    to: enumeration
+    evidence: 20-枝干-设备类协议/Video-UVC/00-UVC详解.md
+
+  # ── 免驱与实现工具 ──
+  - id: rel-070
+    from: webusb
+    type: uses
+    to: vendor-class
+    evidence: 20-枝干-设备类协议/其他设备类/06-WebUSB与厂商自定义类.md
+  - id: rel-071
+    from: ms-os-descriptors
+    type: enables
+    to: webusb
+    evidence: 20-枝干-设备类协议/其他设备类/06-WebUSB与厂商自定义类.md
+    note: Windows 侧 WinUSB 自动绑定；libusb 同享免驱
+  - id: rel-072
+    from: tinyusb
+    type: specifies
+    to: descriptors
+    evidence: 60-枝干-主机侧与实现/05-实战-TinyUSB设备固件.md
+    note: 固件栈以回调形式组装描述符（实现层示例）
+  - id: rel-073
+    from: libusb
+    type: uses
+    to: transfer-bulk
+    evidence: 60-枝干-主机侧与实现/06-实战-libusb主机程序.md
+  - id: rel-074
+    from: linux-gadget
+    type: similar-to
+    to: tinyusb
+    evidence: 60-枝干-主机侧与实现/07-实战-LinuxGadget与usbip.md
+    note: 主机侧模拟设备 vs 设备侧固件，两路实现同一描述符契约
+  - id: rel-075
+    from: usbip
+    type: tunnels
+    to: usb2
+    evidence: 60-枝干-主机侧与实现/07-实战-LinuxGadget与usbip.md
+    note: USB 协议封装进 TCP/IP
+
+  # ── 蓝牙控制器类的位置 ──
+  - id: rel-076
+    from: hci
+    type: runs-on
+    to: ble-ll
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/01-蓝牙体系架构与HCI.md
+    note: HCI 是 Controller(LL) 与 Host 的分界协议
