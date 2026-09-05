@@ -6,18 +6,23 @@ cd "$(dirname "$0")/.."
 rc=0
 
 echo "== 1/8 Markdown 相对链接 =="
-broken=0
+broken=0; specinfo=0
 while IFS= read -r f; do
   dir=$(dirname "$f")
   while IFS= read -r link; do
     [ -n "$link" ] || continue
     case "$link" in http*|\#*) continue ;; esac
     if [ ! -e "$dir/$link" ]; then
-      echo "  断链: [$f] -> $link"; broken=$((broken+1))
+      case "$dir/$link" in
+        *80-参考资料*)
+          # 指向本地规范缓存二进制的链接：gitignore 排除属预期，CI 环境用 tools/spec_fetch.sh 重建
+          echo "  规范二进制(本地缓存, 可 bash tools/spec_fetch.sh 重建): $link"; specinfo=$((specinfo+1)) ;;
+        *) echo "  断链: [$f] -> $link"; broken=$((broken+1)) ;;
+      esac
     fi
   done < <(grep -oE '\]\([^)#][^)]*\)' "$f" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//')
 done < <(find . -name '*.md' -type f)
-[ "$broken" -eq 0 ] && echo "  通过" || rc=1
+[ "$broken" -eq 0 ] && echo "  通过（另有 $specinfo 条规范二进制引用，按预期仅存在于本地缓存）" || rc=1
 
 echo "== 2/8 代码围栏闭合 =="
 unbalanced=0
