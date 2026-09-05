@@ -45,7 +45,9 @@ USBTMC 本身**不含任何仪器语义**——它只负责把字节流可靠地
 
 细节约束：Bulk-OUT 的 `wMaxPacketSize` 必须是 4 的倍数；基础规范要求设备描述符 `bcdUSB ≥ 0x0200`、iManufacturer/iProduct/iSerialNumber 三个字符串索引**必须非零**（VISA 靠"VID+PID+序列号"唯一定位一台仪器）。`lsusb` 里一行 `bInterfaceClass 254 App. Specific, bInterfaceSubClass 3, bInterfaceProtocol 1` 就是典型的 USB488 仪器接口。
 
-## 3. 消息模型：12 字节头定天下
+## 3. 消息模型
+> 🔍 对抗抽查（evolve #28）：MsgID=0x01 DEV_DEP_MSG_OUT、厂商 0x7E/0x7F 与 USBTMC 1.0 原文（Table 3 等）比对一致。
+：12 字节头定天下
 
 USBTMC 的所有批量通信都以一个 **12 字节消息头**开头，之后紧跟消息数据：
 

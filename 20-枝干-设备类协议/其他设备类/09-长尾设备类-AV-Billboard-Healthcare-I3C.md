@@ -45,7 +45,9 @@ Type-C 设备容器（Device Container，如扩展坞、转接器）支持一种
 | 类代码 | **设备级** bDeviceClass 0x11、bDeviceSubClass 0x00、bDeviceProtocol 0x00（USB-IF 规定 0x11 只能出现在设备描述符） |
 | 设备形态 | 独立 Billboard 设备只有端点 0（纯控制传输），没有批量/中断端点；也可作为复合设备的一个功能与主功能共存 |
 | bcdUSB | ≥ 0x0201（必须支持 BOS 描述符），高速设备还须提供 Device Qualifier |
-| BOS 必备 | **Container ID**（跨枚举唯一标识设备容器）+ **Billboard Capability**（bDevCapabilityType = **0x0D**） |
+| BOS 必备 |
+> 🔍 对抗抽查（evolve #28）：Billboard Capability bDevCapabilityType=0x0D 与 Billboard 1.2.2 原文比对一致。
+ **Container ID**（跨枚举唯一标识设备容器）+ **Billboard Capability**（bDevCapabilityType = **0x0D**） |
 
 Billboard Capability 描述符（挂在 BOS 下）核心字段：
 
