@@ -467,3 +467,38 @@ relations:
     to: ble-ll
     evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/01-蓝牙体系架构与HCI.md
     note: HCI 是 Controller(LL) 与 Host 的分界协议
+
+  - id: rel-077
+    from: class-av
+    type: uses
+    to: transfer-bulk
+    evidence: 20-枝干-设备类协议/其他设备类/10-AV设备类详解.md
+    note: AVControl 的命令块管道（CBP）为批量 IN/OUT
+  - id: rel-078
+    from: class-phdc
+    type: carries
+    to: ieee-11073
+    evidence: 20-枝干-设备类协议/其他设备类/11-PHDC健康医疗类.md
+    note: APDU 承载 11073 抽象语法
+  - id: rel-079
+    from: classic-a2dp
+    type: runs-on
+    to: avdtp
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md
+  - id: rel-080
+    from: classic-hfp
+    type: similar-to
+    to: le-audio
+    evidence: 50-枝干-无线关联/BLE-低功耗蓝牙/09-LEAudio与LC3.md
+    note: 电话语音的双路线（eSCO vs CIS）
+  - id: rel-081
+    from: ucsi
+    type: extends
+    to: usb-pd
+    evidence: 30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md
+    note: 向 OS 暴露 PD/Type-C 控制面
+  - id: rel-082
+    from: class-usbtmc
+    type: uses
+    to: transfer-bulk
+    evidence: 20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md

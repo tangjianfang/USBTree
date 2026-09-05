@@ -80,6 +80,12 @@ graph LR
     usbip["USB over IP（usbip）"]
     dp-protocol["DisplayPort（外部协议）"]
     pcie["PCIe（外部协议）"]
+    class-av["AV 设备类（AVControl CBP + AVDD） (0x10)"]
+    class-phdc["PHDC 健康医疗类 (0x0F)"]
+    ieee-11073["IEEE 11073（外部协议，健康医疗语义层）"]
+    avdtp["AVDTP 音视频分发传输协议"]
+    classic-hfp["经典蓝牙 HFP 免提"]
+    ucsi["UCSI（OS 侧 Type-C/PD 控制接口）"]
     class-hid -->|uses: Input/Output 报告走中断端点轮询| transfer-interrupt
     cdc-acm -->|uses| transfer-bulk
     msc-bot -->|uses| transfer-bulk
@@ -156,3 +162,9 @@ graph LR
     linux-gadget -->|similar-to: 主机侧模拟设备 vs 设备侧固件，两路实现同一描述符契约| tinyusb
     usbip -->|tunnels: USB 协议封装进 TCP/IP| usb2
     hci -->|runs-on: HCI 是 Controller(LL) 与 Host 的分界协议| ble-ll
+    class-av -->|uses: AVControl 的命令块管道（CBP）为批量 IN/OUT| transfer-bulk
+    class-phdc -->|carries: APDU 承载 11073 抽象语法| ieee-11073
+    classic-a2dp -->|runs-on| avdtp
+    classic-hfp -->|similar-to: 电话语音的双路线（eSCO vs CIS）| le-audio
+    ucsi -->|extends: 向 OS 暴露 PD/Type-C 控制面| usb-pd
+    class-usbtmc -->|uses| transfer-bulk

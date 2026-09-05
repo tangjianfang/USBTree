@@ -359,3 +359,30 @@ entities:
     type: external-protocol
     name: PCIe（外部协议）
     docs: 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md
+
+  - id: class-av
+    type: device-class
+    name: AV 设备类（AVControl CBP + AVDD）
+    code: "0x10"
+    docs: 20-枝干-设备类协议/其他设备类/10-AV设备类详解.md
+  - id: class-phdc
+    type: device-class
+    name: PHDC 健康医疗类
+    code: "0x0F"
+    docs: 20-枝干-设备类协议/其他设备类/11-PHDC健康医疗类.md
+  - id: ieee-11073
+    type: external-protocol
+    name: IEEE 11073（外部协议，健康医疗语义层）
+    docs: 20-枝干-设备类协议/其他设备类/11-PHDC健康医疗类.md
+  - id: avdtp
+    type: protocol
+    name: AVDTP 音视频分发传输协议
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md
+  - id: classic-hfp
+    type: profile
+    name: 经典蓝牙 HFP 免提
+    docs: 50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md
+  - id: ucsi
+    type: standard
+    name: UCSI（OS 侧 Type-C/PD 控制接口）
+    docs: 30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md
