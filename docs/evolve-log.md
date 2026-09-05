@@ -66,3 +66,4 @@
 #31 | 技能与门面计数同步 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(~10行) | README 28份漂移→按索引页; spec-lookup 补 4 行新缓存映射 + spec_extract 提示
 #32 | 端点包长/PID 三处一致性 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 06/90-02-5/13 包长与 05/90-02-4 PID 全一致（含 SSP 控制 512）
 #33 | 05-TinyUSB 宏勘误 | findings(1) | actions(1) | result(green+progress, 8/8) | diff(~6行) | 官方 tusb_option.h 证实 ENDPOINT 单P写法错误, 统一为 CFG_TUD_ENDPPOINT_MAX 并警示静默回退
+#34 | 06-libusb 错误码抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | 10 个错误码与 libusb.h 一致
