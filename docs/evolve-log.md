@@ -1,7 +1,7 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #10（下一轮）
+- pointer: #11（下一轮）
 - rounds done: 9
 - status: resumed-run（N=50，轮次 #6~#55，#55=回顾）
 - checkpoint: #5 完成于 39d0aca；池已刷新（见下）
@@ -44,3 +44,4 @@
 #7 | tools/validate.sh | findings(0) | actions(2) | result(green+progress, 8/8) | diff(~40行) | +检查7 export.mmd 新鲜度(gen_graph 支持自定义输出); +检查8 H1 唯一性; 全库即绿
 #8 | 40/07 USB4 v2 重提取 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(~8行) | v2 ADP_CS_2 三字段(Sub-type/Version/Protocol)核实; TMU HiFi 配置值(3125/0/30/255/16)回填; 缓存附带发现: zip 内含 CM Guide 2.0/DROM/Inter-Domain/Retimer 2.0 等附加规范
 #9 | graph/ 扩容 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(~50行) | 实体 80→86/边 76→82; 发现并补上 class-usbtmc 缺失的 uses-transfer-bulk 边
+#10 | 30/40 目录索引页 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(+70行) | 发现: 30 索引前向链接 40 索引未建导致断链→同轮补建; 内容文件 102→104
