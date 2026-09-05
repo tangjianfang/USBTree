@@ -76,3 +76,4 @@
 #47 | 枚举序列关键词一致性 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 树干08/排查手册/技能包三处 GET_DESCRIPTOR 叙述无矛盾
 #48 | 四目录索引表核对 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 30/40/60/70 索引表行数=实际文件数
 #50b | 事故恢复 | findings(3) | actions(1) | result(green+progress, 8/8) | diff(恢复218/222/206行×3) | 12-LLCP/06-USB3x/15-A2DP 从基线 3d3272e 恢复并重放戳记/Gen2 表; L8 入库
+#53 | 图谱再生成+标记清点 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(~5行) | COVERAGE 经典蓝牙 90→93(HFP/AVRCP 已缓存); 残留 5 处标记均为合法溯源注记; 导出图再生成
