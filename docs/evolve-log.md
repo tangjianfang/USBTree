@@ -2,7 +2,8 @@
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
 - pointer: #52（下一轮）
-- rounds done: 50
+- rounds done: 60
+- checkpoint: #60/105——run2 进行中(5/50)：USB4 三附带规范成文、HFP eSCO/AT 表、液体腐蚀附录、图谱 89/85
 - checkpoint: #50/50（evolve #50 重写头部修复记账漂移：此前多次 sed/python 基准值不匹配导致头部冻结于 #15；底部逐轮记录行完好且为权威）
 - status: resumed-run（N=50，轮次 #6~#55，#55=回顾）
 - metrics: findings≈17 | fixes≈14 | regressions 3（#49 覆盖事故, 已从基线恢复; 以底部逐轮行为准）
@@ -94,3 +95,5 @@
 #56 | 11 篇 eSCO 参数表 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(+15行) | run2 首轮: S1~S4/T1/T2 与 mSBC 强制集自 HFP-1.10 Tables 6.11~6.14
 #57 | 30/09 液体腐蚀附录 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(+14行) | R2.5 附录 A 三种检测方法成文
 #58 | 图谱二轮扩容 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(~25行) | 89 实体/85 边
+#59 | USBTMC 主规范抽查 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | USB488 为独立子规范引用
+#60 | USB488 子规范核对 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | bNotify1 D7=1/Status Byte 证实; checkpoint #60
