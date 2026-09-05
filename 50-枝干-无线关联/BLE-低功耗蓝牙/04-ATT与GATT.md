@@ -40,6 +40,8 @@ doc-path: 50-枝干-无线关联/BLE-低功耗蓝牙/04-ATT与GATT.md
 |---|---|---|---|
 | 0x01 | Error Response | S→C | 携带"请求 opcode + 出错 handle + 错误码" |
 | 0x02 / 0x03 | Exchange MTU Req / Rsp | C↔S | 参数：服务器/客户端 RX MTU（2B） |
+> 🔍 对抗抽查（evolve #30）：方法名序列（Exchange MTU/Execute Write/Find By Type/Handle Value NTF-CFM…）与 Core 6.0 Vol 3 Part F 提取文本比对一致。
+
 | 0x04 / 0x05 | Find Information Req / Rsp | C↔S | 枚举 Handle→UUID 对（发现描述符） |
 | 0x06 / 0x07 | Find By Type Value Req / Rsp | C↔S | 按类型+值找 handle 范围（找服务声明） |
 | 0x08 / 0x09 | Read By Type Req / Rsp | C↔S | 按类型读（发现特征的主力） |
