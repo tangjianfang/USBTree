@@ -1,0 +1,34 @@
+MIT License
+
+Copyright (c) 2026 tangjianfang
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Scope note / 范围说明: This license covers the original Chinese text, structure,
+diagrams, graph data (graph/), skills (skills/), and tools (tools/) of the
+USBTree knowledge system. 本许可证覆盖 USBTree 的原创中文内容、结构、图谱数据、
+技能包与工具脚本。
+
+Third-party materials / 第三方材料: Official specifications cached under
+`80-参考资料/` (USB-IF / Bluetooth SIG documents) are NOT covered by this
+license, are NOT redistributed in this repository (binaries are gitignored),
+and remain subject to their respective license terms. 本仓库不重新分发任何
+官方规范原文；请通过 `80-参考资料/README.md` 的官方直链自行获取。

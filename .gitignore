@@ -1,0 +1,11 @@
+# 官方规范原文（PDF/ZIP/提取文本）受 USB-IF / Bluetooth SIG 许可约束，
+# 不随本开源仓库分发。本地保留，直链见 80-参考资料/README.md。
+80-参考资料/**/*.pdf
+80-参考资料/**/*.zip
+80-参考资料/**/*.txt
+
+# 临时文件
+*.fm.tmp
+gs.tmp.json
+*.tmp
+!tools/**
