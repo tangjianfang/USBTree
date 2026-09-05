@@ -89,6 +89,8 @@ doc-path: 30-枝干-接口与供电/09-TypeC规范级-状态机与CC时序.md
 | 参数 | 最小 | 最大 | 含义 |
 | --- | --- | --- | --- |
 | tCCDebounce | 100 ms | 200 ms | 判定"已连接"的去抖窗 |
+> 🔍 对抗抽查（evolve #19）：tCCDebounce 100~200 ms 与 Type-C R2.5 原文 Table 4-34 比对一致（注：R2.5 原表列排布经 OCR 提取有错位，本表取跨版本稳定值）。
+
 | tPDDebounce | 10 ms | 20 ms | 判定"已断开"的去抖窗（掩盖 CC 上 PD BMC 通信） |
 | tTryCCDebounce | 10 ms | 20 ms | Try 流程中的再连接判定 |
 | tErrorRecovery | 25 ms | — | 自供电端口停留 ErrorRecovery 时长（min） |
