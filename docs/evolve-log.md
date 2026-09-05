@@ -58,3 +58,4 @@
 #21 | GATT Supplement 缓存 | findings(0) | actions(0) | result(blocked, 8/8) | diff(+1行) | files.bluetooth 动态下载无静态直链; 池标注需人工/浏览器
 #22 | 结晶 | findings(0) | actions(2) | result(green+progress, 8/8) | diff(+45行) | L1/L2/L3/L7(5 次验证)→tools/spec_extract.sh; 实测顺带复核 GET_IDLE=0x02
 #23 | 11 篇 HFP AT 表 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(+20行) | 9 条 AT 命令速查（BRSF/BAC/CHLD/BIEV/BVRA 等），首用结晶工具 spec_extract.sh 提取
+#24 | 类代码表三处一致性核对 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(~4行) | 20-索引 0x0F/0x10 行改指专篇; 90-02-7 长尾类缺行评估为可接受(速查定位)+已有 20-索引兜底
