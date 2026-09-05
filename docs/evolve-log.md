@@ -1,7 +1,7 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #13（下一轮）
+- pointer: #14（下一轮）
 - rounds done: 11
 - status: resumed-run（N=50，轮次 #6~#55，#55=回顾）
 - checkpoint: #5 完成于 39d0aca；池已刷新（见下）
@@ -47,3 +47,4 @@
 #10 | 30/40 目录索引页 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(+70行) | 发现: 30 索引前向链接 40 索引未建导致断链→同轮补建; 内容文件 102→104
 #11 | 60/70 目录索引页 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(+60行) | 发现: 60 索引前向链接 70 索引未建→同轮补建; 70 索引回链两个技能包; 内容文件 104→106
 #12 | 90/01 术语表 | findings(1) | actions(1) | result(green+progress, 8/8) | diff(+13行) | 新增 11 条术语（EPR 查重后确认缺定义行，一并补）；USBCV 已有定义跳过
+#13 | 90/02 速查表扩容 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(+55行) | 新增 13/14/15 三节；数值全部 grep 自既有规范级附录文件
