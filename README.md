@@ -85,7 +85,7 @@ USBTree/
 
 ## 🤖 Agent 使用指南（Graph + Skill 双引擎）
 
-- **Graph 回答"知道什么"**：`graph/entities.yaml`（86 个实体：协议/类/机制，带类码与主文档）+ `graph/relations.yaml`（82 条类型化关系边：carries/reuses/supersedes/tunnels/enables…，每条边带 evidence 指向正文）。查询示例："HOGP reuses HID-ReportDescriptor"——跨传输复用、代际更替（BOT→UAS、ECM→NCM、OTG→DRP）、隧道承载（USB4→USB3/PCIe/DP）全部结构化可查；全景图见 `graph/export.mmd`。
+- **Graph 回答"知道什么"**：`graph/entities.yaml`（86 个实体：协议/类/机制，带类码与主文档）+ `graph/relations.yaml`（85 条类型化关系边：carries/reuses/supersedes/tunnels/enables…，每条边带 evidence 指向正文）。查询示例："HOGP reuses HID-ReportDescriptor"——跨传输复用、代际更替（BOT→UAS、ECM→NCM、OTG→DRP）、隧道承载（USB4→USB3/PCIe/DP）全部结构化可查；全景图见 `graph/export.mmd`。
 - **Skill 回答"怎么做"**：`skills/` 下四个技能包，均含触发条件、分步动作、验证命令与回退路径——
   1. [usb-enum-troubleshoot](skills/usb-enum-troubleshoot/SKILL.md)：枚举失败分阶段排查；
   2. [usb-capture-analysis](skills/usb-capture-analysis/SKILL.md)：trace 分析方法论与异常特征表；

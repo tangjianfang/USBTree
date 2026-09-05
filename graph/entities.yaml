@@ -386,3 +386,16 @@ entities:
     type: standard
     name: UCSI（OS 侧 Type-C/PD 控制接口）
     docs: 30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md
+
+  - id: usb4-drom
+    type: mechanism
+    name: USB4 DROM 设备 ROM
+    docs: 40-枝干-高速演进/08-USB4-DROM设备ROM规范.md
+  - id: inter-domain-protocol
+    type: protocol
+    name: USB4 Inter-Domain Service Protocol（USB4NET）
+    docs: 40-枝干-高速演进/07-USB4规范级-配置空间与隧道.md
+  - id: scpi
+    type: external-protocol
+    name: SCPI（外部协议，仪器命令语言）
+    docs: 20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md

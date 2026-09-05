@@ -86,6 +86,9 @@ graph LR
     avdtp["AVDTP 音视频分发传输协议"]
     classic-hfp["经典蓝牙 HFP 免提"]
     ucsi["UCSI（OS 侧 Type-C/PD 控制接口）"]
+    usb4-drom["USB4 DROM 设备 ROM"]
+    inter-domain-protocol["USB4 Inter-Domain Service Protocol（USB4NET）"]
+    scpi["SCPI（外部协议，仪器命令语言）"]
     class-hid -->|uses: Input/Output 报告走中断端点轮询| transfer-interrupt
     cdc-acm -->|uses| transfer-bulk
     msc-bot -->|uses| transfer-bulk
@@ -168,3 +171,6 @@ graph LR
     classic-hfp -->|similar-to: 电话语音的双路线（eSCO vs CIS）| le-audio
     ucsi -->|extends: 向 OS 暴露 PD/Type-C 控制面| usb-pd
     class-usbtmc -->|uses| transfer-bulk
+    usb4-drom -->|part-of| usb4
+    inter-domain-protocol -->|runs-on: 主机到主机网络服务（USB4NET）| usb4
+    class-usbtmc -->|carries| scpi
