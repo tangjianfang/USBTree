@@ -71,7 +71,9 @@ flowchart LR
 | 0x06 | PD_DATA_ALERT | Alert | 1~2 对象 | 异步事件告警（位定义见 PD 规范） |
 | 0x07 | PD_DATA_GET_COUNTRY_INFO | Get_Country_Info | 1 对象 | 索要国家/地区信息 |
 | 0x08 | PD_DATA_ENTER_USB | Enter_USB | 1×EUDO | 请求进入指定 USB 模式（见第八节） |
-| 0x09~0x0B | — | Reserved（内核标注） | — | PD 3.1 的 EPR_Source_Cap / EPR_Request / EPR_Mode 占此区段，内核 pd.h 未给宏，编号见 PD 规范 §6.3 数据消息类型表 |
+| 0x09 | EPR_Request | EPR 请求（EPR 模式内） | 3.1 | **已按 PD 3.2 规范 Table 6.5 权威核实**（evolve：PD 3.2 V1.2 缓存提取；内核 pd.h 未给宏） |
+| 0x0A | EPR_Mode | 进入/退出 EPR 模式 | 3.1 | 同上（Table 6.5） |
+| 0x0B | Source_Info | 源信息（PDP/工作状态） | 3.0 | 同上（Table 6.5；注意与 Get_Source_Info 控制消息配套） |
 | 0x0C | PD_DATA_REVISION | Revision | 2 对象 | Get_Revision 的应答（版本协商） |
 | 0x0D~0x0E | — | Reserved | — | 保留 |
 | 0x0F | PD_DATA_VENDOR_DEF | Vendor_Defined | VDM | 厂商扩展：Alt Mode/线缆查询（见第九节） |

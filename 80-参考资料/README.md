@@ -13,6 +13,7 @@
 | USB-TypeC-Spec-2.5-2026.zip | USB Type-C Cable and Connector Release 2.5（2026-03，**现行最新**） | [usb.org](https://www.usb.org/sites/default/files/USB%20Type-C%202.5%20Release%20202603.zip) | [Type-C 详解](../30-枝干-接口与供电/02-USBType-C详解.md) |
 | USB-TypeC-Spec-R2.0.pdf | Type-C Release 2.0（2019-08，可读性好的单 PDF，历史参考） | [usb.org](https://www.usb.org/sites/default/files/USB%20Type-C%20Spec%20R2.0%20-%20August%202019.pdf) | 同上 |
 | UCSI-3.1.zip | USB Type-C Connector System Software Interface (UCSI) 3.1 | [usb.org](https://www.usb.org/sites/default/files/USB%20Type-C%20Connector%20System%20Software%20Interface%20UCSI%20Revision_3.1.zip) | [PD 深入](../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md)（OS 侧接口） |
+| USB-PD-3.2-V1.2.zip | **USB Power Delivery Specification Rev 3.2 Ver 1.2**（2026-05，含 R3.2 V1.1/R2.0 历史版、PDUSB 伴随规范——**EP-1 材料解锁**） | [usb.org 文档库](https://www.usb.org/document-library/usb-power-delivery)（公开直链） | [PD 深入](../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md)、[PD 消息全表](../30-枝干-接口与供电/08-USBPD消息全表.md) |
 | USB2-Electrical-Compliance-v1.08.pdf | USB2 电气合规测试规范 v1.08（2026-04） | [usb.org](https://www.usb.org/sites/default/files/USB2%20Electrical%20Compliance%20Specification%20v1.08.pdf) | [合规测试实操](../70-枝干-调试测试与安全/05-合规测试实操.md) |
 
 ## 二、device-classes/ —— 设备类规范

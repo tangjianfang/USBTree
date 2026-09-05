@@ -11,7 +11,7 @@
 - **verification**: validate 8/8 + PD 表逐条标注规范表号
 - **rollback**: 不需要（纯增补）
 - **预估**: 2 轮
-- **status**: approved（2026-09-05 用户全部批准；材料到位前先执行可切片）
+- **status**: **completed**（2026-09-05：发现 usb.org 公开直链 USB_PD_R3.2_V1.2_2.zip，已缓存并回填 EPR 消息编号 0x09/0x0A/0x0B；定时器精确 min/max 见缓存 Table 7.10）
 
 ## EP-2 · GATT Supplement 与 Assigned Numbers 缓存
 
