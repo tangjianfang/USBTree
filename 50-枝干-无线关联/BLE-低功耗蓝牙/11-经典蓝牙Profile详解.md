@@ -167,6 +167,8 @@ flowchart LR
 
 ## 六、AVRCP：媒体控制面
 
+> 📎 规范原文已缓存（evolve #15）：[AVRCP-1.6.3.pdf](../../80-参考资料/bluetooth/AVRCP-1.6.3.pdf)（绝对音量/浏览/播放列表，AVC 命令经 AVCTP PSM 0x0017）。
+
 AVRCP（Audio/Video Remote Control Profile）跑在 AVCTP（PSM **0x0017**）上，与 A2DP 并行：A2DP 管"数据面"，AVRCP 管"控制面"。
 
 | 版本 | 关键能力 |

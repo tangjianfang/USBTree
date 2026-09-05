@@ -49,6 +49,7 @@
 | Bluetooth-HID-Profile-1.1.1.pdf | Human Interface Device Profile 1.1.1（经典蓝牙 HID） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/human-interface-device-profile-1-1-1/) | [经典蓝牙 Profile 详解](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
 | A2DP-1.4.1.pdf | Advanced Audio Distribution Profile 1.4.1（2025-06-30） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a2dp-1-4-1/) | [A2DP 编解码与 AVDTP 参数](../50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) |
 | AVDTP-1.3.pdf | A/V Distribution Transport Protocol 1.3（Table 8.6 信令码/§8.21 编码能力） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-distribution-transport-protocol-1-3/) | 同上 |
+| AVRCP-1.6.3.pdf | A/V Remote Control Profile 1.6.3（绝对音量/浏览） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-remote-control-profile1-6-3/) | [经典 Profile 详解 · AVRCP](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
 | HFP-1.10.pdf | Hands-Free Profile 1.10（现行最新，AT 命令/eSCO） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hands-free-profile-1-10/) | [经典 Profile 详解 · HFP](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
 | *注* | `files.bluetooth.com` 新链需经中转页取 nonce 直链（见 [docs/lessons.md](../docs/lessons.md) L7）；下载后务必校验 `%PDF` 魔数 | — | — |
 

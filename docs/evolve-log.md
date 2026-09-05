@@ -1,10 +1,10 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #14（下一轮）
-- rounds done: 11
+- pointer: #16（下一轮）
+- rounds done: 15
+- checkpoint: #15 完成于本轮提交；池快照——T4 缓存扩展完成 HFP/AVRCP/AVDTP，余 GATT Supplement/Assigned Numbers；T3 轮换队列=规范级附录对抗抽查(利用 /tmp 提取文本)→目录级一致性→技能包核对
 - status: resumed-run（N=50，轮次 #6~#55，#55=回顾）
-- checkpoint: #5 完成于 39d0aca；池已刷新（见下）
 - metrics: findings 10 | fixes 10 | regressions 0
 - pool-refresh: 2026-09-05（#6 内执行）
 - boundary: USB/BLE 领域知识系统（纯文档 + bash 工具 + 图谱/技能包）。红线：不改 80-参考资料 下规范原文内容（只增不改）；不做应用代码；不自动 push；破坏性命令需确认。
