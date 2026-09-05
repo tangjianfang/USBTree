@@ -45,7 +45,7 @@ USBTree/
 ├── 90-附录/                   (3 篇: 术语表/速查表大全/时序参数全表)
 ├── graph/                     (知识图谱: entities.yaml 实体表 · relations.yaml 关系表 · export.mmd 全景图)
 ├── skills/                    (Agent 技能包: 枚举排查/抓包分析/规范检索/设备构建)
-├── tools/                     (validate.sh · gen_graph.sh · inject_frontmatter.sh)
+├── tools/                     (validate.sh · gen_graph.sh · inject_frontmatter.sh · spec_extract.sh)
 └── COVERAGE.md                (覆盖率记分卡: 分领域百分比与维护规则)
 ```
 
