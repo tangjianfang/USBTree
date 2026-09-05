@@ -71,3 +71,7 @@
 #36 | 01-UVC GUID 抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | YUY2/NV12/M420/I420 GUID 逐字符一致
 #37 | 01/02 UAC1 请求码勘误 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(~8行) | 本轮最大发现: UAC1 请求码整组写反(旧值 GET_CUR=0x02/GET_MIN=0x84), Table A-9 原文核实为 0x81/0x82/0x83/0x84; 03 附录此前已正确
 #38 | 30/08 BIST/VDM 核对 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | VDM Command=1 与内核 CMD_DISCOVER_IDENT 一致；08 篇本已标注内核来源
+#45 | 外链抽测 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | usb.org/bluetooth.com/tinyusb 三链接 200
+#46 | 20-索引一致性 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 其他设备类 11 篇与索引行对应正常
+#47 | 枚举序列关键词一致性 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 树干08/排查手册/技能包三处 GET_DESCRIPTOR 叙述无矛盾
+#48 | 四目录索引表核对 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 30/40/60/70 索引表行数=实际文件数
