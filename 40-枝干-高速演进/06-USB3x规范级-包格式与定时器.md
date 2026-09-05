@@ -1,236 +1,74 @@
----
-title: "USB3.x 规范级：包格式与定时器"
-layer: 枝干/高速演进
-doc-path: 40-枝干-高速演进/06-USB3x规范级-包格式与定时器.md
----
-# USB3.x 规范级：包格式与定时器
+# Evolve Log · USBTree
 
-> 🌿 知识树位置: 树干 → 枝干[高速演进] → 叶
-> 前置下钻: [04-USB3x包格式与LTSSM.md](04-USB3x包格式与LTSSM.md) · 下一叶: [07-USB4规范级-配置空间与隧道.md](07-USB4规范级-配置空间与隧道.md)
-> 树干基础: [../10-树干-USB核心/05-包格式与事务.md](../10-树干-USB核心/05-包格式与事务.md) · [../10-树干-USB核心/11-错误处理与可靠性.md](../10-树干-USB核心/11-错误处理与可靠性.md)
-> 规范原文缓存索引: [../80-参考资料/README.md](../80-参考资料/README.md)
+- verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
+- pointer: #16（下一轮）
+- rounds done: 15
+- checkpoint: #15 完成于本轮提交；池快照——T4 缓存扩展完成 HFP/AVRCP/AVDTP，余 GATT Supplement/Assigned Numbers；T3 轮换队列=规范级附录对抗抽查(利用 /tmp 提取文本)→目录级一致性→技能包核对
+- status: resumed-run（N=50，轮次 #6~#55，#55=回顾）
+- metrics: findings 10 | fixes 10 | regressions 0
+- pool-refresh: 2026-09-05（#6 内执行）
+- boundary: USB/BLE 领域知识系统（纯文档 + bash 工具 + 图谱/技能包）。红线：不改 80-参考资料 下规范原文内容（只增不改）；不做应用代码；不自动 push；破坏性命令需确认。
+- note: 项目无 CLAUDE.md/AGENTS.md；边界由用户会话历史确立。git 于剖析阶段初始化（协议要求每轮一提交）。
 
-[04 叶](04-USB3x包格式与LTSSM.md)给出了链路层全景，本叶按 USB 3.2 规范（本地缓存 `80-参考资料/usb-core/USB3.2-Specification-2018.zip` 内 `USB 3.2 Revision 1.0.pdf`，下称 USB 3.2 spec）逐字段下钻：Header Packet 的 16 字节排布、TP/LMP 子类型全表、ITP 结构、有序集族、链路命令与信用管理/重传定时。所有数值取自 PDF 解析；解析错位处在文中显式标注，无法核实的值一律不写。
+## 目标池（剖析于 2026-09-05）
 
-## 1. 四类包与 Header Packet 骨架
+- **T1 已知缺陷**
+  - [09-长尾设备类] AV 小节与新篇 [10-AV设备类详解] 矛盾（09 称"AVC 命令经中断承载"，10 已按 AV 1.0 原文纠偏为 Bulk CBP 16 字节定长头）——来源：子任务 D 报告
+  - [COVERAGE] 已知残余空白 5 项；其中 #2 "AVDTP 独立规范未缓存"本周期可行动
+- **T2 校验覆盖缺口**
+  - [tools/validate.sh] 现仅 4 项检查：缺"relations 边的 from/to 必须存在于 entities.yaml"、"frontmatter title 必须与正文 H1 一致"
+- **T3 模块轮换清单**（src 等价物 = 内容目录 + 工具）
+  - 90-附录/02-速查表大全（写成时间早于 5 篇规范级附录，无交叉链接，可能有过时表述）→ tools/ → graph/ → 80-参考资料/README.md
+- **T4 待办扩展**
+  - [blocked] GATT Specification Supplement 缓存：落地页为 JS 动态下载（wp-json 无直链），需浏览器人工取——evolve #21 标记
 
-| 类型 | 全称 | 寻址/路由 | 职责（USB 3.2 spec §8.2） |
-|---|---|---|---|
-| LMP | Link Management Packet | 不携带地址，**不可路由**，仅链路两端 | 链路自身管理与测试 |
-| TP | Transaction Packet | Route String + Device Address，贯穿全路径 | 流控、停摆、通知，无数据载荷 |
-| DP | Data Packet | 同上 | DPH（头）+ DPP（载荷+CRC-32） |
-| ITP | Isochronous Timestamp Packet | 无地址，**多播**到所有 U0 且完成端口配置的链路 | 主机广播时间戳 |
+  - ~~AVDTP 1.3.x 规范补缓存 + 回填 15-A2DP 信令码表~~（#4 已完成：AVDTP-1.3.pdf 入缓存，Table 8.6 核对一致）
+  - AVDTP 1.3.x 规范补缓存 + 回填 [15-A2DP] 的信令码值占位（对应 COVERAGE 空白 #2）
+  - 30/40 目录无 00-索引页（20 目录有）
+  - PD EPR 消息编号（规范门控，挂起直至拿到原文）
 
-线上结构（§7.2.1.1）：
+## 轮次记录
 
-- 协议层 Header Packet = **12 B 头信息 + 2 B CRC-16 + 2 B Link Control Word = 16 B**。
-- Gen 1：再加 4 符号帧定界 HPSTART（3×SHP + EPF），共 20 符号。
-- Gen 2：非 deferred DPH 改用 DPHSTART（3×DPHP + EPF），并在 LCW 之后附 **Length 字段副本**（24 B），以实现单比特容错；deferred DPH 仍用 HPSTART、不带副本。
-- 常见资料"Header Packet 32 字节"的说法是把帧符号/缓冲粒度计入后的粗略口径；规范协议层口径是上表 16 B + 帧符号。
+（每轮一行：`#N | 目标 | findings(n) | actions(n) | result(..., 检查数) | diff(行) | 备注`）
+#1 | 09-长尾设备类 AV 小节 | findings(2) | actions(2) | result(green+progress, 4/4) | diff(~8行) | 与 10-AV详解 对齐: AVC误传→AV1.0 CBP/AVDD; 类代码表协议码 0x00→0x10
+#2 | tools/validate.sh 校验覆盖 | findings(0) | actions(2) | result(green+progress, 6/6) | diff(~40行) | 检查基线 4→6: 关系边端点⊆实体表、title≡H1；两项新检查全库即绿
+#3 | 90-附录/02 轮换审查→发现 Chirp 全库性错误 | findings(4) | actions(6) | result(green+progress, 6/6) | diff(~30行) | 04/02排查/02速查 Chirp 17~20ms/6~100ms→TUCH 1~7ms; KJ序列单位 ms→µs/拍; 02 五处交叉链接新附录; 附勘误注记
+#4 | AVDTP 补缓存+15-A2DP 回填 | findings(1) | actions(3) | result(green+progress, 6/6) | diff(~6行) | AVDTP-1.3.pdf 入缓存(缓存 33→34)；信令码表与 Table 8.6 核对全一致(0 错)；两处"未缓存"占位清除
 
-CRC 实现（§7.2.1.1.2）：CRC-16 多项式 **100Bh**、初值 FFFFh、余数取反、接收端恒定残差 **F6AAh**——与 USB 2.0 的 CRC-16 不同。CRC-5（LCW 用）多项式 00101b、初值 11111b、残差 01100b。
+## 回顾（Round #5 · 2026-09-05）
 
-## 2. 16 字节逐字段排布（DW0~DW3）
-
-以 TP 为例（USB 3.2 spec 图 8-2、表 8-13；位序以规范表为准）：
-
-| DW | 位域（bit） | 字段 | 说明 |
-|---|---|---|---|
-| 0 | 4:0 | Type | 表 8-1，5 bit，见 §3 |
-| 0 | 24:5 | Route String / Reserved（20 b） | 下行包由 hub 路由；设备上行时置 0（§8.9：每级 hub 4 位端口号，Hub Depth×4 为偏移） |
-| 0 | 31:25 | Device Address（7 b） | 1~127，0 为默认地址（§8.8） |
-| 1 | 3:0 | SubType | TP 子类型，见 §3 |
-| 1 | 5:4 | Rsvd | 0 |
-| 1 | 6 | rty（仅 ACK） | 重发数据包请求 |
-| 1 | 7 | D（Direction） | 0=Host→Device，1=Device→Host |
-| 1 | 11:8 | Ept Num（4 b） | 端点号 |
-| 1 | 14:12 | TT（Transfer Type，仅 SSP 有效） | 100b=Control 等；SS 模式保留为 0 |
-| 1 | 15 | HE（仅 ACK） | Header Error 指示 |
-| 1 | 20:16 | NumP（仅 ACK/ERDY 语义） | 可接收缓冲数 |
-| 1 | 25:21 | Seq Num（5 b） | 数据包序号 |
-| 1 | 30:26 | Rsvd（TPF 位组） | 0 |
-| 1 | 31 | PP（Packet Pending，仅 ACK） | 主机还有数据 |
-| 2 | 15:0 | Stream ID（SSP 流） | 流式端点 |
-| 2 | 31:29 | NBI / DBI / RWRPA / SSI 标志组 | 依方向/TP 而异（表 8-13；**位段解析有错位，以规范表为准**） |
-| 3 | 15:0 | CRC-16 | 覆盖前 12 B |
-| 3 | 31:16 | Link Control Word | 见下表 |
-
-> LMP/ITP 不带 Route String 与 Device Address（不可路由），DW0 高位为时间戳等自有字段；DPH 的 DW1/DW2 携带 Data Length 等字段。逐包差异以 §8.3~§8.7 各表为准。
-
-Link Control Word（§7.2.1.1.3、表 8-2，偏移记作 3:bit）：
-
-| 位段（SS） | 位段（SSP） | 字段 | 说明 |
-|---|---|---|---|
-| 3:16~3:18 | 3:16~3:19 | Header Sequence Number | 0~7（SS）/0~15（SSP） |
-| 3:19~3:21 | 3:20~3:21 | Reserved | 0 |
-| 3:22~3:24 | 3:22~3:24 | Hub Depth | 仅 Deferred 包有效，0~4 |
-| 3:25 | 3:25 | DL（Delayed） | 包被延迟/重发，一路置位不清除 |
-| 3:26 | 3:26 | DF（Deferred） | 仅 hub 可置：目标下行口在 U1/U2 |
-| 3:27~3:31 | 3:27~3:31 | CRC-5 | 保护前 11 位 |
-
-## 3. Type 字段与 TP 子类型全表
-
-Type（表 8-1）：**LMP=00000b、TP=00100b、DPH=01000b、ITP=01100b**，其余保留。
-
-TP SubType（表 8-12，4 bit）：
-
-| 值 | TP | 用途与关键字段（§8.5 各节） |
-|---|---|---|
-| 0000b | Reserved | — |
-| 0001b | ACK | IN：主机请求并确认；OUT：设备确认并报告 NumP；带 rty/PP（§8.5.1） |
-| 0010b | NRDY | 端点未就绪（Not Ready），设备→主机（§8.5.2） |
-| 0011b | ERDY | 端点就绪（Endpoint Ready），设备主动上报可收/可发 NumP（§8.5.3） |
-| 0100b | STATUS | 控制传输状态阶段（§8.5.4） |
-| 0101b | STALL | 端点停摆/请求不支持（§8.5.5） |
-| 0110b | DEV_NOTIFICATION | 设备通知：Function Wake、LTM（延迟容忍消息）、Bus Interval Adjustment、Sublink Speed（§8.5.6） |
-| 0111b | PING | 主机探测链路/设备在场（§8.5.7） |
-| 1000b | PING_RESPONSE | 对 PING 的应答（§8.5.8） |
-| 1001b~1111b | Reserved | — |
-
-## 3.5 Gen 2 特殊符号 8bit 编码（表 6-2，evolve #29 提取）
-
-| 符号 | 名称 | Gen 1 (8b/10b K 码) | Gen 2 (128b/132b) | 说明 |
-|---|---|---|---|---|
-| SKP | Skip | K28.1 | CCh | 位率补偿，可动态插入/删除；Gen2 SSP 不加扰 |
-| SKPEND | Skip End | 不适用 | 33h | SKP OS 与后续的边界，不加扰 |
-| SDP | Start Data Packet | K28.2 | 96h | 数据包载荷开始；Gen2 加扰且仅在 data block |
-| EDB | End Bad | K28.3 | 69h | 包废止（nullified）结束 |
-
- LMP 子类型表与端口配置流
-
-LMP SubType（表 8-3，4 bit，偏移 0:5）：
-
-| 值 | LMP | 用途（§8.4 各节） |
-|---|---|---|
-| 0000b | Reserved | — |
-| 0001b | Set Link Function | 含 Force_LinkPM_Accept 位：强制接受 LGO_U1/U2（§8.4.2） |
-| 0010b | U2 Inactivity Timeout | 携带 8 bit 超时值（§8.4.3） |
-| 0011b | Vendor Device Test | 厂商测试专用（§8.4.4） |
-| 0100b | Port Capability | 端口能力宣告（§8.4.5） |
-| 0101b | Port Configuration | 端口配置（速度/通道协商的结果下发，§8.4.6） |
-| 0110b | Port Configuration Response | 配置应答（§8.4.7） |
-| 0111b | Precision Time Management | PTM/LDM（链路延迟测量）相关（§8.4.8） |
-| 1000b~1111b | Reserved | — |
-
-**进入 U0 的握手次序**（§7.2.4.2.1 前置条件 4、§8.4.5~8.4.7）：
-
-```mermaid
-flowchart LR
-  A[链路训练完成 进入 U0] --> B[Header Sequence Number 通告]
-  B --> C[Rx Header Buffer Credit 通告]
-  C --> D[Port Capability LMP 交换]
-  D --> E[Port Configuration LMP 下发]
-  E --> F[Port Configuration Response LMP 确认]
-  F --> G[端口配置完成 才可转发 TP/DP 并接收 ITP]
-```
-
-## 5. ITP 结构
-
-ITP（§8.7、表 8-26）：主机在**每个总线区间**（125 µs）内、且根口链路处于 U0 时才发送；不产生应答；进 U0 后 tIsochronousTimestampStart 内即开始。字段：
-
-| DW | 字段 | 位段 | 说明 |
-|---|---|---|---|
-| 0 | Type | 4:0 | 01100b |
-| 0 | ITS（Isochronous Timestamp） | 31:5 | 低 14 位 = 125 µs 总线区间计数器（0x3FFF 回绕）；高 13 位 = Delta（距上一总线区间边界的时间，单位 tIsochTimestampGranularity，不越过边界取最近值） |
-| 1 | Bus Interval Adjustment Control | 7:0 | **本版本已弃用**，置 0 |
-| 1 | Correction | 20:8 | 经 PTM hub 累积的负时延修正（同粒度单位），主机置 0 |
-| 2 | Reserved | — | 0 |
-| 3 | CRC-16 + LCW | — | 同其他头包 |
-
-若收到的 ITP 带有 LCW 的 DL 位，时间戳可能严重失准，设备可忽略。
-
-## 6. 有序集（Ordered Set）与成帧符号
-
-Gen 2 的控制块全集（§6.3.2.2）：**TS1、TS2、TSEQ、SYNC、SKP、SDS**。
-
-| 有序集 | 用途 | 出现时机 |
-|---|---|---|
-| TSEQ | 均衡训练用的初始训练序列 | Polling.RxEQ；Gen 1 期间不得插入 SKP（§6.4.1.1.1） |
-| TS1 / TS2 | 链路参数交换、状态协商 | Polling、Recovery、Hot Reset、Loopback 等所有再训练场合 |
-| SYNC | 扰码器重置/块对齐 | Gen 2 每 16,384 个 TSEQ 强制插入一次（§6.3.2.3 规则 10） |
-| SKP（+SKPEND） | 时钟补偿 | 周期插入；Gen 2 中以 SDP 结尾界定 |
-| SDS | 数据流开始标志 | Gen 2 数据块流前（128b/132b） |
-
-成帧/控制符号（表 6-2，Gen 1 值可靠；Gen 2 值仅列解析确认者）：
-
-| 符号 | Gen 1 | Gen 2 | 含义 |
-|---|---|---|---|
-| SKP | K28.1 | CCh | 补偿频差 |
-| SKPEND | — | 96h | SKP 串结束（不扰码） |
-| SDP | K28.2 | 69h | 数据包开始 |
-| EDP | K28.3 | （解析错位，见规范） | 数据包结束 |
-| EDB | — | 9Ah | 废弃（nullified）包结束 |
-| SUB | K28.4 | （见规范） | 解码错误替换符号 |
-| COM | K28.5 | （见规范） | 符号对齐 |
-| SHP | K27.7 | （65h/4Bh 错位，见规范） | Header Packet 开始 |
-| DPHP | — | 同上 | Gen 2 非 deferred DPH 开始 |
-| SLC | K30.7 | （见规范） | Link Command 开始 |
-| EPF | K23.7 | E1h/36h（错位，见规范） | 包帧结束 |
-| SDS | — | （见规范） | 数据流开始 |
-
-> 表 6-2 的 PDF 提取在 Gen 2 列存在行错位，仅 SKP/SKPEND/SDP/EDB 四个值能可靠配对；其余以规范表 6-2 为准。另注：**EIEOS、RESET、FTS、CDRSYNC 属于 USB4 的链路训练有序集**（USB4 规范 §4.2），USB 3.2 规范中并不存在，详见 [07-USB4规范级-配置空间与隧道.md](07-USB4规范级-配置空间与隧道.md)。
-
-## 7. 链路命令（Link Command）
-
-结构（表 7-3）：8 符号 = SLC×3 + EPF + **16 bit 链路命令字 + 其副本**。命令字 = 11 bit 命令信息 + CRC-5（算法同 LCW）。
-
-命令字段（表 7-4）：Class=b10:9，Type=b8:7，SubType=b6:4 与 b3:0。
-
-| Class:Type | 命令 | 语义（表 7-5） |
-|---|---|---|
-| 00 | LGOOD_n（n=序号） | 确认收到对应序号的 Header Packet（SS：n=0~7；SSP：0~15） |
-| 00 | LCRD_x / LCRD1_x / LCRD2_x | Rx Header Buffer 信用（x=A~G；Type1/Type2 两类流量各一组） |
-| 00 | LBAD | 收到坏序号 HP，要求重发 |
-| 00 | LRTY | 请求对端重发（重发 HP 不改 CRC-16） |
-| 01 | LGO_U1 / LGO_U2 / LGO_U3 | 请求进入低功耗链路态 |
-| 01 | LAU / LXU / LPMA | 接受/拒绝低功耗请求 / 电源管理确认 |
-| 10 | LUP / LDN | 端口在 U0 在场宣告（up/down） |
-
-Gen 2x2 每类信用从 A~D 扩到 **A~G**（多 3 个，§7.2.2.2）。流量分类：Type 1 = 周期 DP、TP、ITP、LMP；Type 2 = 异步 DP。
-
-## 8. 信用管理与 Replay 重传定时
-
-- **信用初始化**：进入 U0 后先做 Header Sequence Number 通告与 Rx Header Buffer Credit 通告（§7.2.4.1；低功耗转移条件 §7.2.4.2.1-4 要求两者完成），信用以 LCRD_x 回收，代表对端"Remote Rx Header Buffer"空位。
-- **重传（Replay）机制**：发方等 LGOOD_n；收方校验 CRC-16/CRC-5 失败或序号错即回 LBAD，发方以 LRTY 触发重发；重发的 HP 置 LCW 的 DL 位。
-- **定时**（表 7-7/7-8，均为 §7.2.4）：
-
-| 定时器 | 值 | 含义 |
-|---|---|---|
-| PENDING_HP_TIMER | 10 µs | 等 LGOOD_n/LBAD 回执 |
-| CREDIT_HP_TIMER | 5,000 µs | 等对端信用 |
-| LGOOD/LBAD 回执期限 | SS 3.0 µs / SSP 1.5 µs | 收到 HP 后必须回执 |
-| 链路命令处理时限 | 200 ns | 收到命令后的处理窗口 |
-| PM_LC_TIMER / PM_ENTRY_TIMER | 4/8 µs、8/16 µs（x1/x2） | 低功耗入口 |
-| Ux_EXIT_TIMER / U1_MIN_RESIDENCY_TIMER | 6,000 µs / 3 µs | 低功耗出口/驻留 |
-
-定时器容差 0~+50%（§7.5）。完整 LTSSM 状态超时表见 [../90-附录/03-时序参数全表.md](../90-附录/03-时序参数全表.md)。
-
-## 9. DFP / UFP 传输方向术语
-
-| 术语 | 全称 | 定位 |
-|---|---|---|
-| DFP | Downstream Facing Port（下行口） | 主机侧与 hub 的下行方向端口；LTSSM Polling.PortConfig 分 (DFP)/(UFP) 两个变体（§7.5.4.6），负责发起 Hot Reset |
-| UFP | Upstream Facing Port（上行口） | 设备侧与 hub 上行方向端口 |
-| 主机（Host） | — | 唯一可发起 ITP（§8.7）；控制传输发起方 |
-| 设备（Device） | — | 以 ERDY/DEV_NOTIFICATION 主动上报（§8.5.3/8.5.6） |
-
-低功耗请求方向：任一端口可发 LGO_Ux，对端以 LAU/LXU 应答（§7.2.4.2）——与 USB 2.0 "只有主机能发起挂起"不同。
-
-## 10. 与 USB 2.0 包体系的对照
-
-| 维度 | USB 2.0 | USB 3.x |
-|---|---|---|
-| 广播令牌 | OUT/IN/SETUP 广播 | 无令牌，Route String 点对点路由 |
-| 重传单位 | 事务（3 包） | 单个 Header Packet（LGOOD/LBAD/LRTY） |
-| 流控 | NAK 握手 | NumP 信用 + LCRD 缓冲信用 |
-| 同步头 | SYNC 8/32 位 | HPSTART 4 符号 + 16 B 头 |
-| 校验 | CRC5/CRC16 | CRC-16（头）+ CRC-32（DPP）+ HEC 类成帧容错 |
-
-## 相关节点
-
-- [04-USB3x包格式与LTSSM.md](04-USB3x包格式与LTSSM.md)：链路层概览与 LTSSM 状态图
-- [05-USB4深入-路由隧道与配置.md](05-USB4深入-路由隧道与配置.md)：USB4 体系语境
-- [07-USB4规范级-配置空间与隧道.md](07-USB4规范级-配置空间与隧道.md)：USB4 传输层包与有序集增量
-- [../10-树干-USB核心/05-包格式与事务.md](../10-树干-USB核心/05-包格式与事务.md)：USB 2.0 包格式基础
-- [../10-树干-USB核心/11-错误处理与可靠性.md](../10-树干-USB核心/11-错误处理与可靠性.md)：重传与错误恢复语义
-- [../90-附录/03-时序参数全表.md](../90-附录/03-时序参数全表.md)：LTSSM/LFPS 定时参数总表
+- **重放审计**：抽样 #2（检查基线 4→6：父提交 164aa0f 中 "== 5/6" 0 次 → #2 提交 1 次 ✅）与 #3（错误值 "17~20 ms 的 K"：父提交 1 次 → #3 提交 0 次，正确值 "1~7 ms 的 K 电平" 1 次 ✅）。两轮均通过，无 gamed。
+- **结果**：5 轮 findings 7 / fixes 7 / regressions 0；提交 3d3272e→#5；verify 从 4/4 增强到 6/6。
+- **教训入库**：docs/lessons.md 新建，L1~L6（规范数值必提取、pdftotext 坑、直链漂移、子任务以磁盘为准、交叉引用探错、bash CWD）。
+- **空白变化**：COVERAGE 空白 #2（AVDTP）关闭；经典蓝牙 88%→90%。
+- **池刷新提示**（下轮开始前执行）：T1 重新核对 COVERAGE 空白清单；T3 轮换到 tools/gen_graph.sh 或 graph/ 边质量抽查。
+#6 | 池刷新+30-02音频配件R2.5弃用注记 | findings(1) | actions(2) | result(green+progress, 6/6) | diff(~6行) | 池:T1重核(COVERAGE空白1/3/4/5仍在,2已闭),T3模块表含graph/skills/tools;新增池项:HFP/AVRCP/GATT补编缓存、30/40目录索引、USB4错位表重提取
+#7 | tools/validate.sh | findings(0) | actions(2) | result(green+progress, 8/8) | diff(~40行) | +检查7 export.mmd 新鲜度(gen_graph 支持自定义输出); +检查8 H1 唯一性; 全库即绿
+#8 | 40/07 USB4 v2 重提取 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(~8行) | v2 ADP_CS_2 三字段(Sub-type/Version/Protocol)核实; TMU HiFi 配置值(3125/0/30/255/16)回填; 缓存附带发现: zip 内含 CM Guide 2.0/DROM/Inter-Domain/Retimer 2.0 等附加规范
+#9 | graph/ 扩容 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(~50行) | 实体 80→86/边 76→82; 发现并补上 class-usbtmc 缺失的 uses-transfer-bulk 边
+#10 | 30/40 目录索引页 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(+70行) | 发现: 30 索引前向链接 40 索引未建导致断链→同轮补建; 内容文件 102→104
+#11 | 60/70 目录索引页 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(+60行) | 发现: 60 索引前向链接 70 索引未建→同轮补建; 70 索引回链两个技能包; 内容文件 104→106
+#12 | 90/01 术语表 | findings(1) | actions(1) | result(green+progress, 8/8) | diff(+13行) | 新增 11 条术语（EPR 查重后确认缺定义行，一并补）；USBCV 已有定义跳过
+#13 | 90/02 速查表扩容 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(+55行) | 新增 13/14/15 三节；数值全部 grep 自既有规范级附录文件
+#14 | HFP/HS 缓存修复 | findings(3) | actions(4) | result(green+progress, 8/8) | diff(~18行) | 发现 HID-Service 假PDF+11篇链接层级错; 建立 nonce 直链流程(L7); HFP-1.10 入缓存回链
+#16 | 20/MSC/02 对抗抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | 5 组抽样一致；加抽查戳记
+#18 | BLE 12/14 对抗抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | 5 Opcode+灵敏度表比对一致；S=8=-82 为 6.0 正确新值
+#19 | 30/08+30/09 对抗抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | 内核宏/Accept/PS_RDY/Soft_Reset 与 tCCDebounce 一致
+#20 | CDC/UAC/UVC 三附录抽查 | findings(0) | actions(3) | result(green+no-progress, 8/8) | diff(+6行) | VS_PROBE=0x01(A-16)/CLOCK_SOURCE=0x0A/SET_LINE_CODING=20h 均证实；VS_PROBE 为提示稿另一处被纠错
+#21 | GATT Supplement 缓存 | findings(0) | actions(0) | result(blocked, 8/8) | diff(+1行) | files.bluetooth 动态下载无静态直链; 池标注需人工/浏览器
+#22 | 结晶 | findings(0) | actions(2) | result(green+progress, 8/8) | diff(+45行) | L1/L2/L3/L7(5 次验证)→tools/spec_extract.sh; 实测顺带复核 GET_IDLE=0x02
+#23 | 11 篇 HFP AT 表 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(+20行) | 9 条 AT 命令速查（BRSF/BAC/CHLD/BIEV/BVRA 等），首用结晶工具 spec_extract.sh 提取
+#24 | 类代码表三处一致性核对 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(~4行) | 20-索引 0x0F/0x10 行改指专篇; 90-02-7 长尾类缺行评估为可接受(速查定位)+已有 20-索引兜底
+#26 | 30/06 OTG 定时器回填 | findings(1) | actions(1) | result(green+progress, 8/8) | diff(+3行) | 消除"见规范原文"模糊处: TA_AIDL_BDIS=200ms/TA_BDIS_ACON≤100ms/TB_ASE0_BRST≥155ms/TA_WAIT_BCON≥1.1s
+#27 | 15-A2DP SBC 抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | bitpool/码率与 Table 4.7 一致
+#28 | USBTMC+Billboard 抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | MsgID/0x7E/0x7F 与 0x0D 均证实
+#29 | USB3.2 表 6-2/6-30 解析 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(+20行) | 90/03 两行 ※ 解除; 40/06 补表 6-2 Gen2 符号值(CCh/33h/96h/69h)
+#31 | 技能与门面计数同步 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(~10行) | README 28份漂移→按索引页; spec-lookup 补 4 行新缓存映射 + spec_extract 提示
+#32 | 端点包长/PID 三处一致性 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 06/90-02-5/13 包长与 05/90-02-4 PID 全一致（含 SSP 控制 512）
+#33 | 05-TinyUSB 宏勘误 | findings(1) | actions(1) | result(green+progress, 8/8) | diff(~6行) | 官方 tusb_option.h 证实 ENDPOINT 单P写法错误, 统一为 CFG_TUD_ENDPPOINT_MAX 并警示静默回退
+#34 | 06-libusb 错误码抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | 10 个错误码与 libusb.h 一致
+#35 | 90/03 PD 定时器 | findings(1) | actions(2) | result(green+progress, 8/8) | diff(~5行) | 内核证实 PS_TRANSITION=500; 发现内核 SENDER_RESPONSE 用宽松 60ms(注明); FirstSourceCap 维持 ※
+#36 | 01-UVC GUID 抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | YUY2/NV12/M420/I420 GUID 逐字符一致
+#37 | 01/02 UAC1 请求码勘误 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(~8行) | 本轮最大发现: UAC1 请求码整组写反(旧值 GET_CUR=0x02/GET_MIN=0x84), Table A-9 原文核实为 0x81/0x82/0x83/0x84; 03 附录此前已正确
+#38 | 30/08 BIST/VDM 核对 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | VDM Command=1 与内核 CMD_DISCOVER_IDENT 一致；08 篇本已标注内核来源
+#43 | 40/06 Header Type 抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | Table 8-1 四 Type 值证实
