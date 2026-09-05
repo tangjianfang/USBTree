@@ -87,7 +87,7 @@ TP SubType（表 8-12，4 bit）：
 | 1000b | PING_RESPONSE | 对 PING 的应答（§8.5.8） |
 | 1001b~1111b | Reserved | — |
 
-## 3-bis. Gen 2 特殊符号 8bit 编码（表 6-2，evolve #29 提取）
+## 3.5 Gen 2 特殊符号 8bit 编码（表 6-2，evolve #29 提取）
 
 | 符号 | 名称 | Gen 1 (8b/10b K 码) | Gen 2 (128b/132b) | 说明 |
 |---|---|---|---|---|

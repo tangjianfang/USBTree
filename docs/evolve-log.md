@@ -62,3 +62,4 @@
 #26 | 30/06 OTG 定时器回填 | findings(1) | actions(1) | result(green+progress, 8/8) | diff(+3行) | 消除"见规范原文"模糊处: TA_AIDL_BDIS=200ms/TA_BDIS_ACON≤100ms/TB_ASE0_BRST≥155ms/TA_WAIT_BCON≥1.1s
 #27 | 15-A2DP SBC 抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | bitpool/码率与 Table 4.7 一致
 #28 | USBTMC+Billboard 抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | MsgID/0x7E/0x7F 与 0x0D 均证实
+#29 | USB3.2 表 6-2/6-30 解析 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(+20行) | 90/03 两行 ※ 解除; 40/06 补表 6-2 Gen2 符号值(CCh/33h/96h/69h)
