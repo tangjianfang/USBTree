@@ -7,6 +7,8 @@ description: 查询 USB/BLE 规范级事实（字段编码、请求码、时序�
 
 ## 检索顺序（从快到权威，逐级升级）
 
+> 🛠 一键提取缓存规范文本：`bash tools/spec_extract.sh <缓存文件> [检索词]`（自动解压 zip→pdftotext→grep）。
+
 1. **[速查表大全](../../90-附录/02-速查表大全.md)** —— 12 张高频表（描述符类型码、标准请求、PID、最大包长、类代码、键值、GATT UUID、PD 档位、时序参数、命名对照），80% 的编码问题到此为止；
 2. **[术语表](../../90-附录/01-术语表.md)** —— 缩写展开与一句话定义；
 3. **知识树章节** —— 按下方"主题→章节"映射直达；
@@ -33,7 +35,9 @@ description: 查询 USB/BLE 规范级事实（字段编码、请求码、时序�
 | USBTMC/USB488 | [USBTMC](../../20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md) | `device-classes/USBTMC-USB488-1.0.zip` |
 | Billboard | [长尾设备类](../../20-枝干-设备类协议/其他设备类/09-长尾设备类-AV-Billboard-Healthcare-I3C.md) | `device-classes/Billboard-1.2.2.zip` |
 | BLE 链路层/GATT/SMP/HOGP | [BLE 子树](../../50-枝干-无线关联/BLE-低功耗蓝牙/00-BLE概述.md) | `bluetooth/Bluetooth-Core-6.0.pdf`（Vol 6=BLE，Vol 3=Host）；HOGP 单行本 `HOGP-1.0.pdf` |
-| 经典蓝牙 Profile（A2DP/HFP/HID） | [经典 Profile 详解](../../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) | `bluetooth/Bluetooth-HID-Profile-1.1.1.pdf`；其余 Profile 在 [Core 6.0 HTML](https://www.bluetooth.com/specifications/specs/) |
+| 经典蓝牙 Profile（HID/HFP/AVRCP） | [经典 Profile 详解](../../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) | `bluetooth/Bluetooth-HID-Profile-1.1.1.pdf`、`HFP-1.10.pdf`、`AVRCP-1.6.3.pdf` |
+| A2DP/AVDTP 编解码与信令 | [A2DP 编解码与 AVDTP 参数](../../50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) | `bluetooth/A2DP-1.4.1.pdf`、`bluetooth/AVDTP-1.3.pdf`（Table 8.6 信令码） |
+| 合规测试（眼图/TestMode/USBCV） | [合规测试实操](../../70-枝干-调试测试与安全/05-合规测试实操.md) | `usb-core/USB2-Electrical-Compliance-v1.08.pdf` |
 | 类代码总表 | [设备类索引](../../20-枝干-设备类协议/00-设备类索引.md) | 联网：[USB-IF defined-class-codes](https://www.usb.org/defined-class-codes) |
 
 ## 缓存 PDF 打开提示
