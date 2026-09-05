@@ -63,3 +63,4 @@
 #27 | 15-A2DP SBC 抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | bitpool/码率与 Table 4.7 一致
 #28 | USBTMC+Billboard 抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | MsgID/0x7E/0x7F 与 0x0D 均证实
 #29 | USB3.2 表 6-2/6-30 解析 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(+20行) | 90/03 两行 ※ 解除; 40/06 补表 6-2 Gen2 符号值(CCh/33h/96h/69h)
+#31 | 技能与门面计数同步 | findings(2) | actions(2) | result(green+progress, 8/8) | diff(~10行) | README 28份漂移→按索引页; spec-lookup 补 4 行新缓存映射 + spec_extract 提示
