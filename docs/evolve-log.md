@@ -91,3 +91,4 @@
 ## Run 2 开启（N=50，轮次 #56~#105，#105=回顾）
 
 - pointer 迁移至 #56；池: Tier4 实战篇 API 抽查系列（libusb 已证）/09-TypeC 深化/HFP eSCO 表/USB3.2 zip 附带(CRC32 等)登记/术语表二轮/一致性专项余量
+#56 | 11 篇 eSCO 参数表 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(+15行) | run2 首轮: S1~S4/T1/T2 与 mSBC 强制集自 HFP-1.10 Tables 6.11~6.14
