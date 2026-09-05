@@ -24,9 +24,9 @@ USB-IF 分配了 20 多个基础类代码（Base Class Code），但日常 95% �
 
 | 项目 | 内容 |
 |---|---|
-| 类代码 | bInterfaceClass 0x10（接口级），子类 0x01=AVControl 接口、0x02=AVData 视频流接口、0x03=AVData 音频流接口，协议 0x00 |
-| 定位 | USB-IF 曾试图用一套"控制面 + 数据面分离"的类统一音视频设备：控制面接口承载 **AVC（Audio/Video Control）命令集**（源自 IEEE 1394/FireWire 的 AV/C Digital Interface Command Set，PLAY/RECORD 等单元命令），数据面接口承载视频/音频流 |
-| 描述符要点 | AVControl 与 AVData 为不同接口，靠接口关联描述符（IAD）组成复合功能；流接口的格式协商细节见规范原文 |
+| 类代码 | bInterfaceClass 0x10（接口级），子类 0x01=AVControl、0x02=AVData 视频、0x03=AVData 音频，协议 0x10（IP_VERSION_01_00） |
+| 定位 | USB-IF 试图用一套"控制面 + 数据面分离"的类统一音视频设备（公开规范为 AV Devices 1.0，2011-12-07）。控制面 = AVControl 接口上的**命令块管道（CBP）**：一对批量 IN/OUT 承载 16 字节定长头的 Command/Response/Notify/Null 消息（32 字节粒度）；设备能力用 **AVDD（XML，avschema.xsd）** 描述——注意它**不是** 1394 的 AVC 命令集（常见误传，已按 AV 1.0 原文核实） |
+| 描述符要点 | AVControl 与 AVData 为不同接口，靠 IAD 组成复合功能；详细消息模型与 AVDD 结构见 [10-AV设备类详解](10-AV设备类详解.md) |
 | 驱动支持 | 主流操作系统**均无内置驱动**，需厂商驱动；Windows/Linux 生态几乎空白 |
 | 何时会遇到 | 几乎不会——市场上音视频设备早已被 **UAC + UVC 组合**通吃（见 [../Audio-UAC/00-UAC概述.md](../Audio-UAC/00-UAC概述.md) 与 [../Video-UVC/00-UVC详解.md](../Video-UVC/00-UVC详解.md)）：UVC 管摄像头、UAC 管音频，简单、驱动齐、免安装。AV 类采用率极低，可视为"标准化的失败尝试"；枚举见到 0x10 基本可判定为老设备或特殊定制 |
 
@@ -154,7 +154,7 @@ CDC（0x02）下除 ACM/ECM/NCM 等通信子类外，还有面向无线终端的
 | 0x05 | Physical Interface Device | 力反馈/运动/康复设备的物理效果描述 | 无现代驱动，已消亡 | 上古力反馈摇杆 |
 | 0x0D | Content Security | DRM/内容保护委托 | 无通用驱动 | 罕见；内容保护实际多用 EFh/06h STEP |
 | 0x0F | Personal Healthcare (PHDC) | 基于 IEEE 11073 的健康数据交换 | 需专用栈/网关 | 血压计、体重秤（已被 BLE 健康类大幅替代） |
-| 0x10 | Audio/Video (AVC) | AVControl/AVData 分面管控音视频流 | 无主流内置驱动 | 采用率极低；音视频已由 UAC+UVC 通吃 |
+| 0x10 | Audio/Video (AV) | AVControl 批量命令块管道（CBP）+ AVData 流接口，能力用 AVDD(XML) 描述 | 无主流内置驱动 | 采用率极低；音视频已由 UAC+UVC 通吃；详见 [10-AV设备类详解](10-AV设备类详解.md) |
 | 0x11 | Billboard | Type-C 替代模式协商失败的"告示牌" | 各系统内置 | USB-C 扩展坞/转接器（失败时枚举出） |
 | 0x12 | USB Type-C Bridge | 双端口桥接的调试/互通测试附件 | 无通用驱动 | 罕见测试附件 |
 | 0x13 | Bulk Display Protocol | VESA 的 USB 批量显示协议 | 需厂商驱动 | 少量便携屏/扩展方案 |
