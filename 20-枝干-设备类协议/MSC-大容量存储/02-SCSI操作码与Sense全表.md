@@ -141,6 +141,8 @@ MODE SENSE 返回 MODE Parameter List：参数头（Mode Data Length(2B)+Medium 
 
 ## 5. Sense Key / ASC / ASCQ 组合全表（UFI Tables 51~53，40 条）
 
+> 🔍 对抗抽查（evolve #16）：随机 5 组（02/3A00、06/2800、07/2700、2Bh SEEK、Sense Key 7）与缓存 UFI 原文 grep 比对一致。
+
 | Key | ASC | ASCQ | 含义 | | Key | ASC | ASCQ | 含义 |
 |---|---|---|---|---|---|---|---|---|
 | 00 | 00 | 00 | NO SENSE | | 05 | 25 | 00 | 逻辑单元不支持 |
