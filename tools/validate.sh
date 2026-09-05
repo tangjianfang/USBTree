@@ -5,7 +5,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 rc=0
 
-echo "== 1/6 Markdown 相对链接 =="
+echo "== 1/8 Markdown 相对链接 =="
 broken=0
 while IFS= read -r f; do
   dir=$(dirname "$f")
@@ -19,7 +19,7 @@ while IFS= read -r f; do
 done < <(find . -name '*.md' -type f)
 [ "$broken" -eq 0 ] && echo "  通过" || rc=1
 
-echo "== 2/6 代码围栏闭合 =="
+echo "== 2/8 代码围栏闭合 =="
 unbalanced=0
 while IFS= read -r f; do
   n=$(grep -c '^```' "$f")
@@ -27,7 +27,7 @@ while IFS= read -r f; do
 done < <(find . -name '*.md' -type f)
 [ "$unbalanced" -eq 0 ] && echo "  通过" || rc=1
 
-echo "== 3/6 图谱引用完整性（实体 docs 与边 evidence 必须真实存在） =="
+echo "== 3/8 图谱引用完整性（实体 docs 与边 evidence 必须真实存在） =="
 badref=0
 while IFS= read -r p; do
   [ -n "$p" ] || continue
@@ -35,7 +35,7 @@ while IFS= read -r p; do
 done < <(grep -E '^[[:space:]]*(docs|evidence):' graph/entities.yaml graph/relations.yaml | sed -E 's/^[^:]*:[[:space:]]*//; s/^(docs|evidence):[[:space:]]*//')
 [ "$badref" -eq 0 ] && echo "  通过" || rc=1
 
-echo "== 4/6 frontmatter 覆盖（10~90 内容目录） =="
+echo "== 4/8 frontmatter 覆盖（10~90 内容目录） =="
 total=0; missing=0
 for d in 10-* 20-* 30-* 40-* 50-* 60-* 70-* 90-*; do
   [ -d "$d" ] || continue
@@ -49,7 +49,7 @@ done
 echo "  内容文件 $total 篇，缺 frontmatter $missing 篇"
 [ "$missing" -eq 0 ] || rc=1
 
-echo "== 5/6 关系边端点存在性（relations from/to ⊆ entities id） =="
+echo "== 5/8 关系边端点存在性（relations from/to ⊆ entities id） =="
 grep -E '^[[:space:]]*- id:' graph/entities.yaml | sed -E 's/.*- id:[[:space:]]*//' | sort -u > /tmp/usbtree_ids.$$
 bad5=0
 while IFS= read -r v; do
@@ -61,7 +61,7 @@ done < <(grep -E '^[[:space:]]*(from|to):' graph/relations.yaml | sed -E 's/.*:[
 rm -f /tmp/usbtree_ids.$$
 [ "$bad5" -eq 0 ] && echo "  通过" || rc=1
 
-echo "== 6/6 frontmatter title 与正文 H1 一致 =="
+echo "== 6/8 frontmatter title 与正文 H1 一致 =="
 mismatch=0
 for d in 10-* 20-* 30-* 40-* 50-* 60-* 70-* 90-*; do
   [ -d "$d" ] || continue
@@ -74,6 +74,26 @@ for d in 10-* 20-* 30-* 40-* 50-* 60-* 70-* 90-*; do
   done < <(find "$d" -name '*.md' -type f)
 done
 [ "$mismatch" -eq 0 ] && echo "  通过" || rc=1
+
+echo "== 7/8 graph/export.mmd 新鲜度（与数据源重新生成结果一致） =="
+if bash tools/gen_graph.sh /tmp/usbtree_export_check.mmd >/dev/null 2>&1; then
+  if diff -q /tmp/usbtree_export_check.mmd graph/export.mmd >/dev/null 2>&1; then
+    echo "  通过"; rm -f /tmp/usbtree_export_check.mmd
+  else
+    echo "  过期：graph/export.mmd 与数据源不一致，请运行 bash tools/gen_graph.sh"; rc=1
+  fi
+else
+  echo "  生成失败"; rc=1
+fi
+
+echo "== 8/8 内容文件 H1 标题唯一性 =="
+dupfile=$(mktemp)
+for d in 10-* 20-* 30-* 40-* 50-* 60-* 70-* 90-*; do
+  [ -d "$d" ] || continue
+  find "$d" -name '*.md' -type f -exec grep -h -m1 '^# ' {} \;
+done | sed 's/^#[[:space:]]*//' | sort | uniq -d > "$dupfile"
+if [ -s "$dupfile" ]; then rc=1; else echo "  通过"; fi
+rm -f "$dupfile"
 
 echo ""
 if [ "$rc" -eq 0 ]; then echo "✔ 校验全部通过"; else echo "✘ 存在问题，请修复后重跑"; fi

@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-OUT=graph/export.mmd
+OUT="${1:-graph/export.mmd}"
 
 {
   echo "%% 由 tools/gen_graph.sh 自动生成，勿手改；数据源: graph/entities.yaml + graph/relations.yaml"
