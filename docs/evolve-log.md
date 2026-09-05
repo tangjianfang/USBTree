@@ -1,8 +1,8 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #7（下一轮）
-- rounds done: 6
+- pointer: #8（下一轮）
+- rounds done: 7
 - status: resumed-run（N=50，轮次 #6~#55，#55=回顾）
 - checkpoint: #5 完成于 39d0aca；池已刷新（见下）
 - metrics: findings 8 | fixes 8 | regressions 0
@@ -41,3 +41,4 @@
 - **空白变化**：COVERAGE 空白 #2（AVDTP）关闭；经典蓝牙 88%→90%。
 - **池刷新提示**（下轮开始前执行）：T1 重新核对 COVERAGE 空白清单；T3 轮换到 tools/gen_graph.sh 或 graph/ 边质量抽查。
 #6 | 池刷新+30-02音频配件R2.5弃用注记 | findings(1) | actions(2) | result(green+progress, 6/6) | diff(~6行) | 池:T1重核(COVERAGE空白1/3/4/5仍在,2已闭),T3模块表含graph/skills/tools;新增池项:HFP/AVRCP/GATT补编缓存、30/40目录索引、USB4错位表重提取
+#7 | tools/validate.sh | findings(0) | actions(2) | result(green+progress, 8/8) | diff(~40行) | +检查7 export.mmd 新鲜度(gen_graph 支持自定义输出); +检查8 H1 唯一性; 全库即绿
