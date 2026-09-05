@@ -41,7 +41,7 @@ USBTree/
 │   └── BLE-低功耗蓝牙/        (16 篇: 架构HCI/链路层/广播/ATT-GATT/GAP/SMP/HOGP/对比/LEAudio/Mesh/经典Profile/LLCP全表/测向与信道探测/RF参数全表/A2DP参数)
 ├── 60-枝干-主机侧与实现/      (9 篇: 主机控制器栈/操作系统/固件栈/libusb/实战TinyUSB/实战libusb/实战Gadget与usbip/Windows驱动开发/macOS与Linux主机开发)
 ├── 70-枝干-调试测试与安全/    (5 篇: 抓包/排查手册/合规认证/USB 安全与 BadUSB/合规测试实操)
-├── 80-参考资料/               (官方规范原文缓存: 34 份 223MB + 索引 README + 提取文本)
+├── 80-参考资料/               (官方规范原文缓存: 36 份 228M（含 HFP/AVRCP/AVDTP） + 索引 README + 提取文本)
 ├── 90-附录/                   (3 篇: 术语表/速查表大全/时序参数全表)
 ├── graph/                     (知识图谱: entities.yaml 实体表 · relations.yaml 关系表 · export.mmd 全景图)
 ├── skills/                    (Agent 技能包: 枚举排查/抓包分析/规范检索/设备构建)
