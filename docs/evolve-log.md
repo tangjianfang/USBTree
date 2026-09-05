@@ -1,11 +1,11 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #16（下一轮）
-- rounds done: 15
-- checkpoint: #15 完成于本轮提交；池快照——T4 缓存扩展完成 HFP/AVRCP/AVDTP，余 GATT Supplement/Assigned Numbers；T3 轮换队列=规范级附录对抗抽查(利用 /tmp 提取文本)→目录级一致性→技能包核对
+- pointer: #52（下一轮）
+- rounds done: 50
+- checkpoint: #50/50（evolve #50 重写头部修复记账漂移：此前多次 sed/python 基准值不匹配导致头部冻结于 #15；底部逐轮记录行完好且为权威）
 - status: resumed-run（N=50，轮次 #6~#55，#55=回顾）
-- metrics: findings 10 | fixes 10 | regressions 0
+- metrics: findings≈17 | fixes≈14 | regressions 3（#49 覆盖事故, 已从基线恢复; 以底部逐轮行为准）
 - pool-refresh: 2026-09-05（#6 内执行）
 - boundary: USB/BLE 领域知识系统（纯文档 + bash 工具 + 图谱/技能包）。红线：不改 80-参考资料 下规范原文内容（只增不改）；不做应用代码；不自动 push；破坏性命令需确认。
 - note: 项目无 CLAUDE.md/AGENTS.md；边界由用户会话历史确立。git 于剖析阶段初始化（协议要求每轮一提交）。
@@ -75,3 +75,4 @@
 #46 | 20-索引一致性 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 其他设备类 11 篇与索引行对应正常
 #47 | 枚举序列关键词一致性 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 树干08/排查手册/技能包三处 GET_DESCRIPTOR 叙述无矛盾
 #48 | 四目录索引表核对 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | 30/40/60/70 索引表行数=实际文件数
+#50b | 事故恢复 | findings(3) | actions(1) | result(green+progress, 8/8) | diff(恢复218/222/206行×3) | 12-LLCP/06-USB3x/15-A2DP 从基线 3d3272e 恢复并重放戳记/Gen2 表; L8 入库
