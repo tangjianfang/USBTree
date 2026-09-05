@@ -1,0 +1,18 @@
+# USB-IF 营销命名 ↔ 规范名 ↔ 速率 · 单一事实源
+# 由 tools/gen_naming.py 消费：重写 90-附录/02-速查表大全.md 的「§12 速度命名」区块，
+# 并作为 tools/validate.sh 命名一致性检查的数据源。改命名只改这里。
+# speed_mbit: 用于校验口径的标称速率（Gbit/s 换算为 1000）
+
+naming:
+  - {spec: "USB 2.0",               legacy: ["USB 2.0 Hi-Speed", "USB 2.0 High Speed"], marketing: "USB 480Mbps",  speed_mbit: 480}
+  - {spec: "USB 3.2 Gen 1",         legacy: ["USB 3.0", "USB 3.1 Gen 1", "SuperSpeed USB"],    marketing: "USB 5Gbps",    speed_mbit: 5000}
+  - {spec: "USB 3.2 Gen 2",         legacy: ["USB 3.1", "USB 3.1 Gen 2", "SuperSpeed USB 10Gbps", "SuperSpeed+"], marketing: "USB 10Gbps", speed_mbit: 10000}
+  - {spec: "USB 3.2 Gen 2×2",       legacy: ["USB 3.2（双通道）"],                              marketing: "USB 20Gbps",   speed_mbit: 20000}
+  - {spec: "USB4 Gen 3×2",          legacy: ["USB4"],                                          marketing: "USB 40Gbps",   speed_mbit: 40000}
+  - {spec: "USB4 v2（Gen 4）",      legacy: ["USB4 2.0"],                                      marketing: "USB 80Gbps",   speed_mbit: 80000}
+
+# 常见错误对照（validate 会反向扫描：正文若把"规范名"与错误速率绑定则告警）
+# 例：不得出现 "USB 3.2 Gen 1 … 10Gbps" 的绑定。
+forbidden_pairs:
+  - {spec: "USB 3.2 Gen 1", wrong_speed_mbit: 10000}
+  - {spec: "USB 3.2 Gen 2", wrong_speed_mbit: 5000}

@@ -11,7 +11,7 @@
 - **verification**: validate 8/8 + PD 表逐条标注规范表号
 - **rollback**: 不需要（纯增补）
 - **预估**: 2 轮
-- **status**: proposed（等用户提供规范文件）
+- **status**: approved（2026-09-05 用户全部批准；材料到位前先执行可切片）
 
 ## EP-2 · GATT Supplement 与 Assigned Numbers 缓存
 
@@ -22,7 +22,7 @@
 - **verification**: validate + UUID 抽样比对
 - **rollback**: 不需要
 - **预估**: 2 轮
-- **status**: proposed（等用户提供文件或授权浏览器自动化）
+- **status**: approved（2026-09-05；先尝试公开直链）
 
 ## EP-3 · 命名规范自动化守卫（远期）
 
@@ -33,4 +33,4 @@
 - **verification**: validate 新检查 + 抽样比对
 - **rollback**: 保留旧表一版
 - **预估**: 3 轮
-- **status**: proposed
+- **status**: approved（2026-09-05，立即执行）
