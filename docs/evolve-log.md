@@ -52,3 +52,4 @@
 #16 | 20/MSC/02 对抗抽查 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | 5 组抽样一致；加抽查戳记
 #18 | BLE 12/14 对抗抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | 5 Opcode+灵敏度表比对一致；S=8=-82 为 6.0 正确新值
 #19 | 30/08+30/09 对抗抽查 | findings(0) | actions(2) | result(green+no-progress, 8/8) | diff(+4行) | 内核宏/Accept/PS_RDY/Soft_Reset 与 tCCDebounce 一致
+#20 | CDC/UAC/UVC 三附录抽查 | findings(0) | actions(3) | result(green+no-progress, 8/8) | diff(+6行) | VS_PROBE=0x01(A-16)/CLOCK_SOURCE=0x0A/SET_LINE_CODING=20h 均证实；VS_PROBE 为提示稿另一处被纠错
