@@ -1,6 +1,18 @@
 # USBTree · USB/BLE 领域知识系统
 
+[![validate](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml/badge.svg)](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-117%20%E7%AF%87%C2%B719700%2B%E8%A1%8C-blue)
+
 > **知识树 × 关系图谱 × 可执行技能 × 官方规范缓存**
+>
+> English TL;DR — A Chinese knowledge system for USB & Bluetooth LE: a hierarchical
+> knowledge tree (117 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,
+> Type-C/PD, USB4 and BLE), a typed knowledge graph (89 entities / 85 relations),
+> executable agent skills, and an index of 36 cached official specifications.
+> Content is MIT-licensed; third-party specification binaries are not
+> redistributed — fetch them via [80-参考资料/README.md](80-参考资料/README.md)
+> or `bash tools/spec_fetch.sh`.
 
 以 **USB** 为树干、把所有依赖/关联 USB 的协议（HID、CDC、MSC、UAC、UVC、Type-C/PD、USB4、BLE……）作为枝干，层层递进到分枝与树叶知识点的中文知识系统。四种形态各司其职：正文知识树供人研读，`graph/` 关系图谱供机器查询，`skills/` 技能包供 Agent 执行，`80-参考资料/` 官方规范缓存作为最终裁判；`tools/validate.sh` 一键校验全库一致性，`COVERAGE.md` 记录覆盖率。
 
