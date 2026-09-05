@@ -1,3 +1,9 @@
+---
+title: "Evolve Log · USBTree"
+layer: 枝干/无线关联
+section: BLE-低功耗蓝牙
+doc-path: 50-枝干-无线关联/BLE-低功耗蓝牙/12-LLCP控制过程全表.md
+---
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
