@@ -1,8 +1,8 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #61（下一轮）
-- rounds done: 60
+- pointer: #62（下一轮）
+- rounds done: 61
 - checkpoint: #60/过夜运行前——池: EP-4 S1~S6 切片(approved)/USB3.2 附带登记/术语二轮/一致性余量；驱动: scripts/auto-evolve.sh
 - checkpoint: #50/50（evolve #50 重写头部修复记账漂移：此前多次 sed/python 基准值不匹配导致头部冻结于 #15；底部逐轮记录行完好且为权威）
 - status: autonomous-overnight（N=1000 名义；驱动 07:45 停止派发，08:00 收尾报告）
@@ -97,4 +97,4 @@
 #58 | 图谱二轮扩容 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(~25行) | 89 实体/85 边
 #59 | USBTMC 主规范抽查 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | USB488 为独立子规范引用
 #60 | USB488 子规范核对 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | bNotify1 D7=1/Status Byte 证实; checkpoint #60
-#61(进行中) | EP-4 S1 通道层实现 | — | — | result(running) | — | headless 会话于 01:13 随机器唤醒恢复，正在产出 apps/win/src/channel/；收尾任务因唤醒于 01:18 提前触发，已改期至今日 08:00
+#61 | EP-4 S1 通道层前半(usb-labs) | findings(0) | actions(3) | result(green+progress, usb-labs validate ✔ + MSVC 两靶绿) | diff(+321行@usb-labs 8ef4e12) | IChannel 契约+SerialChannelT 适配(读线程→回调/统计)+MockEchoPort 离线自测 25 例全绿(C++ 通道测试基线 0→25); HidChannel 留 #62, S1 真机验收待整片完成后执行。01:13 中断会话的 #61(进行中) 占位由本轮完成记录取代（工作落盘于 usb-labs 8ef4e12）
