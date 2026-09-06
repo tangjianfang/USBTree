@@ -97,3 +97,4 @@
 #58 | 图谱二轮扩容 | findings(0) | actions(1) | result(green+progress, 8/8) | diff(~25行) | 89 实体/85 边
 #59 | USBTMC 主规范抽查 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | USB488 为独立子规范引用
 #60 | USB488 子规范核对 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | bNotify1 D7=1/Status Byte 证实; checkpoint #60
+#61(进行中) | EP-4 S1 通道层实现 | — | — | result(running) | — | headless 会话于 01:13 随机器唤醒恢复，正在产出 apps/win/src/channel/；收尾任务因唤醒于 01:18 提前触发，已改期至今日 08:00
