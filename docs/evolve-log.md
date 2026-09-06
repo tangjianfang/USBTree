@@ -1,9 +1,9 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #68（下一轮）
-- rounds done: 67
-- checkpoint: #67/1000——EP-4 S4 解析面板前半完成（HID 报告解码核心+62 例自测，工作落盘 usb-labs ca9e25e）；S4 后半（UI 解析面板接线+原始|解析切换）待 #68；usb-labs 暂无截图机制，视觉 review 即便 UI 目标亦跳过
+- pointer: #69（下一轮）
+- rounds done: 68
+- checkpoint: #68/1000——EP-4 S4 解析面板完成（前后半齐：解码核心+选型/调度+解析视图接线，工作落盘 usb-labs ff2b69b，自测基线 291）；EP-4 代码侧 S1~S4 齐，S5 WinUSB/MSC 通道待 #69；整片真机验收（S1 通道/S2 定位/S3 收发/S4 解码）待执行；usb-labs 暂无截图机制，视觉 review 即便 UI 目标亦跳过
 - checkpoint: run3 驱动运维（2026-09-07 02:51）——驱动一晚两次假熔断已根治（L9：tail-1 抓 hook 噪声 + 大切片耗尽 max-turns 吞标记；改为仓库状态判定+turns 100）；无时间闸连续驱动运行中，指针 #67 续跑，目标 1000 轮
 - checkpoint: #50/50（evolve #50 重写头部修复记账漂移：此前多次 sed/python 基准值不匹配导致头部冻结于 #15；底部逐轮记录行完好且为权威）
 - status: run-3（N=1000 连续；驱动 scripts/auto-evolve-1000.sh；熔断=连续 3 轮无进展）
@@ -105,3 +105,4 @@
 #65 | EP-4 S3 会话台前半(usb-labs) | findings(0) | actions(3) | result(green+progress, usb-labs validate ✔ + MSVC 四靶绿零告警 + selftest 61/61 & 50/50 & 78/78) | diff(+632行@usb-labs 4c258a5) | session_codec(发送框智能识别 auto/hex/ascii 锁定·奇数位补前导 0·UTF-8 中文可发 + 双视图 + 绝对/相对时间戳 + IN/OUT 行格式)+session_core(周期节拍 100ms~60s 钳制/发送历史 50 条·草稿态游标/帧日志环形·清屏不清账/SessionCore 时间基准); 新靶 session_selftest 78 例(控制台自测基线 111→189); 轮内自纠 4 处自测断言笔误(运行暴露即修,实现零改动——纯空白按 ASCII 原文/空格仅分隔非字节边界/interval 未重设/hex_view 误传 false); README 文件结构同步; 632 行超 ~300 软帽(纯逻辑头文件+自测占比大,单提交可整体回退); S3 后半(UI 标签页/收发区接线)待 #66
 #66 | EP-4 S3 会话台后半(usb-labs) | findings(3) | actions(3) | result(green+progress, usb-labs validate ✔ + MSVC 四靶绿零告警 + selftest 61/61 & 50/50 & 95/95) | diff(+874/-19行@usb-labs 5a5525f) | session_view(RenderCursor 渲染游标:poll 增量/暂停停走/恢复补齐/环形淘汰跳过/rebuild 口径切换全量重渲染)+session_pane(每会话一面板:发送区智能识别+编码锁定+Ctrl+↵/↑↓历史草稿态+周期即改即生效,接收区暂停/清屏/Hex↔ASCII/相对↔绝对+行数封顶滞回剪头,读线程 PostMessage 载荷投递 UI 线程入账)+console_window(下区标签台:增删/切换/右键关闭+100ms 共享定时器驱动周期发送+45/55 分区+DPI 联动); 自测 78→95(+17); findings=收编 02:39 中断会话在途工作后 review 出 3 处文档滞后(console_window.cpp 头注释仍称 S2 单区/README 缺 session_view·session_pane/selftest 头注释)同轮修; 874 行超 ~300 软帽(新 UI 文件 601 行占比大,单提交可整体回退); S3 至此齐(真机收发验收随整片), S4 解析面板待 #67
 #67 | EP-4 S4 解析面板前半(usb-labs) | findings(3) | actions(3) | result(green+progress, usb-labs validate ✔ + MSVC 五靶绿零告警 + selftest 61/61 & 50/50 & 95/95 & 62/62) | diff(+364行@usb-labs ca9e25e) | hid_parser 解码核心(键盘页键码表 0x04~0x65/修饰键位图 bit0 LCtrl…bit7 RGui/boot 8 字节行格式含 0x01~0x03 错误码/鼠标按钮位图+X·Y 有符号位移+滚轮+宽轴 LE/消费页 B0~B8·CD·E2·E9·EA/Report ID 剥离统一入口/AsciiParser 委托 session_codec 口径不二), 码表全部核对自缓存 PDF 原文; findings=HUT 消费页 -layout 提取行漂移 1 行(B5~B8 段, -table 模式+库内 07-消费控制 篇交叉裁决, L2/L5 现场再证)+keycode_name 初版索引错位(自审发现即修)+自测夹具 2 处鼠标字节序笔误(运行暴露即修); 新靶 parser_selftest 62 例(控制台自测基线 206→268); S4 后半(UI 面板接线+原始|解析切换)待 #68
+#68 | EP-4 S4 解析面板后半(usb-labs) | findings(2) | actions(3) | result(green+progress, usb-labs validate ✔ + MSVC 五靶绿零告警 + selftest 61/61 & 50/50 & 95/95 & 85/85) | diff(+284/-19行@usb-labs ff2b69b) | parser_select 纯逻辑(通道描述→选型: HID 顶层 usage page/usage——GD 0x01+06/07 键盘·+02 鼠标·0x0C 消费页, 数值核对自缓存 HUT-1.3 §4/§15; 串口/环回→ASCII 委托; 未收录→none 回退原始)+帧解析调度(mouse 按剥离 Report ID 后长度猜格式); 通道层 HidPort::fill_caps 遍历输入 Value/Button caps 判 has_report_id(HIDP_CAPS 无直接字段, ReportID≠0 即带前缀)+ChannelDesc 增 HID 能力透传; 会话层 RenderCursor 增 parsed_view/parser(§4.7 跟随协议: HID 已收录默认开)+frame_line 同一行装配两视图只差正文; UI 接收工具条"解析视图"开关(切换即 rebuild, 选型 none 置灰)+状态行解析器名; 自测 62→85(选型 11+调度 6+行装配 2 含 S3 口径回归+游标切换 4); findings=轮内自纠 2 处(ChannelDesc 字段名与选型实现不一致·编译暴露即修/自测鼠标 4 字节预期漏滚轮字节·运行暴露即修); 已知边界: 多顶层集合复合 HID 按首集合 usage 选型, 逐 Report ID 分流待真机样本; EP-4 代码侧 S1~S4 齐, S5 待 #69, 整片真机验收待执行
