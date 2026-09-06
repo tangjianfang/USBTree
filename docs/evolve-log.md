@@ -1,11 +1,11 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #52（下一轮）
+- pointer: #61（下一轮）
 - rounds done: 60
-- checkpoint: #60/105——run2 进行中(5/50)：USB4 三附带规范成文、HFP eSCO/AT 表、液体腐蚀附录、图谱 89/85
+- checkpoint: #60/过夜运行前——池: EP-4 S1~S6 切片(approved)/USB3.2 附带登记/术语二轮/一致性余量；驱动: scripts/auto-evolve.sh
 - checkpoint: #50/50（evolve #50 重写头部修复记账漂移：此前多次 sed/python 基准值不匹配导致头部冻结于 #15；底部逐轮记录行完好且为权威）
-- status: resumed-run（N=50，轮次 #6~#55，#55=回顾）
+- status: autonomous-overnight（N=1000 名义；驱动 07:45 停止派发，08:00 收尾报告）
 - metrics: findings≈17 | fixes≈14 | regressions 3（#49 覆盖事故, 已从基线恢复; 以底部逐轮行为准）
 - pool-refresh: 2026-09-05（#6 内执行）
 - boundary: USB/BLE 领域知识系统（纯文档 + bash 工具 + 图谱/技能包）。红线：不改 80-参考资料 下规范原文内容（只增不改）；不做应用代码；不自动 push；破坏性命令需确认。
