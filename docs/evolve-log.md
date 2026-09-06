@@ -1,9 +1,9 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #66（下一轮）
-- rounds done: 65
-- checkpoint: #65/1000——EP-4 S3 会话台前半完成（收发编解码+会话核心纯逻辑+自测 78 例，工作落盘 usb-labs 4c258a5）；S3 后半（UI 标签页/发送框/接收区接线）待 #66；usb-labs 暂无截图机制，视觉 review 即便 UI 目标亦跳过
+- pointer: #67（下一轮）
+- rounds done: 66
+- checkpoint: #66/1000——EP-4 S3 会话台后半完成（收发面板+多会话标签台接线+渲染游标，自测 78→95 例，工作落盘 usb-labs 5a5525f；含收编 02:39 中断会话的在途工作）；S4 解析面板待 #67；usb-labs 暂无截图机制，视觉 review 即便 UI 目标亦跳过
 - checkpoint: run3 驱动交接（2026-09-07 01:52）——01:13 旧驱动（auto-evolve.sh，带 0745 时间闸）跑完 #61~#63 后因 tail-1 假熔断自停（L9）；已换 auto-evolve-1000.sh 无时间闸驱动（修 grep ROUND 标记判定 + GLM-5.3-Flash 视觉review指令写入会话提示），从指针 #64 续跑，目标 1000 轮
 - checkpoint: #50/50（evolve #50 重写头部修复记账漂移：此前多次 sed/python 基准值不匹配导致头部冻结于 #15；底部逐轮记录行完好且为权威）
 - status: run-3（N=1000 连续；驱动 scripts/auto-evolve-1000.sh；熔断=连续 3 轮无进展）
@@ -103,3 +103,4 @@
 #63 | EP-4 S2 设备发现前半(usb-labs) | findings(0) | actions(2) | result(green+progress, usb-labs validate ✔ + MSVC 三靶绿 + selftest 61/61 & 36/36) | diff(+307行@usb-labs c9c6e10) | device_catalog 即时过滤核心(多关键词AND/ASCII大小写折叠/协议kind掩码/保序)+serial_enum COM枚举(SERIALCOMM注册表,数字序); 新靶 discovery_selftest 36 例(控制台自测基线 61→97); S2 后半(DeviceInfo→目录适配+UI表格+双击开会话)待 #64; 轮中观察到并发提交 cef2eb0(驱动头部状态同步,仅 checkpoint 行,线性无冲突)
 #64 | EP-4 S2 设备发现后半(usb-labs) | findings(2) | actions(3) | result(green+progress, usb-labs validate ✔ + MSVC 三靶绿零告警 + selftest 61/61 & 50/50) | diff(+571行@usb-labs 49a4d32) | catalog_build(DeviceInfo→目录适配·名称回退链/USB·HID+COM 合流/会话工厂 hid→HidChannel·serial→SerialChannel·usb 待 S5)+console_window(--console 独立窗口,产测模式旁路:EN_CHANGE 即时过滤/复选框掩码/F5 后台扫描/双击开会话,收发台 UI 为 S3)+PerMonitorV2 DPI; 自测基线 36→50(+14); 轮内自纠 2 处(头文件缺 windows.h 自含性/自测夹具断言错位,均为构建·运行验证暴露后即修); 571 行超 ~300 软帽(Win32 窗口骨架占比大,单提交可整体回退); S2 逻辑+UI 至此齐(真机"3 秒定位+双击真开"验收随整片), S3 会话台待 #65
 #65 | EP-4 S3 会话台前半(usb-labs) | findings(0) | actions(3) | result(green+progress, usb-labs validate ✔ + MSVC 四靶绿零告警 + selftest 61/61 & 50/50 & 78/78) | diff(+632行@usb-labs 4c258a5) | session_codec(发送框智能识别 auto/hex/ascii 锁定·奇数位补前导 0·UTF-8 中文可发 + 双视图 + 绝对/相对时间戳 + IN/OUT 行格式)+session_core(周期节拍 100ms~60s 钳制/发送历史 50 条·草稿态游标/帧日志环形·清屏不清账/SessionCore 时间基准); 新靶 session_selftest 78 例(控制台自测基线 111→189); 轮内自纠 4 处自测断言笔误(运行暴露即修,实现零改动——纯空白按 ASCII 原文/空格仅分隔非字节边界/interval 未重设/hex_view 误传 false); README 文件结构同步; 632 行超 ~300 软帽(纯逻辑头文件+自测占比大,单提交可整体回退); S3 后半(UI 标签页/收发区接线)待 #66
+#66 | EP-4 S3 会话台后半(usb-labs) | findings(3) | actions(3) | result(green+progress, usb-labs validate ✔ + MSVC 四靶绿零告警 + selftest 61/61 & 50/50 & 95/95) | diff(+874/-19行@usb-labs 5a5525f) | session_view(RenderCursor 渲染游标:poll 增量/暂停停走/恢复补齐/环形淘汰跳过/rebuild 口径切换全量重渲染)+session_pane(每会话一面板:发送区智能识别+编码锁定+Ctrl+↵/↑↓历史草稿态+周期即改即生效,接收区暂停/清屏/Hex↔ASCII/相对↔绝对+行数封顶滞回剪头,读线程 PostMessage 载荷投递 UI 线程入账)+console_window(下区标签台:增删/切换/右键关闭+100ms 共享定时器驱动周期发送+45/55 分区+DPI 联动); 自测 78→95(+17); findings=收编 02:39 中断会话在途工作后 review 出 3 处文档滞后(console_window.cpp 头注释仍称 S2 单区/README 缺 session_view·session_pane/selftest 头注释)同轮修; 874 行超 ~300 软帽(新 UI 文件 601 行占比大,单提交可整体回退); S3 至此齐(真机收发验收随整片), S4 解析面板待 #67
