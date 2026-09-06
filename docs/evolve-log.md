@@ -3,7 +3,7 @@
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
 - pointer: #63（下一轮）
 - rounds done: 62
-- checkpoint: #61 起为 run3；run2（#56~#60+收尾）已完结于 usb-labs 侧
+- checkpoint: #62/1000——过夜驱动运行中(claude headless 循环, ~14min/轮)；EP-4 S1 已落 2 轮；视觉 review 策略=GLM-5.3-Flash(出现 UI 目标时)；07:45 时间闸为当前驱动实例所带，后续驱动实例可移除
 - checkpoint: #50/50（evolve #50 重写头部修复记账漂移：此前多次 sed/python 基准值不匹配导致头部冻结于 #15；底部逐轮记录行完好且为权威）
 - status: run-3（N=1000 连续；驱动 scripts/auto-evolve-1000.sh；熔断=连续 3 轮无进展）
 - metrics: findings≈17 | fixes≈14 | regressions 3（#49 覆盖事故, 已从基线恢复; 以底部逐轮行为准）
