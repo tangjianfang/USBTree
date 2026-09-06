@@ -4,7 +4,7 @@
 - pointer: #67（下一轮）
 - rounds done: 66
 - checkpoint: #66/1000——EP-4 S3 会话台后半完成（收发面板+多会话标签台接线+渲染游标，自测 78→95 例，工作落盘 usb-labs 5a5525f；含收编 02:39 中断会话的在途工作）；S4 解析面板待 #67；usb-labs 暂无截图机制，视觉 review 即便 UI 目标亦跳过
-- checkpoint: run3 驱动交接（2026-09-07 01:52）——01:13 旧驱动（auto-evolve.sh，带 0745 时间闸）跑完 #61~#63 后因 tail-1 假熔断自停（L9）；已换 auto-evolve-1000.sh 无时间闸驱动（修 grep ROUND 标记判定 + GLM-5.3-Flash 视觉review指令写入会话提示），从指针 #64 续跑，目标 1000 轮
+- checkpoint: run3 驱动运维（2026-09-07 02:51）——驱动一晚两次假熔断已根治（L9：tail-1 抓 hook 噪声 + 大切片耗尽 max-turns 吞标记；改为仓库状态判定+turns 100）；无时间闸连续驱动运行中，指针 #67 续跑，目标 1000 轮
 - checkpoint: #50/50（evolve #50 重写头部修复记账漂移：此前多次 sed/python 基准值不匹配导致头部冻结于 #15；底部逐轮记录行完好且为权威）
 - status: run-3（N=1000 连续；驱动 scripts/auto-evolve-1000.sh；熔断=连续 3 轮无进展）
 - metrics: findings≈20 | fixes≈16 | regressions 3（#49 覆盖事故, 已从基线恢复; 以底部逐轮行为准）

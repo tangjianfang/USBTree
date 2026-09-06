@@ -25,12 +25,25 @@ echo "$(date '+%F %T') [1000] 连续驱动启动（目标 1000 轮；熔断=连�
 ROUND_PROMPT='在 C:/tjf/github/usb-labs（工作仓库）执行一轮 evolve 协议（1.4.0）。协议状态必读: C:/tjf/github/USBTree/docs/evolve-log.md（头部 pointer=本轮序号；文内目标池与 Run 2 池说明）与 C:/tjf/github/USBTree/docs/epics.md（EP-4 approved 可实施：切片 S1 通道层/S2 设备发现/S3 会话台/S4 解析面板，设计见 apps/设计-工程师通信控制台.md；EP-1 完成/EP-2 blocked-需人工/EP-3 完成）。流程: (1) 读 pointer 确定本轮序号; (2) 选 1 个目标执行 1~3 个动作; (3) usb-labs 根目录 bash tools/validate.sh 必须 9/9 通过; (4) git commit（不 push）; (5) 向 C:/tjf/github/USBTree/docs/evolve-log.md 底部追加轮次行（#序号 | 目标 | findings | actions | result | diff | 备注）并更新头部 pointer 与 rounds done。纪律: 无实质进展如实记 result(green+no-progress)；连续 3 轮无进展则在日志声明"收敛，停止驱动"；禁止伪造进展、禁止 push、禁止改动 80-参考资料 二进制。视觉review（仅当目标为 UI 且有截图机制时执行，否则跳过）: 子代理指定模型 GLM-5.3-Flash（用户指定，替代协议默认 haiku），返回问题清单后须经复核才动工。所有文件操作用绝对路径。完成后仅输出一行: ROUND <序号> DONE|NOPROGRESS|BLOCKED'
 
 n=0; noprog=0
+USBTREE_LOG="C:/tjf/github/USBTree/docs/evolve-log.md"
 while [ "$n" -lt "$MAX" ]; do
   n=$((n+1))
-  # 教训 L9（旧驱动 01:48 假熔断实证）: 会话输出末行可能是 SessionEnd hook 噪声,
-  # tail -1 会抓到噪声而非 ROUND 标记 → 成功轮被误判无进展。改为全量捕获后 grep 标记。
-  raw=$(claude -p "$ROUND_PROMPT" --max-turns 60 --dangerously-skip-permissions 2>&1)
+  # L9（第二次实证 02:22/02:39/02:48）: 大切片会耗尽 max-turns, 工作已落盘但标记被吞——
+  # 判定以仓库状态为最终事实: ①会话输出 grep ROUND 标记(快路径); ②无标记时 pointer
+  # 前进→按最新轮次行 result 字段定性; pointer 未动→会话异常, 计入熔断。
+  ptr_before=$(grep -m1 '^- pointer' "$USBTREE_LOG")
+  raw=$(claude -p "$ROUND_PROMPT" --max-turns 100 --dangerously-skip-permissions 2>&1)
   out=$(printf '%s\n' "$raw" | grep -Eo 'ROUND [0-9]+ (DONE|NOPROGRESS|BLOCKED)' | tail -1)
+  if [ -z "$out" ]; then
+    ptr_after=$(grep -m1 '^- pointer' "$USBTREE_LOG")
+    if [ "$ptr_after" != "$ptr_before" ]; then
+      last=$(grep -E '^#[0-9]+ \|' "$USBTREE_LOG" | tail -1)
+      case "$last" in
+        *'result(green+progress'*) out="REPO-EVIDENCE DONE (${ptr_after#*- })" ;;
+        *)                         out="REPO-EVIDENCE NOPROGRESS (${ptr_after#*- })" ;;
+      esac
+    fi
+  fi
   echo "$(date '+%F %T') [1000-round $n] marker=[${out:-NONE}]" >> "$DRIVER_LOG"
   case "$out" in
     *DONE*) noprog=0 ;;
