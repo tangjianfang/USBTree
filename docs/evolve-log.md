@@ -1,8 +1,8 @@
 # Evolve Log · USBTree
 
 - verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
-- pointer: #62（下一轮）
-- rounds done: 61
+- pointer: #63（下一轮）
+- rounds done: 62
 - checkpoint: #61 起为 run3；run2（#56~#60+收尾）已完结于 usb-labs 侧
 - checkpoint: #50/50（evolve #50 重写头部修复记账漂移：此前多次 sed/python 基准值不匹配导致头部冻结于 #15；底部逐轮记录行完好且为权威）
 - status: run-3（N=1000 连续；驱动 scripts/auto-evolve-1000.sh；熔断=连续 3 轮无进展）
@@ -98,3 +98,4 @@
 #59 | USBTMC 主规范抽查 | findings(0) | actions(0) | result(green+no-progress, 8/8) | diff(0) | USB488 为独立子规范引用
 #60 | USB488 子规范核对 | findings(0) | actions(1) | result(green+no-progress, 8/8) | diff(+2行) | bNotify1 D7=1/Status Byte 证实; checkpoint #60
 #61 | EP-4 S1 通道层前半(usb-labs) | findings(0) | actions(3) | result(green+progress, usb-labs validate ✔ + MSVC 两靶绿) | diff(+321行@usb-labs 8ef4e12) | IChannel 契约+SerialChannelT 适配(读线程→回调/统计)+MockEchoPort 离线自测 25 例全绿(C++ 通道测试基线 0→25); HidChannel 留 #62, S1 真机验收待整片完成后执行。01:13 中断会话的 #61(进行中) 占位由本轮完成记录取代（工作落盘于 usb-labs 8ef4e12）
+#62 | EP-4 S1 通道层后半(usb-labs) | findings(1) | actions(2) | result(green+progress, usb-labs validate ✔ + MSVC 两靶绿 + selftest 61/61) | diff(+296行@usb-labs 99134f1) | HidChannelT 适配(读线程轮片:超时=轮空/错误=退出, send=set_output_report, Report ID 透传)+MockHidPort 回显假件 36 例(C++ 通道测试基线 25→61); 自评捕获并修正 Mock 空队列 timed_out 标志缺陷(未及提交); README 文件结构补 channel/(消 #61 文档滞后); S1 通道层至此齐(Serial+Hid), 剩真机验收, S2 设备发现待 #63
