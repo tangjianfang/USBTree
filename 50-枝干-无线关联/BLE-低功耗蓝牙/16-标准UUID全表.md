@@ -1,3 +1,9 @@
+---
+title: "标准 UUID 全表"
+layer: 枝干/无线关联
+section: BLE-低功耗蓝牙
+doc-path: 50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md
+---
 # 16-标准UUID全表（Assigned Numbers 机器生成）
 
 > 数据源：Bluetooth SIG 官方公开仓库 `bitbucket.org/bluetooth-SIG/public`（assigned_numbers/uuids/*.yaml），
