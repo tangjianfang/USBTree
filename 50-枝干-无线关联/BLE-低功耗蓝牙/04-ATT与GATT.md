@@ -126,6 +126,8 @@ CCCD（Client Characteristic Configuration Descriptor，UUID **0x2902**）：2 �
 | 0x1812 | HID 服务 | HOGP 核心，见 [07-HOGP-HIDoverGATT](07-HOGP-HIDoverGATT.md) |
 | 0x1813 | Scan Parameters | Scan Interval Window 0x2A10（客户端建议扫描节奏） |
 
+> **全量编号**：本节为速查（高频 6 服务）；完整标准 UUID 表（声明 0x28xx / 服务 0x18xx / 特征 0x2Axx~0x2Bxx / 描述符 0x29xx，SIG 官方 Assigned Numbers 数据机生成 615 项）见 [16-标准UUID全表](16-标准UUID全表.md)。字段结构与语义以缓存规范 GATT_Specification_Supplement.pdf（2026-02-05 版）为准——注意现行 GSS 正文已不含 UUID 编号，编号以 Assigned Numbers 为单一事实源。
+
 ## 五、服务发现完整流程（抓包级）
 
 以"发现服务→发现特征→订阅电量"为例（C=客户端，S=服务器）：

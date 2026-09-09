@@ -22,7 +22,7 @@
 - **verification**: validate + UUID 抽样比对
 - **rollback**: 不需要
 - **预估**: 2 轮
-- **status**: approved → **blocked-pending-manual**（2026-09-05 复核：GSS 下载页为 JS 渲染无静态直链，需浏览器人工保存 PDF 至 80-参考资料/bluetooth/ 后告知即可完成回填）
+- **status**: **completed**（2026-09-10：现行 GSS PDF 经 Azure blob 直链入缓存（btprodspecificationrefs.blob.core.windows.net，2026-02-05 版；正文已不含 UUID 编号）；UUID 全表改由 SIG 官方 YAML 仓库（bitbucket.org/bluetooth-SIG/public，assigned_numbers/uuids）机器生成为 [BLE/16-标准UUID全表](../50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md)（声明 4/服务 76/特征 511/描述符 24，锚点 0x2A00/0x1800/0x2902 核对通过）；04-ATT与GATT 速查节已挂全表交叉引用）
 
 ## EP-3 · 命名规范自动化守卫（远期）
 
