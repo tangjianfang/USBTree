@@ -1,6 +1,6 @@
 # Evolve Log · USBTree
 
-- verify: `bash tools/validate.sh`（自定义结构校验：链接/代码围栏/图谱引用/frontmatter；基线 4/4 绿）
+- verify: `bash tools/validate.sh`（链接/围栏/图谱/frontmatter/边端点/标题/导出/H1 唯一/命名区块/孤页/统计；基线 11/11 绿）
 - pointer: #79（下一轮）
 - rounds done: 78
 - checkpoint: 终局（2026-09-10）——run3 止于 #78（2026-09-08 00:37 最后提交，休眠杀进程后未再派发）；#79 半成品（msc 块数 16 位域）由 ROADMAP T1 收口（usb-labs 71a770a，test_msc 39/39）；累计 78 轮，EP-4 S1~S5+收口全落盘，真机验收移交 ROADMAP T5

@@ -13,7 +13,7 @@
 | USB-TypeC-Spec-2.5-2026.zip | USB Type-C Cable and Connector Release 2.5（2026-03，**现行最新**） | [usb.org](https://www.usb.org/sites/default/files/USB%20Type-C%202.5%20Release%20202603.zip) | [Type-C 详解](../30-枝干-接口与供电/02-USBType-C详解.md) |
 | USB-TypeC-Spec-R2.0.pdf | Type-C Release 2.0（2019-08，可读性好的单 PDF，历史参考） | [usb.org](https://www.usb.org/sites/default/files/USB%20Type-C%20Spec%20R2.0%20-%20August%202019.pdf) | 同上 |
 | UCSI-3.1.zip | USB Type-C Connector System Software Interface (UCSI) 3.1 | [usb.org](https://www.usb.org/sites/default/files/USB%20Type-C%20Connector%20System%20Software%20Interface%20UCSI%20Revision_3.1.zip) | [PD 深入](../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md)（OS 侧接口） |
-| USB-PD-3.2-V1.2.zip | **USB Power Delivery Specification Rev 3.2 Ver 1.2**（2026-05，含 R3.2 V1.1/R2.0 历史版、PDUSB 伴随规范——**EP-1 材料解锁**） | [usb.org 文档库](https://www.usb.org/document-library/usb-power-delivery)（公开直链） | [PD 深入](../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md)、[PD 消息全表](../30-枝干-接口与供电/08-USBPD消息全表.md) |
+| USB-PD-3.2-V1.2.zip | **USB Power Delivery Specification Rev 3.2 Ver 1.2**（公开包 `USB_PD_R3.2_V1.2_2.zip`，含 R3.2 V1.1/R2.0 历史版与 PDUSB 伴随规范——**EP-1 材料解锁**。文档库另有更新包，换版时改 `tools/spec_fetch.sh` 并复核 30/08） | [usb.org 直链](https://www.usb.org/sites/default/files/USB_PD_R3.2_V1.2_2.zip) · [文档库](https://www.usb.org/document-library/usb-power-delivery) | [PD 深入](../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md)、[PD 消息全表](../30-枝干-接口与供电/08-USBPD消息全表.md) |
 | USB2-Electrical-Compliance-v1.08.pdf | USB2 电气合规测试规范 v1.08（2026-04） | [usb.org](https://www.usb.org/sites/default/files/USB2%20Electrical%20Compliance%20Specification%20v1.08.pdf) | [合规测试实操](../70-枝干-调试测试与安全/05-合规测试实操.md) |
 
 ## 二、device-classes/ —— 设备类规范
@@ -35,8 +35,9 @@
 | CCID-1.1.pdf | ICCD/CCID 智能卡类 1.1 | [usb.org](https://www.usb.org/sites/default/files/DWG_Smart-Card_CCID_Rev110.pdf) | [CCID](../20-枝干-设备类协议/其他设备类/02-CCID智能卡.md) |
 | USBTMC-USB488-1.0.zip | USB Test & Measurement Class 1.0（含 USB488 子类） | [usb.org](https://www.usb.org/document-library/test-measurement-class-specification) | [USBTMC](../20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md) |
 | Billboard-1.2.2.zip | USB Billboard Device Class 1.2.2 | [usb.org](https://www.usb.org/document-library/billboard-device-class-spec-revision-122-and-adopters-agreement) | [长尾设备类](../20-枝干-设备类协议/其他设备类/09-长尾设备类-AV-Billboard-Healthcare-I3C.md) |
-| AV-1.0.zip（+AV-BDP-1.0.pdf） | USB Audio/Video Devices 1.0（AVFunction/AVFormat1~3 + Basic Device Profile） | [usb.org 文档库](https://www.usb.org/documents?search=audio+video) | [AV 设备类详解](../20-枝干-设备类协议/其他设备类/10-AV设备类详解.md) |
-| PHDC-1.0.zip | Personal Healthcare Devices 1.0（含勘误） | [usb.org 文档库](https://www.usb.org/documents?search=healthcare) | [PHDC 健康医疗类](../20-枝干-设备类协议/其他设备类/11-PHDC健康医疗类.md) |
+| AV-1.0.zip | USB Audio/Video Devices 1.0（AVFunction/AVFormat1~3） | [usb.org 直链](https://www.usb.org/sites/default/files/USB_AV_Specification_Rev_1.0.zip) | [AV 设备类详解](../20-枝干-设备类协议/其他设备类/10-AV设备类详解.md) |
+| AV-BDP-1.0.pdf | USB AV Basic Device Profile 1.0 | [usb.org 直链](https://www.usb.org/sites/default/files/AV_BDP_v1.0.pdf) | 同上 |
+| PHDC-1.0.zip | Personal Healthcare Devices 1.0（含勘误） | [usb.org 直链](https://www.usb.org/sites/default/files/Personal_Healthcare_1.zip) | [PHDC 健康医疗类](../20-枝干-设备类协议/其他设备类/11-PHDC健康医疗类.md) |
 | *注* | 上表部分 zip 附 `*.txt`（pdftotext 提取文本，便于 grep 检索） | — | — |
 
 ## 三、bluetooth/ —— 蓝牙 SIG 规范
@@ -44,28 +45,31 @@
 | 本地文件 | 规范 | 官方来源 | 知识树对应 |
 |---|---|---|---|
 | Bluetooth-Core-6.0.pdf | Bluetooth Core Specification 6.0（2024，全 6 卷） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/core-specification-6-0/) | [BLE 子树](../50-枝干-无线关联/BLE-低功耗蓝牙/00-BLE概述.md) 全部 |
-| Bluetooth-Core-6.0-Errata-List.pdf | Core 6.0 勘误清单 | 同上 | 同上 |
+| Bluetooth-Core-6.0-Errata-List.pdf | Core 6.0 勘误清单 | **MANUAL**：DocMan `doc_id=588930` 现跳到 [Bluetooth.org 登录页](https://www.bluetooth.com/specifications/specs/core-specification-6-0/)，登录后下载并保存为该文件名（须为 `%PDF`） | 同上 |
 | HOGP-1.0.pdf | HID over GATT Profile (HOGP) 1.0 | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hid-over-gatt-profile-1-0/) | [HOGP](../50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md) |
 | HID-Service-1.1.pdf | HID Service (GATT) 1.1 | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hid-service-specification/) | 同上 |
 | Bluetooth-HID-Profile-1.1.1.pdf | Human Interface Device Profile 1.1.1（经典蓝牙 HID） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/human-interface-device-profile-1-1-1/) | [经典蓝牙 Profile 详解](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
-| A2DP-1.4.1.pdf | Advanced Audio Distribution Profile 1.4.1（2025-06-30） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a2dp-1-4-1/) | [A2DP 编解码与 AVDTP 参数](../50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) |
-| AVDTP-1.3.pdf | A/V Distribution Transport Protocol 1.3（Table 8.6 信令码/§8.21 编码能力） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-distribution-transport-protocol-1-3/) | 同上 |
+| A2DP-1.4.1.pdf | Advanced Audio Distribution Profile 1.4.1（2025-06-30） | **MANUAL**：[bluetooth.com 规范页](https://www.bluetooth.com/specifications/specs/a2dp-1-4-1/) 浏览器下载后保存为该文件名 | [A2DP 编解码与 AVDTP 参数](../50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) |
+| AVDTP-1.3.pdf | A/V Distribution Transport Protocol 1.3（Table 8.6 信令码/§8.21 编码能力） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-distribution-transport-protocol-1-3/) · DocMan `doc_id=260860` | 同上 |
 | AVRCP-1.6.3.pdf | A/V Remote Control Profile 1.6.3（绝对音量/浏览） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-remote-control-profile1-6-3/) | [经典 Profile 详解 · AVRCP](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
 | HFP-1.10.pdf | Hands-Free Profile 1.10（现行最新，AT 命令/eSCO） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hands-free-profile-1-10/) | [经典 Profile 详解 · HFP](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
-| *注* | `files.bluetooth.com` 新链需经中转页取 nonce 直链（见 [docs/lessons.md](../docs/lessons.md) L7）；下载后务必校验 `%PDF` 魔数 | — | — |
+| GATT_Specification_Supplement.pdf | GATT Specification Supplement（现行 GSS；正文不含 UUID 编号，编号见 Assigned Numbers） | [Azure blob 直链](https://btprodspecificationrefs.blob.core.windows.net/gatt-specification-supplement/GATT_Specification_Supplement.pdf) | [标准 UUID 全表](../50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md)、[ATT 与 GATT](../50-枝干-无线关联/BLE-低功耗蓝牙/04-ATT与GATT.md) |
+| *注* | `files.bluetooth.com` 新链需经中转页取 nonce 直链（见 [docs/lessons.md](../docs/lessons.md) L7）。`tools/spec_fetch.sh` 只接受文件头 `%PDF` 或 `PK`，HTML 登录页会判失败并删除。带 `MANUAL:` 的条目不建目录，按日志里的路径手工保存 | — | — |
 
 ## 四、未能直连下载的规范（门控/付费）与官方在线替代
 
+USB PD 3.2 已有公开直链，见第一节 `USB-PD-3.2-V1.2.zip` 与 `bash tools/spec_fetch.sh`。消息编号另与 [Linux 内核 pd.h](https://github.com/torvalds/linux/blob/master/include/linux/usb/pd.h) 交叉验证。
+
 | 规范 | 状态 | 获取途径 |
 |---|---|---|
-| **USB PD 3.1/3.2** | Adopters Agreement 门控，无公开直链 | 在 [usb.org 文档库](https://www.usb.org/documents?search=power+delivery) 检索下载（需接受协议）；本库 [PD 深入](../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md) 的消息编号已与 [Linux 内核 pd.h](https://github.com/torvalds/linux/blob/master/include/linux/usb/pd_01.h) 交叉验证 |
 | xHCI 规范 | USB-IF 会员限定 | 公开替代：[osdev xHCI 页](https://wiki.osdev.org/XHCI)、内核 [xhci.c](https://github.com/torvalds/linux/tree/master/drivers/usb/host) |
-| PTP (ISO 15740) | ISO 付费标准 | 免费近似：[CIPA DC-009 (PTP-IP)](https://www.cipa.jp/std/documents_e/DC-009_E.pdf)、[Microsoft MTP 文档](https://learn.microsoft.com/windows/win32/wmdm/) |
+| PTP (ISO 15740) | ISO 付费标准 | 免费近似是 PTP-IP，即 [CIPA DC-005-2005](https://www.cipa.jp/std/documents/download_e.html?CIPA_DC-005-2005)（在 [CIPA 标准列表](https://www.cipa.jp/e/std/std-sec.html) 点标题下载；旧直链 `DC-009_E.pdf` 已 404，且 DC-009 是 DCF 相机文件规则，不是 PTP-IP）。白皮书直链：[CIPA DC-005 White Paper](https://www.cipa.jp/std/documents/e/CIPA_DC-005_Whitepaper_ENG.pdf)。另见 [Microsoft MTP 文档](https://learn.microsoft.com/windows/win32/wmdm/) |
 | HID over I2C | 微软规范，在线文档形态 | [HID over I2C Guide](https://learn.microsoft.com/windows-hardware/drivers/hid/hid-over-i2c-guide) |
 | Microsoft OS 2.0 Descriptors | 在线文档形态 | [Microsoft OS descriptors](https://learn.microsoft.com/windows-hardware/drivers/usbcon/microsoft-os-2-0-descriptors-specification) |
 | WebUSB | WICG 草案（在线） | [webusb spec](https://wicg.github.io/webusb/) |
 | Wireless USB / MA-USB（历史） | 文档库可下但意义有限 | [文档库检索](https://www.usb.org/documents?search=wireless+usb)；本库说明见 [Wireless USB 历史](../50-枝干-无线关联/99-WirelessUSB与MA-USB历史.md) |
-| BillBoard/AV/Healthcare 等长尾类 | Billboard 已缓存；AV/Healthcare 可从文档库下载 | [定义类码总表](https://www.usb.org/defined-class-codes) + [文档库检索](https://www.usb.org/documents)；本库见 [长尾设备类](../20-枝干-设备类协议/其他设备类/09-长尾设备类-AV-Billboard-Healthcare-I3C.md) |
+
+Billboard、AV-1.0、AV-BDP、PHDC 均已缓存，直链见第二节与 `bash tools/spec_fetch.sh`。类码总表见 [defined-class-codes](https://www.usb.org/defined-class-codes)。
 
 ## 五、官方工具与代码库（在线资源）
 
@@ -84,9 +88,10 @@
 ## 六、如何更新缓存
 
 ```bash
-# 示例：重新下载 USB 4 规范（URL 以官网文档库当前为准）
-curl -fL -o usb-core/USB4-Specification-v2-2025-11.zip \
-  "https://www.usb.org/sites/default/files/USB4%20Specification%20November%202025.zip"
+# 按 tools/spec_fetch.sh 的清单重建全部可直链的缓存（假 PDF/ZIP 会被拒绝并删除）
+bash tools/spec_fetch.sh
+# 只拉某一份，例如 USB4
+bash tools/spec_fetch.sh USB4
 ```
 
 注意：usb.org 直链命名随版本变化（如 USB 2.0 从 `usb2.0.pdf` 变为 `usb_20_YYYYMMDD.zip`），失效时以 [文档库](https://www.usb.org/documents) 页面为准；蓝牙规范直链格式为 `bluetooth.org/DocMan/handlers/DownloadDoc.ashx?doc_id=NNNNN`，可从各规范落地页获取。

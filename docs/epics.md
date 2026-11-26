@@ -22,7 +22,7 @@
 - **verification**: validate + UUID 抽样比对
 - **rollback**: 不需要
 - **预估**: 2 轮
-- **status**: **completed**（2026-09-10：现行 GSS PDF 经 Azure blob 直链入缓存（btprodspecificationrefs.blob.core.windows.net，2026-02-05 版；正文已不含 UUID 编号）；UUID 全表改由 SIG 官方 YAML 仓库（bitbucket.org/bluetooth-SIG/public，assigned_numbers/uuids）机器生成为 [BLE/16-标准UUID全表](../50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md)（声明 4/服务 76/特征 511/描述符 24，锚点 0x2A00/0x1800/0x2902 核对通过）；04-ATT与GATT 速查节已挂全表交叉引用）
+- **status**: **completed**（2026-09-10：现行 GSS PDF 经 Azure blob 直链入缓存（btprodspecificationrefs.blob.core.windows.net；正文已不含 UUID 编号）；UUID 全表改由 SIG 官方 YAML 仓库（bitbucket.org/bluetooth-SIG/public，assigned_numbers/uuids）机器生成为 [BLE/16-标准UUID全表](../50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md)（声明 4/服务 76/特征 511/描述符 24，锚点 0x2A00/0x1800/0x2902 核对通过）；04-ATT与GATT 速查节已挂全表交叉引用。缓存索引与 `tools/spec_fetch.sh` 已登记 `bluetooth/GATT_Specification_Supplement.pdf`）
 
 ## EP-3 · 命名规范自动化守卫（远期）
 
@@ -33,7 +33,7 @@
 - **verification**: validate 新检查 + 抽样比对
 - **rollback**: 保留旧表一版
 - **预估**: 3 轮
-- **status**: approved（2026-09-05，立即执行）
+- **status**: **completed**（324f950：`graph/naming.yaml` 单一事实源 + `tools/gen_naming.py` 重写速查表命名区块 + `tools/validate.sh` 检查 9 只读核对新鲜度。此前状态仍写 approved，现与实现对齐）
 
 ## EP-4 · 工程师通信控制台（Communication Console）
 

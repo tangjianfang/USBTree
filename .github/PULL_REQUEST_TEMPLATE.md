@@ -1,5 +1,5 @@
 <!-- 提交前自查 -->
-- [ ] `bash tools/validate.sh` 8/8 通过
+- [ ] `bash tools/validate.sh` 11/11 通过
 - [ ] 图谱数据变更已重新生成 `graph/export.mmd`
 - [ ] 新增数值有规范出处标注；不确定处标"见规范原文"而非编造
 - [ ] 未提交任何官方规范二进制（gitignore 会拦截，请勿绕过）

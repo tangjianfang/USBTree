@@ -3,7 +3,7 @@
 # 幂等：已带 frontmatter（首行为 ---）的文件自动跳过
 # 用法: bash tools/inject_frontmatter.sh
 set -uo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 
 layer_of() {
   case "$1" in

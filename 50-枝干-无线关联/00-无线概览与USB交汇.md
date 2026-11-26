@@ -20,7 +20,7 @@ doc-path: 50-枝干-无线关联/00-无线概览与USB交汇.md
 | (b) HID 跨传输 | 同一份 HID 报告描述符同时服务 USB 与 BLE（HOGP） | 双模键盘、蓝牙鼠标插线变有线 |
 | (c) 2.4G 私有无线 dongle | 厂商私有射频协议 ↔ USB-HID 的"翻译器" | 罗技 Unifying、雷蛇 HyperSpeed 键鼠套装 |
 
-本枝干第 1 篇即本文，专门把这三个交汇点讲透；后续 BLE 子树的 8 个文件专注 BLE 本体，只在必要处回扣 USB。
+本枝干第 1 篇即本文，专门把这三个交汇点讲透；后续 BLE 子树共 17 篇专注 BLE 本体，只在必要处回扣 USB。
 
 ## 二、全景图
 
@@ -147,6 +147,14 @@ flowchart TD
 | [06-SMP安全与配对](BLE-低功耗蓝牙/06-SMP安全与配对.md) | 配对、密钥、加密与攻击面 |
 | [07-HOGP-HIDoverGATT](BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md) | BLE 键鼠：回到 USB 知识树的主干道 |
 | [08-经典蓝牙与BLE对比](BLE-低功耗蓝牙/08-经典蓝牙与BLE对比.md) | BR/EDR vs BLE、LE Audio、选型 |
+| [09-LEAudio与LC3](BLE-低功耗蓝牙/09-LEAudio与LC3.md) | LE Audio、LC3、广播音频 |
+| [10-Mesh网络概述](BLE-低功耗蓝牙/10-Mesh网络概述.md) | Mesh 泛洪、中继与 GATT 承载 |
+| [11-经典蓝牙Profile详解](BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) | HID / HFP / AVRCP / A2DP 骨架 |
+| [12-LLCP控制过程全表](BLE-低功耗蓝牙/12-LLCP控制过程全表.md) | 链路层控制 Opcode 全表 |
+| [13-测向与信道探测](BLE-低功耗蓝牙/13-测向与信道探测.md) | AoA/AoD 与 Channel Sounding |
+| [14-RF物理层参数全表](BLE-低功耗蓝牙/14-RF物理层参数全表.md) | PHY、发射功率与灵敏度 |
+| [15-A2DP编解码与AVDTP参数](BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) | SBC/AAC 位级与 AVDTP 信令 |
+| [16-标准UUID全表](BLE-低功耗蓝牙/16-标准UUID全表.md) | SIG Assigned Numbers 标准 UUID |
 
 ## 相关节点
 

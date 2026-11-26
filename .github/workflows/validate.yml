@@ -10,5 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: 全库一致性校验（链接/围栏/图谱/frontmatter/标题）
+      - name: 安装命名区块校验依赖（PyYAML）
+        run: python3 -m pip install --disable-pip-version-check pyyaml
+      - name: 全库一致性校验（链接/围栏/图谱/frontmatter/标题/孤页/统计）
         run: bash tools/validate.sh

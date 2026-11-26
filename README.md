@@ -2,14 +2,15 @@
 
 [![validate](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml/badge.svg)](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-117%20%E7%AF%87%C2%B719700%2B%E8%A1%8C-blue)
+![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-109%20%E7%AF%87%C2%B719721%E8%A1%8C-blue)
+<!-- usbtree-stats: articles=109 lines=19721 entities=89 edges=85 specs=38 checks=11 -->
 
 > **知识树 × 关系图谱 × 可执行技能 × 官方规范缓存**
 >
 > English TL;DR — A Chinese knowledge system for USB & Bluetooth LE: a hierarchical
-> knowledge tree (117 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,
+> knowledge tree (109 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,
 > Type-C/PD, USB4 and BLE), a typed knowledge graph (89 entities / 85 relations),
-> executable agent skills, and an index of 36 cached official specifications.
+> executable agent skills, and an index of 38 cached official specifications.
 > Content is MIT-licensed; third-party specification binaries are not
 > redistributed — fetch them via [80-参考资料/README.md](80-参考资料/README.md)
 > or `bash tools/spec_fetch.sh`.
@@ -21,7 +22,7 @@
 | 部位 | 内容 | 位置 |
 |---|---|---|
 | 🌱 根 | 总览与地图 | 本文件、[知识树总图](00-知识树总图.md) |
-| 🌳 树干 | USB 核心协议（12 篇） | [10-树干-USB核心/](10-树干-USB核心/01-概述与版本演进.md) |
+| 🌳 树干 | USB 核心协议（13 篇） | [10-树干-USB核心/](10-树干-USB核心/01-概述与版本演进.md) |
 | 🌿 主枝 | 六大枝干：设备类 / 接口与供电 / 高速演进 / 无线关联 / 主机侧实现 / 调试安全 | `20~70` 目录 |
 | 🍃 分枝→叶 | HID 报告描述符、BOT 传输、PD 协商、GATT 服务……直到单个字段/命令/电阻值 | 各枝干内的文件与小节 |
 
@@ -46,18 +47,20 @@ USBTree/
 │   ├── Audio-UAC/             (4 篇: 概述/UAC1/UAC2-3/实体与请求全表)
 │   ├── Video-UVC/             (2 篇: UVC 详解/控制与格式全表)
 │   └── 其他设备类/            (11 篇: DFU/CCID/PTP-MTP/打印机/蓝牙控制器/WebUSB/MIDI/USBTMC/长尾类/AV/PHDC)
-├── 30-枝干-接口与供电/        (9 篇: 接口形态/Type-C/BC1.2/USB PD/AltMode/OTG与HNP/PD深入/PD消息全表/TypeC状态机)
-├── 40-枝干-高速演进/          (7 篇: USB3.x/USB4 与雷电/版本对比/USB3x包格式与LTSSM/USB4深入/USB3x规范级/USB4规范级)
+├── 30-枝干-接口与供电/        (9 篇 + 00-索引: 接口形态/Type-C/BC1.2/USB PD/AltMode/OTG与HNP/PD深入/PD消息全表/TypeC状态机)
+├── 40-枝干-高速演进/          (9 篇 + 00-索引: USB3.x/USB4 与雷电/版本对比/USB3x包格式与LTSSM/USB4深入/USB3x规范级/USB4规范级/DROM/CM指南)
 ├── 50-枝干-无线关联/
 │   ├── 00-无线概览与USB交汇.md · 99-WirelessUSB与MA-USB历史.md
-│   └── BLE-低功耗蓝牙/        (16 篇: 架构HCI/链路层/广播/ATT-GATT/GAP/SMP/HOGP/对比/LEAudio/Mesh/经典Profile/LLCP全表/测向与信道探测/RF参数全表/A2DP参数)
-├── 60-枝干-主机侧与实现/      (9 篇: 主机控制器栈/操作系统/固件栈/libusb/实战TinyUSB/实战libusb/实战Gadget与usbip/Windows驱动开发/macOS与Linux主机开发)
-├── 70-枝干-调试测试与安全/    (5 篇: 抓包/排查手册/合规认证/USB 安全与 BadUSB/合规测试实操)
-├── 80-参考资料/               (官方规范原文缓存: 36 份 228M（含 HFP/AVRCP/AVDTP） + 索引 README + 提取文本)
+│   └── BLE-低功耗蓝牙/        (17 篇: 架构HCI/链路层/广播/ATT-GATT/GAP/SMP/HOGP/对比/LEAudio/Mesh/经典Profile/LLCP全表/测向与信道探测/RF参数全表/A2DP参数/标准UUID全表)
+├── 60-枝干-主机侧与实现/      (9 篇 + 00-索引: 主机控制器栈/操作系统/固件栈/libusb/实战TinyUSB/实战libusb/实战Gadget与usbip/Windows驱动开发/macOS与Linux主机开发)
+├── 70-枝干-调试测试与安全/    (5 篇 + 00-索引: 抓包/排查手册/合规认证/USB 安全与 BadUSB/合规测试实操)
+├── 80-参考资料/               (官方规范原文缓存: 38 份（清单 tools/spec_fetch.sh，二进制不入库） + 索引 README + 提取文本)
 ├── 90-附录/                   (3 篇: 术语表/速查表大全/时序参数全表)
-├── graph/                     (知识图谱: entities.yaml 实体表 · relations.yaml 关系表 · export.mmd 全景图)
+├── docs/                      (epics · evolve-log · lessons)
+├── graph/                     (entities.yaml · relations.yaml · naming.yaml · export.mmd)
+├── scripts/                   (retired/ 历史驱动脚本)
 ├── skills/                    (Agent 技能包: 枚举排查/抓包分析/规范检索/设备构建)
-├── tools/                     (validate.sh · gen_graph.sh · inject_frontmatter.sh · spec_extract.sh)
+├── tools/                     (validate.sh · gen_graph.sh · gen_naming.py · gen_stats.py · inject_frontmatter.sh · spec_extract.sh · spec_fetch.sh · check_orphans.py)
 └── COVERAGE.md                (覆盖率记分卡: 分领域百分比与维护规则)
 ```
 
@@ -71,7 +74,10 @@ USBTree/
 - 理解 U 盘/读卡器 → [MSC 与 BOT](20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md)
 - 做声卡/麦克风 → [UAC 概述](20-枝干-设备类协议/Audio-UAC/00-UAC概述.md)
 - 做摄像头/采集卡 → [UVC 详解](20-枝干-设备类协议/Video-UVC/00-UVC详解.md)
-- 玩充电头/快充/线缆 → [Type-C](30-枝干-接口与供电/02-USBType-C详解.md) → [USB PD](30-枝干-接口与供电/04-USBPD协议.md)
+- 玩充电头/快充/线缆 → [接口与供电索引](30-枝干-接口与供电/00-索引.md) → [Type-C](30-枝干-接口与供电/02-USBType-C详解.md) → [USB PD](30-枝干-接口与供电/04-USBPD协议.md)
+- 看 USB3 / USB4 / DROM / 连接管理器 → [高速演进索引](40-枝干-高速演进/00-索引.md)
+- 写主机驱动（含 Windows / macOS / Linux） → [主机侧索引](60-枝干-主机侧与实现/00-索引.md)
+- 排查、合规与安全 → [调试测试与安全索引](70-枝干-调试测试与安全/00-索引.md)
 - 搞蓝牙/BLE → [无线概览：USB 与 BLE 的交汇](50-枝干-无线关联/00-无线概览与USB交汇.md) → [BLE 子树](50-枝干-无线关联/BLE-低功耗蓝牙/00-BLE概述.md)
 - 设备枚举不出来 → [枚举失败排查手册](70-枝干-调试测试与安全/02-枚举失败排查手册.md)
 - 抓 USB 包 → [协议分析仪与抓包](70-枝干-调试测试与安全/01-协议分析仪与抓包.md)
@@ -97,14 +103,14 @@ USBTree/
 
 ## 🤖 Agent 使用指南（Graph + Skill 双引擎）
 
-- **Graph 回答"知道什么"**：`graph/entities.yaml`（86 个实体：协议/类/机制，带类码与主文档）+ `graph/relations.yaml`（85 条类型化关系边：carries/reuses/supersedes/tunnels/enables…，每条边带 evidence 指向正文）。查询示例："HOGP reuses HID-ReportDescriptor"——跨传输复用、代际更替（BOT→UAS、ECM→NCM、OTG→DRP）、隧道承载（USB4→USB3/PCIe/DP）全部结构化可查；全景图见 `graph/export.mmd`。
+- **Graph 回答"知道什么"**：`graph/entities.yaml`（89 个实体：协议/类/机制，带类码与主文档）+ `graph/relations.yaml`（85 条类型化关系边：carries/reuses/supersedes/tunnels/enables…，每条边带 evidence 指向正文）。查询示例："HOGP reuses HID-ReportDescriptor"——跨传输复用、代际更替（BOT→UAS、ECM→NCM、OTG→DRP）、隧道承载（USB4→USB3/PCIe/DP）全部结构化可查；全景图见 `graph/export.mmd`。
 - **Skill 回答"怎么做"**：`skills/` 下四个技能包，均含触发条件、分步动作、验证命令与回退路径——
   1. [usb-enum-troubleshoot](skills/usb-enum-troubleshoot/SKILL.md)：枚举失败分阶段排查；
   2. [usb-capture-analysis](skills/usb-capture-analysis/SKILL.md)：trace 分析方法论与异常特征表；
   3. [usb-spec-lookup](skills/usb-spec-lookup/SKILL.md)：速查表→知识树→缓存规范 PDF 的四级检索策略；
   4. [build-usb-device](skills/build-usb-device/SKILL.md)：TinyUSB/libusb/gadget 三路工程模板路由。
 - **激活方式**：将 `skills/<name>/` 拷贝到所用 Agent 平台的技能目录（如 ZCode 的 skills 目录），或直接把 SKILL.md 作为系统提示的一部分引用。
-- **一致性保障**：`bash tools/validate.sh`（链接/围栏/图谱引用/frontmatter 四项检查）；`bash tools/gen_graph.sh` 在改动关系表后重新生成全景图。
+- **一致性保障**：`bash tools/validate.sh`（共 11 项检查：链接/围栏/图谱引用/frontmatter/边端点/标题/导出/H1 唯一/命名区块/孤页/统计）；`bash tools/gen_graph.sh` 在改动关系表后重新生成全景图。数字以 `python3 tools/gen_stats.py` 为准。
 
 ## 🧾 声明
 

@@ -14,7 +14,7 @@
 
 ## 硬性门槛（PR 必须满足）
 
-1. `bash tools/validate.sh` **8/8 通过**——包括 frontmatter title≡H1、图谱边端点存在性；
+1. `bash tools/validate.sh` **11/11 通过**——包括 frontmatter title≡H1、图谱边端点存在性、孤页可达与统计数字；
 2. 不引入 TODO/占位符；不确定的数值写"见规范原文"，**严禁编造**；
 3. 规范数值优先用 `bash tools/spec_extract.sh <缓存文件> [检索词]` 从原文提取并标注章节；
 4. 不重新分发官方规范二进制（许可约束，见 [LICENSE](LICENSE) 范围说明）；
@@ -34,7 +34,7 @@
 ## 本地验证
 
 ```bash
-bash tools/validate.sh        # 8 项检查：链接/围栏/图谱引用/frontmatter/边端点/title≡H1/导出新鲜度/H1 唯一
+bash tools/validate.sh        # 11 项检查：链接/围栏/图谱引用/frontmatter/边端点/title≡H1/导出新鲜度/H1 唯一/命名区块/孤页/统计
 bash tools/gen_graph.sh       # 图谱数据变更后重新生成 export.mmd
 bash tools/spec_extract.sh "80-参考资料/usb-core/USB4-Specification-v2-2025-11.zip" "tunnel"   # 规范检索
 ```

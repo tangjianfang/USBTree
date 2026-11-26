@@ -105,6 +105,6 @@ BOT 的性能天花板来自"一条命令未完成不能发下一条"——UAS �
 
 ## 相关节点
 
-- 下一叶: [01-SCSI命令与UFI.md](01-SCSI命令与UFI.md)
+- 下一叶: [01-SCSI命令与UFI.md](01-SCSI命令与UFI.md) · [02-SCSI操作码与Sense全表](02-SCSI操作码与Sense全表.md)
 - 树干: [错误处理与可靠性](../../10-树干-USB核心/11-错误处理与可靠性.md)（STALL/HALT 机制的总纲）
 - 枝干: [高速演进](../../40-枝干-高速演进/01-USB3x与SuperSpeed.md)（UAS 为什么属于 3.x 时代）

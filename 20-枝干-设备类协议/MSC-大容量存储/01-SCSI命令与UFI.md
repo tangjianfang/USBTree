@@ -115,6 +115,6 @@ CSW(13B): Tag 配对, Residue=0, Status=0x00
 
 ## 相关节点
 
-- 上一叶: [00-MSC概述与BOT.md](00-MSC概述与BOT.md)
+- 上一叶: [00-MSC概述与BOT.md](00-MSC概述与BOT.md) · 规范级全表: [02-SCSI操作码与Sense全表](02-SCSI操作码与Sense全表.md)
 - 树干: [包格式与事务](../../10-树干-USB核心/05-包格式与事务.md)
 - 对比: [PTP 与 MTP](../其他设备类/03-PTP与MTP.md)（文件级访问为何取代块级）
