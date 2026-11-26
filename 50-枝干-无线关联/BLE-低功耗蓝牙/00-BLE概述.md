@@ -144,6 +144,14 @@ BLE 是出货量最大的无线协议之一，年出货芯片数十亿颗，几�
 | [06-SMP安全与配对](06-SMP安全与配对.md) | 配对方法、ECDH、密钥分发、攻击面 |
 | [07-HOGP-HIDoverGATT](07-HOGP-HIDoverGATT.md) | BLE 键鼠与 USB-HID 的同构 |
 | [08-经典蓝牙与BLE对比](08-经典蓝牙与BLE对比.md) | BR/EDR 对比、LE Audio、选型 |
+| [09-LEAudio与LC3](09-LEAudio与LC3.md) | LE Audio、LC3 与广播音频 |
+| [10-Mesh网络概述](10-Mesh网络概述.md) | 管理型泛洪、中继、与 GATT 的交集 |
+| [11-经典蓝牙Profile详解](11-经典蓝牙Profile详解.md) | 经典 HID / HFP / AVRCP / A2DP |
+| [12-LLCP控制过程全表](12-LLCP控制过程全表.md) | LL Control PDU Opcode |
+| [13-测向与信道探测](13-测向与信道探测.md) | AoA/AoD、Channel Sounding |
+| [14-RF物理层参数全表](14-RF物理层参数全表.md) | PHY 速率、功率与灵敏度 |
+| [15-A2DP编解码与AVDTP参数](15-A2DP编解码与AVDTP参数.md) | SBC/AAC 信息元素与 AVDTP 信令码 |
+| [16-标准UUID全表](16-标准UUID全表.md) | 声明/服务/特征/描述符 16-bit UUID |
 
 ## 相关节点
 

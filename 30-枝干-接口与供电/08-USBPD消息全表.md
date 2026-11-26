@@ -290,4 +290,4 @@ BIST Carrier Mode 持续 **30~60 ms**（内核 `PD_T_BIST_CONT_MODE` 典型 50 m
 - [05-AlternateMode与E-marker](05-AlternateMode与E-marker.md)：VDM/SOP' 的应用层
 - ../10-树干-USB核心/08-枚举流程与标准请求.md：枚举请求与本篇 Request 消息的对照
 - ../40-枝干-高速演进/05-USB4深入-路由隧道与配置.md：Enter_USB/EUDO 的去向
-- ../80-参考资料/README.md：Type-C 2.5 规范缓存（本篇 PD 编号的规范出处待补 PD 本体）
+- ../80-参考资料/README.md：PD 本体已缓存为 `usb-core/USB-PD-3.2-V1.2.zip`（公开直链 USB_PD_R3.2_V1.2_2.zip）；Type-C 2.5 同目录

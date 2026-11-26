@@ -23,7 +23,7 @@ description: 查询 USB/BLE 规范级事实（字段编码、请求码、时序�
 | USB 3.x 链路层/LTSSM/Header | [USB3x 包格式与 LTSSM](../../40-枝干-高速演进/04-USB3x包格式与LTSSM.md) | `usb-core/USB3.2-Specification-2018.zip` |
 | USB4 路由/隧道/配置空间 | [USB4 深入](../../40-枝干-高速演进/05-USB4深入-路由隧道与配置.md) | `usb-core/USB4-Specification-v2-2025-11.zip` |
 | Type-C 引脚/CC/Rp/Rd | [Type-C 详解](../../30-枝干-接口与供电/02-USBType-C详解.md) | `usb-core/USB-TypeC-Spec-2.5-2026.zip`（最新）或 `USB-TypeC-Spec-R2.0.pdf` |
-| PD 消息/PDO/RDO/状态机 | [PD 深入](../../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md) | ⚠️ PD 规范本体被门控未缓存；替代权威：[Linux 内核 pd.h](https://github.com/torvalds/linux/blob/master/include/linux/usb/pd_01.h) |
+| PD 消息/PDO/RDO/状态机 | [PD 深入](../../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md) · [消息全表](../../30-枝干-接口与供电/08-USBPD消息全表.md) | `usb-core/USB-PD-3.2-V1.2.zip`（R3.2 V1.2 公开包，EP-1 已缓存）；内核交叉验证：[pd.h](https://github.com/torvalds/linux/blob/master/include/linux/usb/pd.h) |
 | OTG/SRP/HNP | [OTG 与角色切换](../../30-枝干-接口与供电/06-OTG与角色切换-HNP-SRP.md) | USB2.0 zip 内含 OTG 补充章节 |
 | HID 描述符/Item/类请求 | [HID 枝干](../../20-枝干-设备类协议/HID-人机接口设备/00-HID概述与定位.md) | `device-classes/HID-1.11.pdf`；Usage ID 查 `HID-UsageTables-1.3.pdf` |
 | CDC/ACM/ECM/NCM | [CDC 枝干](../../20-枝干-设备类协议/CDC-通信设备类/00-CDC概述.md) | `device-classes/CDC-1.2.zip`（含 PSTN 子规范） |
@@ -34,9 +34,12 @@ description: 查询 USB/BLE 规范级事实（字段编码、请求码、时序�
 | CCID 消息 | [CCID](../../20-枝干-设备类协议/其他设备类/02-CCID智能卡.md) | `device-classes/CCID-1.1.pdf` |
 | USBTMC/USB488 | [USBTMC](../../20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md) | `device-classes/USBTMC-USB488-1.0.zip` |
 | Billboard | [长尾设备类](../../20-枝干-设备类协议/其他设备类/09-长尾设备类-AV-Billboard-Healthcare-I3C.md) | `device-classes/Billboard-1.2.2.zip` |
+| AV 设备类 | [AV 详解](../../20-枝干-设备类协议/其他设备类/10-AV设备类详解.md) | `device-classes/AV-1.0.zip`、`AV-BDP-1.0.pdf` |
+| PHDC | [PHDC 健康医疗类](../../20-枝干-设备类协议/其他设备类/11-PHDC健康医疗类.md) | `device-classes/PHDC-1.0.zip` |
 | BLE 链路层/GATT/SMP/HOGP | [BLE 子树](../../50-枝干-无线关联/BLE-低功耗蓝牙/00-BLE概述.md) | `bluetooth/Bluetooth-Core-6.0.pdf`（Vol 6=BLE，Vol 3=Host）；HOGP 单行本 `HOGP-1.0.pdf` |
 | 经典蓝牙 Profile（HID/HFP/AVRCP） | [经典 Profile 详解](../../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) | `bluetooth/Bluetooth-HID-Profile-1.1.1.pdf`、`HFP-1.10.pdf`、`AVRCP-1.6.3.pdf` |
-| A2DP/AVDTP 编解码与信令 | [A2DP 编解码与 AVDTP 参数](../../50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) | `bluetooth/A2DP-1.4.1.pdf`、`bluetooth/AVDTP-1.3.pdf`（Table 8.6 信令码） |
+| A2DP/AVDTP 编解码与信令 | [A2DP 编解码与 AVDTP 参数](../../50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) | `bluetooth/A2DP-1.4.1.pdf`（MANUAL，见 spec_fetch）、`bluetooth/AVDTP-1.3.pdf`（Table 8.6 信令码） |
+| GATT 特征字段 / 标准 UUID | [ATT 与 GATT](../../50-枝干-无线关联/BLE-低功耗蓝牙/04-ATT与GATT.md) · [标准 UUID 全表](../../50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md) | `bluetooth/GATT_Specification_Supplement.pdf`（EP-2；UUID 编号以全表为准） |
 | 合规测试（眼图/TestMode/USBCV） | [合规测试实操](../../70-枝干-调试测试与安全/05-合规测试实操.md) | `usb-core/USB2-Electrical-Compliance-v1.08.pdf` |
 | 类代码总表 | [设备类索引](../../20-枝干-设备类协议/00-设备类索引.md) | 联网：[USB-IF defined-class-codes](https://www.usb.org/defined-class-codes) |
 
