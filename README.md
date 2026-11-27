@@ -56,11 +56,12 @@ USBTree/
 ├── 70-枝干-调试测试与安全/    (5 篇 + 00-索引: 抓包/排查手册/合规认证/USB 安全与 BadUSB/合规测试实操)
 ├── 80-参考资料/               (官方规范原文缓存: 38 份（清单 tools/spec_fetch.sh，二进制不入库） + 索引 README + 提取文本)
 ├── 90-附录/                   (3 篇: 术语表/速查表大全/时序参数全表)
+├── ai-kb/                     (给 AI 参考的技术文档: index.md · 38 个主题 · llms-full.md；python3 tools/ai-kb/build_kb.py 重建)
 ├── docs/                      (epics · evolve-log · lessons)
 ├── graph/                     (entities.yaml · relations.yaml · naming.yaml · export.mmd)
 ├── scripts/                   (retired/ 历史驱动脚本)
 ├── skills/                    (Agent 技能包: 枚举排查/抓包分析/规范检索/设备构建)
-├── tools/                     (validate.sh · gen_graph.sh · gen_naming.py · gen_stats.py · inject_frontmatter.sh · spec_extract.sh · spec_fetch.sh · check_orphans.py)
+├── tools/                     (validate.sh · gen_graph.sh · gen_naming.py · gen_stats.py · inject_frontmatter.sh · spec_extract.sh · spec_fetch.sh · check_orphans.py · ai-kb/build_kb.py)
 └── COVERAGE.md                (覆盖率记分卡: 分领域百分比与维护规则)
 ```
 
@@ -110,7 +111,8 @@ USBTree/
   3. [usb-spec-lookup](skills/usb-spec-lookup/SKILL.md)：速查表→知识树→缓存规范 PDF 的四级检索策略；
   4. [build-usb-device](skills/build-usb-device/SKILL.md)：TinyUSB/libusb/gadget 三路工程模板路由。
 - **激活方式**：将 `skills/<name>/` 拷贝到所用 Agent 平台的技能目录（如 ZCode 的 skills 目录），或直接把 SKILL.md 作为系统提示的一部分引用。
-- **一致性保障**：`bash tools/validate.sh`（共 11 项检查：链接/围栏/图谱引用/frontmatter/边端点/标题/导出/H1 唯一/命名区块/孤页/统计）；`bash tools/gen_graph.sh` 在改动关系表后重新生成全景图。数字以 `python3 tools/gen_stats.py` 为准。
+- **给 AI 检索的派生文库**：`ai-kb/` 把正文收成带 frontmatter 的主题文件（用途与重建方式见 [ai-kb/README.md](ai-kb/README.md)）。它是生成物，不计入上面的篇数；改完树干/枝干后在仓库根目录运行 `python3 tools/ai-kb/build_kb.py`。
+- **一致性保障**：`bash tools/validate.sh`（共 11 项检查：链接/围栏/图谱引用/frontmatter/边端点/标题/导出/H1 唯一/命名区块/孤页/统计）；`bash tools/gen_graph.sh` 在改动关系表后重新生成全景图。数字以 `python3 tools/gen_stats.py` 为准。`ai-kb/` 不参与内容页检查与篇数统计。
 
 ## 🧾 声明
 

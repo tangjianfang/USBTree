@@ -11,6 +11,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent.parent
+# 只统计知识树正文。ai-kb/ 由 tools/ai-kb/build_kb.py 从正文派生，不计入篇数与行数。
 CONTENT_TOP = ("10-", "20-", "30-", "40-", "50-", "60-", "70-", "90-")
 STATS_FILES = ("README.md", "COVERAGE.md", "00-知识树总图.md")
 
