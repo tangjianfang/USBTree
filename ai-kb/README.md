@@ -22,6 +22,6 @@
 python3 tools/ai-kb/build_kb.py
 ```
 
-脚本用仓库内相对路径读取当前检出，原地覆盖本目录的 `index.md`、主题文件和 `llms-full.md`，保留本 README。frontmatter 的 `usbtree_commit` 是运行时的 `git rev-parse --short HEAD`。正文勘误先提交、再运行本脚本，这个字段才对得上被抽进去的原文。
+脚本用仓库内相对路径读取当前检出，原地覆盖本目录的 `index.md`、主题文件和 `llms-full.md`，保留本 README。frontmatter 的 `usbtree_commit` 是这些原文路径上最近一次提交的短哈希；原文有未提交改动时加 `-dirty`。只提交 `ai-kb/` 不会让这个字段跟着变，因此在正文未改时重复运行是空操作。
 
 生成器在 [tools/ai-kb/](../tools/ai-kb/build_kb.py)：`topics.py` 定义主题与核心事实，`build_kb.py` 负责清洗和写出文件。

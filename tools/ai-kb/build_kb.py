@@ -3,7 +3,7 @@
 
 在仓库根目录运行：python3 tools/ai-kb/build_kb.py
 原地覆盖 ai-kb/ 下的生成文件，保留手写的 ai-kb/README.md。
-usbtree_commit 取当前 HEAD（短哈希），应在正文勘误提交之后再跑，使 frontmatter 对得上被抽取的原文。
+usbtree_commit 取最近一次改动所抽取原文的短哈希（工作区有未提交改动时加 -dirty）。提交本目录不会让该字段空转。
 """
 import os, re, posixpath, datetime, sys, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -16,7 +16,21 @@ os.makedirs(OUT, exist_ok=True)
 for name in os.listdir(OUT):
     if name.endswith(".md") and name != "README.md":
         os.remove(os.path.join(OUT, name))
-commit = subprocess.run(["git", "-C", REPO, "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
+
+def source_commit(paths):
+    """最近一次改动被抽取原文的提交。提交 ai-kb 自身不会让这个字段空转。"""
+    log = subprocess.run(
+        ["git", "-C", REPO, "log", "-1", "--format=%h", "--", *paths],
+        capture_output=True, text=True, check=True)
+    commit = log.stdout.strip() or subprocess.run(
+        ["git", "-C", REPO, "rev-parse", "--short", "HEAD"],
+        capture_output=True, text=True, check=True).stdout.strip()
+    dirty = subprocess.run(
+        ["git", "-C", REPO, "status", "--porcelain", "--", *paths],
+        capture_output=True, text=True, check=True).stdout.strip()
+    return commit + ("-dirty" if dirty else "")
+
+commit = source_commit(sorted({s for t in TOPICS for s in t["sources"]}))
 src2kb = {s: t["id"] for t in TOPICS for s in t["sources"]}
 EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200d]")
 NAV = re.compile(r"知识树位置|上一叶|下一叶|返回|父节点|前置|相邻叶子|规范缓存索引|下一篇|上一篇")
