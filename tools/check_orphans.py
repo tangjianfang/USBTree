@@ -20,7 +20,9 @@ def is_content(rel: str) -> bool:
 
 def iter_md():
     for p in ROOT.rglob("*.md"):
-        if any(part.startswith(".") for part in p.relative_to(ROOT).parts):
+        rel = p.relative_to(ROOT)
+        # ai-kb/ 是 tools/ai-kb/build_kb.py 的派生产物，不参与内容页入链/可达性。
+        if rel.parts[:1] == ("ai-kb",) or any(part.startswith(".") for part in rel.parts):
             continue
         yield p
 

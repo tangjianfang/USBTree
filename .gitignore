@@ -9,3 +9,5 @@
 gs.tmp.json
 *.tmp
 !tools/**
+__pycache__/
+*.pyc

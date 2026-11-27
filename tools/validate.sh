@@ -2,6 +2,7 @@
 # USBTree 全库一致性校验：链接 / 代码围栏 / 图谱引用 / frontmatter 覆盖 / 关系边端点 /
 # title≡H1 / 导出新鲜度 / H1 唯一 / 命名区块 / 孤页可达 / 统计数字
 # 用法: bash tools/validate.sh   （退出码 0 = 全部通过）
+# ai-kb/ 是 tools/ai-kb/build_kb.py 的派生产物，不参与链接/围栏/内容页/篇数统计。
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 rc=0
@@ -30,7 +31,7 @@ while IFS= read -r f; do
       esac
     fi
   done < <(grep -oE '\]\([^)#][^)]*\)' "$f" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//')
-done < <(find . -name '*.md' -type f)
+done < <(find . -name '*.md' -type f -not -path './ai-kb/*')
 [ "$broken" -eq 0 ] && echo "  通过（另有 $specinfo 条规范二进制引用，按预期仅存在于本地缓存）" || rc=1
 
 echo "== 2/11 代码围栏闭合 =="
@@ -38,7 +39,7 @@ unbalanced=0
 while IFS= read -r f; do
   n=$(grep -c '^```' "$f")
   if [ $((n % 2)) -ne 0 ]; then echo "  未闭合: $f"; unbalanced=$((unbalanced+1)); fi
-done < <(find . -name '*.md' -type f)
+done < <(find . -name '*.md' -type f -not -path './ai-kb/*')
 [ "$unbalanced" -eq 0 ] && echo "  通过" || rc=1
 
 echo "== 3/11 图谱引用完整性（实体 docs 与边 evidence 必须真实存在） =="
