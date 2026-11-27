@@ -1,6 +1,6 @@
 # COVERAGE · 知识覆盖率记分卡
 
-<!-- usbtree-stats: articles=109 lines=19721 entities=89 edges=85 specs=38 checks=11 -->
+<!-- usbtree-stats: articles=109 lines=19728 entities=89 edges=85 specs=38 checks=11 -->
 
 > 评分日期：2026-09-05（第三轮·EP-1/2/3 执行后；历次轮次见 docs/evolve-log.md） · 评分口径见文末。目标：正文覆盖 ≥95%，计入"缓存规范一步可达"后趋近 99%。
 
