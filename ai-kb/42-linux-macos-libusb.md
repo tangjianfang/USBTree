@@ -15,8 +15,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/60-枝干-主机侧与实现/09-macOS与Linux主机开发.md"
 spec_refs: ["libusb 1.0 API", "Linux kernel USB documentation"]
 related: ["40-host-controller-os", "41-windows-driver", "43-device-firmware"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # libusb 用户态访问、Linux Gadget/usbip、macOS 与 Linux 主机开发

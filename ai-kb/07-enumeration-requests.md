@@ -9,8 +9,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/08-枚举流程与标准请求.md"
 spec_refs: ["USB 2.0 Specification §9.3–9.4"]
 related: ["06-descriptors", "50-debug-troubleshooting", "43-device-firmware"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # 枚举流程、Setup 包与标准请求

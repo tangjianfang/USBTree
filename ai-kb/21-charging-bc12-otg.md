@@ -11,8 +11,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/06-OTG与角色切换-HNP-SRP.md"
 spec_refs: ["Battery Charging 1.2", "USB OTG and Embedded Host Supplement 2.0"]
 related: ["20-connectors-typec", "22-usb-pd", "08-power-management"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # 充电：BC 1.2、专有快充；OTG 与角色切换 HNP/SRP
@@ -39,11 +39,11 @@ generated: 2026-11-27
 
 ### 一、BC 1.2 的三种端口
 
-| 端口类型 | 全称 | 数据 | 最大电流 | 识别特征 |
+| 端口类型 | 全称 | 数据 | 额定电流（BC 1.2 Table 5-2） | 识别特征 |
 | --- | --- | --- | --- | --- |
 | SDP | Standard Downstream Port（标准下行口） | 有（传统 USB） | 500 mA（USB 2.0 配置后；3.0 口为 900 mA） | 行为等同普通 USB 口，需枚举 |
-| CDP | Charging Downstream Port（充电下行口） | 有 | 1.5 A | 内部 D+/D− 经开关短接，但保留与主机数据通路；通过**检测握手**与 DCP 区分 |
-| DCP | Dedicated Charging Port（专用充电口） | 无 | 1.5 A | **D+ 与 D− 短接**（短路阻抗不超过 200 Ω），墙上充电器典型形态 |
+| CDP | Charging Downstream Port（充电下行口） | 有 | ICDP 1.5~5.0 A | D+/D− **不短接**；未连接外设时若在 D+ 上检测到 VDAT_REF~VLGC 之间的电压，就在 D− 上输出 VDM_SRC（§1.4.4），据此与 DCP 区分 |
+| DCP | Dedicated Charging Port（专用充电口） | 无 | IDCP 0.5~5.0 A | **D+ 与 D− 短接**（RDCP_DAT 不超过 200 Ω，§1.4.7），墙上充电器典型形态 |
 
 设计动机：墙上充电器没有主机，若沿用 SDP 规则（必须枚举才能取 500 mA），手机永远只能慢充。DCP 用"D+/D− 短接"这一物理特征让设备**无需枚举**即可判定"可安全取 1.5 A"。
 
@@ -55,11 +55,11 @@ generated: 2026-11-27
 sequenceDiagram
     participant P as 外设/手机
     participant S as 端口（充电器或主机）
-    P->>S: 1. 数据触点检测 DCD：D+ 施加检测电平，观察 D− 是否跟随
-    Note over P,S: 窗口约 900 ms（TDCD）；超时按无数据触点继续
+    P->>S: 1. 数据触点检测 DCD：D+ 上开 IDP_SRC，等 D+ 在 VLGC_LOW 保持 TDCD_DBNC
+    Note over P,S: 超时 TDCD_TIMEOUT 300~900 ms（Table 5-5，§3.2.3）；超时直接进入主检测
     P->>S: 2. 主检测 Primary：确认 D+/D− 是否短接
     alt D− 跟随（短接）
-        P->>P: 判定 DCP（或 CDP 候选）→ 可取 1.5 A
+        P->>P: 判定 DCP（或 CDP 候选）→ 可取 IDEV_CHG ≤1.5 A（Table 5-2）
         opt 端口宣称支持 CDP
             P->>S: 3. CDP 握手：D+ 注入检测信号，观察 D− 响应
             S->>P: CDP 应答 → 判定 CDP（1.5 A + 数据）
@@ -135,8 +135,8 @@ QC 走另一条路：**用 D+/D− 电平组合命令充电器改变输出电压
 | 协议 | 通道 | 档位 | 最高功率 | 数据可并行 |
 | --- | --- | --- | --- | --- |
 | BC 1.2 SDP | 枚举+总线规则 | 5 V 固定 | 2.5 W（500 mA） | 是 |
-| BC 1.2 CDP | D± 握手 | 5 V 固定 | 7.5 W（1.5 A） | 是 |
-| BC 1.2 DCP | D± 短接特征 | 5 V 固定 | 7.5 W（1.5 A） | 否 |
+| BC 1.2 CDP | D± 握手 | 5 V 固定 | ICDP 至少 1.5 A，上限 5.0 A（Table 5-2） | 是 |
+| BC 1.2 DCP | D± 短接特征 | 5 V 固定 | IDCP 0.5~5.0 A（Table 5-2） | 否 |
 | Apple 分压 | D± 固定电平 | 5 V 固定 | 12 W（2.4 A） | 否 |
 | QC 2.0 | D± 电平命令 | 5/9/12 V（Class B 加 20 V） | 18~60 W（按档） | 否 |
 | QC 3.0 | D± 电平脉冲 | 3.6~20 V 连续，200 mV 步进 | 同上 | 否 |
@@ -149,7 +149,7 @@ QC 走另一条路：**用 D+/D− 电平组合命令充电器改变输出电压
 
 ### 七、常见故障与误区
 
-- **CDP 名存实亡**：真正实现 CDP 握手的主机极少，市场把"D± 短接的 1.5 A 口"统称 DCP；设备若坚持等 CDP 握手，反而可能识别异常——成熟设备都做成"检测到短接即按 DCP 取电"。
+- **CDP 名存实亡**（工程经验观察，非 BC 1.2 规范内容）：真正实现 CDP 握手的主机极少，市场把"D± 短接的 1.5 A 口"统称 DCP；设备若坚持等 CDP 握手，反而可能识别异常——成熟设备都做成"检测到短接即按 DCP 取电"。
 - **开机变慢**：BC 1.2 检测序列（DCD 窗口 + 主/次检测）发生在每次插入时，实现不佳的充电管理芯片会把开机/唤醒拖慢数百毫秒至秒级。
 - **多口充电器降档**：多口 PD 充电器在两个口同时插入时常把单口 100 W 拆成 60 W+30 W；这与线缆无关，是电源预算策略（读 PDO 即可验证）。
 - **DCP 判定被滥用**：部分主机口对 2.0 设备按 DCP 短接处理以加速充电，导致该口数据功能失效——诊断时先确认端口宣称的类型。

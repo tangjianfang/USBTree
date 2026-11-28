@@ -2,15 +2,15 @@
 
 [![validate](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml/badge.svg)](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-109%20%E7%AF%87%C2%B719728%E8%A1%8C-blue)
-<!-- usbtree-stats: articles=109 lines=19728 entities=89 edges=85 specs=38 checks=11 -->
+![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-109%20%E7%AF%87%C2%B719750%E8%A1%8C-blue)
+<!-- usbtree-stats: articles=109 lines=19750 entities=89 edges=85 specs=71 checks=11 -->
 
 > **知识树 × 关系图谱 × 可执行技能 × 官方规范缓存**
 >
 > English TL;DR — A Chinese knowledge system for USB & Bluetooth LE: a hierarchical
 > knowledge tree (109 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,
 > Type-C/PD, USB4 and BLE), a typed knowledge graph (89 entities / 85 relations),
-> executable agent skills, and an index of 38 cached official specifications.
+> executable agent skills, and an index of 71 cached official specifications.
 > Content is MIT-licensed; third-party specification binaries are not
 > redistributed — fetch them via [80-参考资料/README.md](80-参考资料/README.md)
 > or `bash tools/spec_fetch.sh`.
@@ -54,7 +54,7 @@ USBTree/
 │   └── BLE-低功耗蓝牙/        (17 篇: 架构HCI/链路层/广播/ATT-GATT/GAP/SMP/HOGP/对比/LEAudio/Mesh/经典Profile/LLCP全表/测向与信道探测/RF参数全表/A2DP参数/标准UUID全表)
 ├── 60-枝干-主机侧与实现/      (9 篇 + 00-索引: 主机控制器栈/操作系统/固件栈/libusb/实战TinyUSB/实战libusb/实战Gadget与usbip/Windows驱动开发/macOS与Linux主机开发)
 ├── 70-枝干-调试测试与安全/    (5 篇 + 00-索引: 抓包/排查手册/合规认证/USB 安全与 BadUSB/合规测试实操)
-├── 80-参考资料/               (官方规范原文缓存: 38 份（清单 tools/spec_fetch.sh，二进制不入库） + 索引 README + 提取文本)
+├── 80-参考资料/               (官方规范原文缓存: 71 份（清单 tools/spec_fetch.sh，二进制不入库） + 索引 README + 提取文本)
 ├── 90-附录/                   (3 篇: 术语表/速查表大全/时序参数全表)
 ├── ai-kb/                     (给 AI 参考的技术文档: index.md · 38 个主题 · llms-full.md；python3 tools/ai-kb/build_kb.py 重建)
 ├── docs/                      (epics · evolve-log · lessons)

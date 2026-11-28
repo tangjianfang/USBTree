@@ -108,7 +108,7 @@ Core Specification（当前 5.4/6.0）按卷组织，本子树章节与卷的对
 | Vol 3, Part G | GATT | [04](04-ATT与GATT.md) |
 | Vol 3, Part H | SMP（安全管理） | [06](06-SMP安全与配对.md) |
 | Vol 4, Part B/C/D/E | HCI 逻辑/UART/USB/SDIO/vHCI 传输 | [01](01-蓝牙体系架构与HCI.md) |
-| HOGP 1.0（独立 Profile 规范） | HID over GATT | [07](07-HOGP-HIDoverGATT.md) |
+| HOGP 1.1（独立 Profile 规范，2025-08-05 采纳；1.0 为 2011-12-27） | HID over GATT；1.1 新增可选 HID ISO（经 LE 等时信道传 HID 报告） | [07](07-HOGP-HIDoverGATT.md) |
 
 高频名词速查：**GAP**管"发现与连接"，**ATT**管"属性表读写"，**GATT**管"表上摆什么服务"，**SMP**管"配对加密"，**HCI**管"主机↔控制器"。五个名字记牢，BLE 文档就读懂一半。
 

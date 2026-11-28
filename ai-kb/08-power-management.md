@@ -9,8 +9,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/10-电源管理与挂起唤醒.md"
 spec_refs: ["USB 2.0 Specification §7.1.7.6, §9.2.5", "USB 2.0 LPM ECN", "USB 3.2 Specification ch.7"]
 related: ["06-descriptors", "21-charging-bc12-otg", "30-usb3-superspeed"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # 电源管理：挂起、远程唤醒、LPM、U1/U2/U3

@@ -9,8 +9,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/05-包格式与事务.md"
 spec_refs: ["USB 2.0 Specification ch.8"]
 related: ["05-transfer-types-bandwidth", "09-errors-testmode", "30-usb3-superspeed"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # 包格式、PID、事务、帧与 Data Toggle

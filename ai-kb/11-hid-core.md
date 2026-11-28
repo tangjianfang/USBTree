@@ -17,8 +17,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/HID-人机接口设备/04-传输与类特定请求.md"
 spec_refs: ["Device Class Definition for HID 1.11", "HID Usage Tables (HUT)"]
 related: ["12-hid-devices", "13-hid-spec-appendix", "41-windows-driver", "60-usb-wireless-intersection"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # HID 核心：类描述符、报告描述符 Item、Usage、类请求

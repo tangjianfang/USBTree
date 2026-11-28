@@ -21,8 +21,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md"
 spec_refs: ["Bluetooth Core Specification 6.0", "LC3 1.0", "Mesh Protocol 1.1", "A2DP 1.4", "AVDTP 1.3"]
 related: ["61-ble-core", "63-ble-uuid"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # BLE 进阶：LE Audio/LC3、Mesh、经典 Profile、LLCP、测向与信道探测、RF 参数、A2DP/AVDTP
@@ -780,9 +780,9 @@ PAN（Personal Area Networking Profile）基于 BNEP（Bluetooth Network Encapsu
 
 LL Control PDU（LLCP）是 BLE 连接的"带外管理帧"：LLID=11 的数据信道 PDU，载荷为 1 字节 Opcode + 定长 CtrData。它管理链路本身的一切——参数、信道图、加密、PHY、DLE、CIS、功控、测距。本文是 [02-链路层与物理层](61-ble-core.md) 第六节 LLCP 简表的"附录化"全量版。
 
-### 一、LL Control PDU 全表（Opcode 0x00~0x3C）
+### 一、LL Control PDU 全表（Opcode 0x00~0x4A）
 
-下表逐条来自 Core 6.0 Vol 6 Part B Table 2.22（位级 CtrData 布局见规范 §2.4.2 各小节，本文只给"方向+用途一句话"）。方向列：C=仅 Central 发起，P=仅 Peripheral 发起，双=任一方发起。
+下表 0x00~0x3C 逐条来自 Core 6.0 Vol 6 Part B Table 2.22；0x3D~0x4A 是 Core 6.0 之后新增、取自 Core 7.0 同表（位级 CtrData 布局见规范 §2.4.2 各小节，本文只给"方向+用途一句话"）。方向列：C=仅 Central 发起，P=仅 Peripheral 发起，双=任一方发起。
 
 | Opcode | 名称 | 方向 | 用途一句话 |
 |---|---|---|---|
@@ -849,6 +849,20 @@ LL Control PDU（LLCP）是 BLE 连接的"带外管理帧"：LLID=11 的数据�
 | 0x3A | LL_CS_TERMINATE_RSP | 双 | CS 终止确认 |
 | 0x3B | LL_FRAME_SPACE_REQ | 双 | 6.0：协商更短/更长的帧间隔（替代默认 150µs，见 [14-RF物理层参数全表](62-ble-advanced.md)） |
 | 0x3C | LL_FRAME_SPACE_RSP | 双 | 帧间隔协商应答 |
+| 0x3D | LL_OTA_UTP_IND | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x3E | LL_CONNECTION_RATE_REQ | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x3F | LL_CONNECTION_RATE_IND | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x40 | LL_ENC_ECDH_REQ | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x41 | LL_ENC_ECDH_RSP | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x42 | LL_HDT_CONFIG_REQ | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x43 | LL_HDT_CONFIG_RSP | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x44 | LL_HDT_LQF_REPORTING_IND | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x45 | LL_CIG_CONFIG_REQ | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x46 | LL_CIG_CONFIG_RSP | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x47 | LL_CIG_CONFIG_REMOVE_IND | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x48 | LL_CIS_PERIPHERAL_UPDATE_REQ | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x49 | LL_CIS_UPDATE_REQ | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x4A | LL_CIS_UPDATE_RSP | 见规范 | Core 7.0 表中定义（6.0 无） |
 | 0xF0~0xFB | 保留 | — | 留给规范开发（specification development purposes） |
 | 其余 | 保留 | — | 收到不支持的 Opcode 必须回 LL_UNKNOWN_RSP |
 

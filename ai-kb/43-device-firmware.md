@@ -11,8 +11,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/60-枝干-主机侧与实现/05-实战-TinyUSB设备固件.md"
 spec_refs: ["TinyUSB documentation", "USB 2.0 ch.9"]
 related: ["07-enumeration-requests", "11-hid-core", "42-linux-macos-libusb"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # 设备端固件栈与 TinyUSB 实战

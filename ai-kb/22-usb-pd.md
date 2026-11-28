@@ -13,8 +13,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/08-USBPD消息全表.md"
 spec_refs: ["USB Power Delivery Specification Rev 3.2"]
 related: ["20-connectors-typec", "23-altmode-emarker", "21-charging-bc12-otg"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # USB Power Delivery：协议、状态机与消息全表
@@ -55,7 +55,8 @@ USB Power Delivery (PD) 是运行在 **CC 线**上的供电协商协议：Source
 | PD 2.0 | 2014 | 迁移到 CC+BMC；消息**定长**（Header + 固定最多 7 个数据对象，按最大长度发送） |
 | PD 3.0 | 2015/2016 | 消息**变长**（按对象数发送）；引入 PPS (APDO)；扩展消息 (Extended Messages)；增强消息安全基础 |
 | PD 3.1 | 2021 | 引入 **EPR** (Extended Power Range)：28/36/48 V，最高 240 W；AVS 扩展至 EPR 档 |
-| PD 3.2 | 2023 | 整合 3.1 与各 ECN（含安全、EPR 模式进入流程），成为现行单一规范 |
+| PD 3.2 | 2023 | 整合 3.1 与各 ECN（含安全、EPR 模式进入流程）；V1.2 为 3.2 系列最后一版 |
+| PD 3.3 | 2026-10 | R3.3 V1.0（2026-10-16）为 usb.org 现行版：按官方 Reorganization Guide，内容与 3.2 V1.2 保持技术等价，章节重组；PDUSB Status and States 拆为伴随规范，BMC 接收器设计示例拆为白皮书 |
 
 工程影响：PD 2.0 与 3.0 报文结构不同（定长 vs 变长），双方通过 Header 中的 Specification Revision 位协商降级到共同版本。
 
@@ -486,7 +487,7 @@ PE 实现要点：
 >  兄弟链接: [04-USBPD协议](22-usb-pd.md) ｜ [07-USBPD深入-状态机与消息全表](22-usb-pd.md)（本篇是其"编号+位域"全表化延伸，叙述不再重复） ｜ [09-TypeC规范级-状态机与CC时序](20-connectors-typec.md) ｜ 树干: ../10-树干-USB核心/ ｜ 高速演进: ../40-枝干-高速演进/
 > 规范原文缓存索引: [80-参考资料/README.md](92-spec-references.md)
 
-本篇给出 USB PD **全部消息类型编号**与**数据对象逐位定义**。消息编号与位域以 Linux 内核头文件 `include/linux/usb/pd.h`、`pd_vdo.h`、`pd_bdo.h`（torvalds/master）为权威提取源——该头文件与 USB PD 规范消息类型表一一对应，是可离线核对的"规范替身"；PD 规范本体未缓存（门控下载），涉及规范原文才能确定的内容一律标"见 PD 规范"。帧结构、GoodCRC/MessageID 可靠传输、协商时序等叙述见 [07-USBPD深入-状态机与消息全表](22-usb-pd.md)。
+本篇给出 USB PD **全部消息类型编号**与**数据对象逐位定义**。消息编号与位域以 Linux 内核头文件 `include/linux/usb/pd.h`、`pd_vdo.h`、`pd_bdo.h`（torvalds/master）为权威提取源——该头文件与 USB PD 规范消息类型表一一对应，是可离线核对的交叉校验源。PD 规范本体**已缓存**：`usb-core/USB-PD-3.2-V1.2.zip`（R3.2 V1.2，本文编号核对基线）与 `usb-core/USB-PD-3.3-V1.0.zip`（R3.3 V1.0，2026-10-16，usb.org 现行版；按其 Reorganization Guide，3.3 为保持技术等价的章节重组，章节号与 3.2 不同）。正文编号与规范消息类型表冲突时以规范为准。帧结构、GoodCRC/MessageID 可靠传输、协商时序等叙述见 [07-USBPD深入-状态机与消息全表](22-usb-pd.md)。
 
 ### 一、消息路由总览
 

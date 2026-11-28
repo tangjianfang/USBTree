@@ -21,8 +21,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/50-枝干-无线关联/BLE-低功耗蓝牙/08-经典蓝牙与BLE对比.md"
 spec_refs: ["Bluetooth Core Specification 6.0"]
 related: ["60-usb-wireless-intersection", "62-ble-advanced", "63-ble-uuid"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: 03306ba
+generated: 2026-11-28
 ---
 
 # BLE 核心：概述、链路层/物理层、广播与连接、ATT/GATT、GAP、SMP、经典蓝牙对比
@@ -138,7 +138,7 @@ Core Specification（当前 5.4/6.0）按卷组织，本子树章节与卷的对
 | Vol 3, Part G | GATT | [04](61-ble-core.md) |
 | Vol 3, Part H | SMP（安全管理） | [06](61-ble-core.md) |
 | Vol 4, Part B/C/D/E | HCI 逻辑/UART/USB/SDIO/vHCI 传输 | [01](60-usb-wireless-intersection.md) |
-| HOGP 1.0（独立 Profile 规范） | HID over GATT | [07](60-usb-wireless-intersection.md) |
+| HOGP 1.1（独立 Profile 规范，2025-08-05 采纳；1.0 为 2011-12-27） | HID over GATT；1.1 新增可选 HID ISO（经 LE 等时信道传 HID 报告） | [07](60-usb-wireless-intersection.md) |
 
 高频名词速查：**GAP**管"发现与连接"，**ATT**管"属性表读写"，**GATT**管"表上摆什么服务"，**SMP**管"配对加密"，**HCI**管"主机↔控制器"。五个名字记牢，BLE 文档就读懂一半。
 

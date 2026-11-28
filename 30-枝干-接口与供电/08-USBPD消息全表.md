@@ -9,7 +9,7 @@ doc-path: 30-枝干-接口与供电/08-USBPD消息全表.md
 > ⬆️ 兄弟链接: [04-USBPD协议](04-USBPD协议.md) ｜ [07-USBPD深入-状态机与消息全表](07-USBPD深入-状态机与消息全表.md)（本篇是其"编号+位域"全表化延伸，叙述不再重复） ｜ [09-TypeC规范级-状态机与CC时序](09-TypeC规范级-状态机与CC时序.md) ｜ 树干: ../10-树干-USB核心/ ｜ 高速演进: ../40-枝干-高速演进/
 > 规范原文缓存索引: [80-参考资料/README.md](../80-参考资料/README.md)
 
-本篇给出 USB PD **全部消息类型编号**与**数据对象逐位定义**。消息编号与位域以 Linux 内核头文件 `include/linux/usb/pd.h`、`pd_vdo.h`、`pd_bdo.h`（torvalds/master）为权威提取源——该头文件与 USB PD 规范消息类型表一一对应，是可离线核对的"规范替身"；PD 规范本体未缓存（门控下载），涉及规范原文才能确定的内容一律标"见 PD 规范"。帧结构、GoodCRC/MessageID 可靠传输、协商时序等叙述见 [07-USBPD深入-状态机与消息全表](07-USBPD深入-状态机与消息全表.md)。
+本篇给出 USB PD **全部消息类型编号**与**数据对象逐位定义**。消息编号与位域以 Linux 内核头文件 `include/linux/usb/pd.h`、`pd_vdo.h`、`pd_bdo.h`（torvalds/master）为权威提取源——该头文件与 USB PD 规范消息类型表一一对应，是可离线核对的交叉校验源。PD 规范本体**已缓存**：`usb-core/USB-PD-3.2-V1.2.zip`（R3.2 V1.2，本文编号核对基线）与 `usb-core/USB-PD-3.3-V1.0.zip`（R3.3 V1.0，2026-10-16，usb.org 现行版；按其 Reorganization Guide，3.3 为保持技术等价的章节重组，章节号与 3.2 不同）。正文编号与规范消息类型表冲突时以规范为准。帧结构、GoodCRC/MessageID 可靠传输、协商时序等叙述见 [07-USBPD深入-状态机与消息全表](07-USBPD深入-状态机与消息全表.md)。
 
 ## 一、消息路由总览
 

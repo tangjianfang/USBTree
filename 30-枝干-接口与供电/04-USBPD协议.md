@@ -25,7 +25,8 @@ USB Power Delivery (PD) 是运行在 **CC 线**上的供电协商协议：Source
 | PD 2.0 | 2014 | 迁移到 CC+BMC；消息**定长**（Header + 固定最多 7 个数据对象，按最大长度发送） |
 | PD 3.0 | 2015/2016 | 消息**变长**（按对象数发送）；引入 PPS (APDO)；扩展消息 (Extended Messages)；增强消息安全基础 |
 | PD 3.1 | 2021 | 引入 **EPR** (Extended Power Range)：28/36/48 V，最高 240 W；AVS 扩展至 EPR 档 |
-| PD 3.2 | 2023 | 整合 3.1 与各 ECN（含安全、EPR 模式进入流程），成为现行单一规范 |
+| PD 3.2 | 2023 | 整合 3.1 与各 ECN（含安全、EPR 模式进入流程）；V1.2 为 3.2 系列最后一版 |
+| PD 3.3 | 2026-10 | R3.3 V1.0（2026-10-16）为 usb.org 现行版：按官方 Reorganization Guide，内容与 3.2 V1.2 保持技术等价，章节重组；PDUSB Status and States 拆为伴随规范，BMC 接收器设计示例拆为白皮书 |
 
 工程影响：PD 2.0 与 3.0 报文结构不同（定长 vs 变长），双方通过 Header 中的 Specification Revision 位协商降级到共同版本。
 
