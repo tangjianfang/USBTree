@@ -11,7 +11,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/70-枝干-调试测试与安全/02-枚举失败排查手册.md"
 spec_refs: ["USB 2.0 ch.9"]
 related: ["07-enumeration-requests", "41-windows-driver", "42-linux-macos-libusb"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 

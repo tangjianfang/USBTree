@@ -11,7 +11,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/90-附录/03-时序参数全表.md"
 spec_refs: ["USB 2.0", "USB 3.2", "Type-C", "USB PD"]
 related: ["06-descriptors", "07-enumeration-requests", "05-transfer-types-bandwidth"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 

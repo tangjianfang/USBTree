@@ -13,7 +13,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/08-USBPD消息全表.md"
 spec_refs: ["USB Power Delivery Specification Rev 3.2"]
 related: ["20-connectors-typec", "23-altmode-emarker", "21-charging-bc12-otg"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 

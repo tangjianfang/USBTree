@@ -9,7 +9,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/05-AlternateMode与E-marker.md"
 spec_refs: ["USB PD 3.2 §6.4.4", "VESA DisplayPort Alt Mode 2.x", "USB Type-C 2.x"]
 related: ["22-usb-pd", "20-connectors-typec", "19-other-classes-b"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 

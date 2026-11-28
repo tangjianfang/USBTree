@@ -11,7 +11,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/12-TestMode与调试模式.md"
 spec_refs: ["USB 2.0 Specification §7.1.20, §8.6, §9.4.9"]
 related: ["04-packets-transactions", "51-compliance-security"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 

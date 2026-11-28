@@ -11,7 +11,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/40-枝干-高速演进/03-各版本对比速查.md"
 spec_refs: ["USB 2.0 Specification", "USB 3.2 Specification", "USB4 Specification v2.0"]
 related: ["02-architecture-topology", "30-usb3-superspeed", "31-usb4", "90-quick-reference"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 

@@ -11,7 +11,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/09-集线器与连接管理.md"
 spec_refs: ["USB 2.0 Specification ch.4/5/9/11"]
 related: ["04-packets-transactions", "06-descriptors", "07-enumeration-requests"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 

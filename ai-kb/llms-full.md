@@ -1,6 +1,6 @@
 # USB 知识库全文（llms-full）
 
-> 由 kb/ 下 39 个文件拼接；源：tangjianfang/USBTree@a5d329b。每个主题以 `<!-- file: xxx.md -->` 分隔。
+> 由 kb/ 下 39 个文件拼接；源：tangjianfang/USBTree@03306ba。每个主题以 `<!-- file: xxx.md -->` 分隔。
 
 <!-- file: index.md -->
 
@@ -132,7 +132,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/40-枝干-高速演进/03-各版本对比速查.md"
 spec_refs: ["USB 2.0 Specification", "USB 3.2 Specification", "USB4 Specification v2.0"]
 related: ["02-architecture-topology", "30-usb3-superspeed", "31-usb4", "90-quick-reference"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -423,7 +423,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/09-集线器与连接管理.md"
 spec_refs: ["USB 2.0 Specification ch.4/5/9/11"]
 related: ["04-packets-transactions", "06-descriptors", "07-enumeration-requests"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -657,7 +657,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/04-信号编码与比特流.md"
 spec_refs: ["USB 2.0 Specification ch.7"]
 related: ["02-architecture-topology", "04-packets-transactions", "20-connectors-typec"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -894,7 +894,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/05-包格式与事务.md"
 spec_refs: ["USB 2.0 Specification ch.8"]
 related: ["05-transfer-types-bandwidth", "09-errors-testmode", "30-usb3-superspeed"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -1083,7 +1083,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/13-总线带宽与调度计算.md"
 spec_refs: ["USB 2.0 Specification ch.5, §9.6.6"]
 related: ["04-packets-transactions", "06-descriptors", "12-hid-devices"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -1431,7 +1431,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/07-描述符详解.md"
 spec_refs: ["USB 2.0 Specification §9.5–9.6", "USB 3.2 Specification §9.6", "IAD ECN"]
 related: ["07-enumeration-requests", "11-hid-core", "14-cdc"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -1595,7 +1595,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/08-枚举流程与标准请求.md"
 spec_refs: ["USB 2.0 Specification §9.3–9.4"]
 related: ["06-descriptors", "50-debug-troubleshooting", "43-device-firmware"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -1738,7 +1738,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/10-电源管理与挂起唤醒.md"
 spec_refs: ["USB 2.0 Specification §7.1.7.6, §9.2.5", "USB 2.0 LPM ECN", "USB 3.2 Specification ch.7"]
 related: ["06-descriptors", "21-charging-bc12-otg", "30-usb3-superspeed"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -1841,7 +1841,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/12-TestMode与调试模式.md"
 spec_refs: ["USB 2.0 Specification §7.1.20, §8.6, §9.4.9"]
 related: ["04-packets-transactions", "51-compliance-security"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -2114,7 +2114,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/00-设备类索引.md"
 spec_refs: ["USB-IF Defined Class Codes"]
 related: ["11-hid-core", "14-cdc", "15-msc", "16-uvc", "17-uac", "18-other-classes-a", "19-other-classes-b"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -2237,7 +2237,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/HID-人机接口设备/04-传输与类特定请求.md"
 spec_refs: ["Device Class Definition for HID 1.11", "HID Usage Tables (HUT)"]
 related: ["12-hid-devices", "13-hid-spec-appendix", "41-windows-driver", "60-usb-wireless-intersection"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -3114,7 +3114,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/HID-人机接口设备/11-实战完整报告描述符.md"
 spec_refs: ["HID 1.11 Appendix B (Boot)", "HID Usage Tables", "HID over I2C 1.0", "HOGP 1.0", "Windows Precision Touchpad"]
 related: ["11-hid-core", "13-hid-spec-appendix", "60-usb-wireless-intersection"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -4316,7 +4316,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/HID-人机接口设备/12-HID规范级附录.md"
 spec_refs: ["Device Class Definition for HID 1.11", "HID Usage Tables"]
 related: ["11-hid-core", "12-hid-devices"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -4711,7 +4711,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/CDC-通信设备类/03-CDC规范级-请求与通知全表.md"
 spec_refs: ["CDC 1.2", "PSTN 1.2 (ACM)", "ECM 1.2", "NCM 1.0"]
 related: ["06-descriptors", "10-class-index", "43-device-firmware"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -5220,7 +5220,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/MSC-大容量存储/02-SCSI操作码与Sense全表.md"
 spec_refs: ["MSC Class Overview 1.4", "MSC BOT 1.0", "UAS 1.0", "SPC/SBC (T10)"]
 related: ["10-class-index", "30-usb3-superspeed"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -5661,7 +5661,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/Video-UVC/01-UVC规范级-控制与格式全表.md"
 spec_refs: ["UVC 1.5"]
 related: ["17-uac", "05-transfer-types-bandwidth"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -6016,7 +6016,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/Audio-UAC/03-UAC规范级-实体与请求全表.md"
 spec_refs: ["USB Audio 1.0", "USB Audio 2.0", "USB Audio 3.0"]
 related: ["16-uvc", "05-transfer-types-bandwidth"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -6500,7 +6500,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/其他设备类/04-Printer打印机类.md"
 spec_refs: ["DFU 1.1", "CCID 1.1", "PIMA 15740 (PTP)", "MTP 1.1", "USB Printer 1.1"]
 related: ["10-class-index", "19-other-classes-b"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -7292,7 +7292,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/其他设备类/11-PHDC健康医疗类.md"
 spec_refs: ["Bluetooth Core Vol 4 Part B (USB Transport)", "WebUSB (WICG)", "Microsoft OS 2.0 Descriptors", "USB MIDI 1.0/2.0", "USBTMC 1.0", "Billboard 1.2", "PHDC 1.0"]
 related: ["10-class-index", "41-windows-driver", "42-linux-macos-libusb", "60-usb-wireless-intersection"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -8613,7 +8613,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/09-TypeC规范级-状态机与CC时序.md"
 spec_refs: ["USB Type-C Cable and Connector Specification 2.x"]
 related: ["21-charging-bc12-otg", "22-usb-pd", "23-altmode-emarker"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -9194,7 +9194,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/06-OTG与角色切换-HNP-SRP.md"
 spec_refs: ["Battery Charging 1.2", "USB OTG and Embedded Host Supplement 2.0"]
 related: ["20-connectors-typec", "22-usb-pd", "08-power-management"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -9598,7 +9598,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/08-USBPD消息全表.md"
 spec_refs: ["USB Power Delivery Specification Rev 3.2"]
 related: ["20-connectors-typec", "23-altmode-emarker", "21-charging-bc12-otg"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -10360,7 +10360,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/05-AlternateMode与E-marker.md"
 spec_refs: ["USB PD 3.2 §6.4.4", "VESA DisplayPort Alt Mode 2.x", "USB Type-C 2.x"]
 related: ["22-usb-pd", "20-connectors-typec", "19-other-classes-b"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -10532,7 +10532,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/40-枝干-高速演进/06-USB3x规范级-包格式与定时器.md"
 spec_refs: ["USB 3.2 Specification ch.6–8"]
 related: ["31-usb4", "08-power-management", "15-msc"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -11168,7 +11168,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/40-枝干-高速演进/09-USB4-CM指南要点.md"
 spec_refs: ["USB4 Specification v2.0", "USB4 Connection Manager Guide", "USB4 DROM Specification"]
 related: ["30-usb3-superspeed", "22-usb-pd", "23-altmode-emarker"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -11852,7 +11852,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/60-枝干-主机侧与实现/02-操作系统USB支持.md"
 spec_refs: ["xHCI 1.2", "EHCI 1.0", "OHCI 1.0a", "UHCI 1.1"]
 related: ["41-windows-driver", "42-linux-macos-libusb"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -12238,7 +12238,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/60-枝干-主机侧与实现/08-WindowsUSB驱动开发.md"
 spec_refs: ["Microsoft Learn: USB driver development", "WDF", "Microsoft OS 2.0 Descriptors"]
 related: ["40-host-controller-os", "11-hid-core", "19-other-classes-b", "50-debug-troubleshooting"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -12536,7 +12536,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/60-枝干-主机侧与实现/09-macOS与Linux主机开发.md"
 spec_refs: ["libusb 1.0 API", "Linux kernel USB documentation"]
 related: ["40-host-controller-os", "41-windows-driver", "43-device-firmware"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -13536,7 +13536,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/60-枝干-主机侧与实现/05-实战-TinyUSB设备固件.md"
 spec_refs: ["TinyUSB documentation", "USB 2.0 ch.9"]
 related: ["07-enumeration-requests", "11-hid-core", "42-linux-macos-libusb"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -14135,7 +14135,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/70-枝干-调试测试与安全/02-枚举失败排查手册.md"
 spec_refs: ["USB 2.0 ch.9"]
 related: ["07-enumeration-requests", "41-windows-driver", "42-linux-macos-libusb"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -14509,7 +14509,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/70-枝干-调试测试与安全/05-合规测试实操.md"
 spec_refs: ["USB-IF Compliance Program", "USB 2.0 Electrical Test Spec", "USB4 Compliance"]
 related: ["09-errors-testmode", "50-debug-troubleshooting"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -15049,7 +15049,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md"
 spec_refs: ["HOGP 1.0", "HIDS 1.0", "Bluetooth Core 6.x Vol 4", "MA-USB 1.0"]
 related: ["11-hid-core", "19-other-classes-b", "61-ble-core"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -15693,7 +15693,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/50-枝干-无线关联/BLE-低功耗蓝牙/08-经典蓝牙与BLE对比.md"
 spec_refs: ["Bluetooth Core Specification 6.0"]
 related: ["60-usb-wireless-intersection", "62-ble-advanced", "63-ble-uuid"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -16808,7 +16808,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md"
 spec_refs: ["Bluetooth Core Specification 6.0", "LC3 1.0", "Mesh Protocol 1.1", "A2DP 1.4", "AVDTP 1.3"]
 related: ["61-ble-core", "63-ble-uuid"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -17567,9 +17567,9 @@ PAN（Personal Area Networking Profile）基于 BNEP（Bluetooth Network Encapsu
 
 LL Control PDU（LLCP）是 BLE 连接的"带外管理帧"：LLID=11 的数据信道 PDU，载荷为 1 字节 Opcode + 定长 CtrData。它管理链路本身的一切——参数、信道图、加密、PHY、DLE、CIS、功控、测距。本文是 [02-链路层与物理层](61-ble-core.md) 第六节 LLCP 简表的"附录化"全量版。
 
-### 一、LL Control PDU 全表（Opcode 0x00~0x47）
+### 一、LL Control PDU 全表（Opcode 0x00~0x4A）
 
-下表 0x00~0x3C 逐条来自 Core 6.0 Vol 6 Part B Table 2.22；0x3D~0x47 是 Core 6.0 之后新增、取自 Core 7.0 同表（位级 CtrData 布局见规范 §2.4.2 各小节，本文只给"方向+用途一句话"）。方向列：C=仅 Central 发起，P=仅 Peripheral 发起，双=任一方发起。
+下表 0x00~0x3C 逐条来自 Core 6.0 Vol 6 Part B Table 2.22；0x3D~0x4A 是 Core 6.0 之后新增、取自 Core 7.0 同表（位级 CtrData 布局见规范 §2.4.2 各小节，本文只给"方向+用途一句话"）。方向列：C=仅 Central 发起，P=仅 Peripheral 发起，双=任一方发起。
 
 | Opcode | 名称 | 方向 | 用途一句话 |
 |---|---|---|---|
@@ -17647,6 +17647,9 @@ LL Control PDU（LLCP）是 BLE 连接的"带外管理帧"：LLID=11 的数据�
 | 0x45 | LL_CIG_CONFIG_REQ | 见规范 | Core 7.0 表中定义（6.0 无） |
 | 0x46 | LL_CIG_CONFIG_RSP | 见规范 | Core 7.0 表中定义（6.0 无） |
 | 0x47 | LL_CIG_CONFIG_REMOVE_IND | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x48 | LL_CIS_PERIPHERAL_UPDATE_REQ | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x49 | LL_CIS_UPDATE_REQ | 见规范 | Core 7.0 表中定义（6.0 无） |
+| 0x4A | LL_CIS_UPDATE_RSP | 见规范 | Core 7.0 表中定义（6.0 无） |
 | 0xF0~0xFB | 保留 | — | 留给规范开发（specification development purposes） |
 | 其余 | 保留 | — | 收到不支持的 Opcode 必须回 LL_UNKNOWN_RSP |
 
@@ -18381,7 +18384,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md"
 spec_refs: ["Bluetooth SIG Assigned Numbers"]
 related: ["61-ble-core", "60-usb-wireless-intersection"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -19060,7 +19063,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/90-附录/03-时序参数全表.md"
 spec_refs: ["USB 2.0", "USB 3.2", "Type-C", "USB PD"]
 related: ["06-descriptors", "07-enumeration-requests", "05-transfer-types-bandwidth"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -19662,7 +19665,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/90-附录/01-术语表.md"
 spec_refs: []
 related: ["index"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -19896,7 +19899,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/00-知识树总图.md"
 spec_refs: []
 related: ["index"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -19979,7 +19982,7 @@ generated: 2026-11-28
 | AVDTP-1.3.pdf | A/V Distribution Transport Protocol 1.3（Table 8.6 信令码/§8.21 编码能力） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-distribution-transport-protocol-1-3/) · DocMan `doc_id=260860` | 同上 |
 | AVRCP-1.6.3.pdf | A/V Remote Control Profile 1.6.3（绝对音量/浏览） | **MANUAL（2026-11 起）**：files.bluetooth.com 现返回 HTML 下载页而非 PDF，须在 [bluetooth.com 规范页](https://www.bluetooth.com/specifications/specs/a-v-remote-control-profile1-6-3/) 用浏览器下载 | [经典 Profile 详解 · AVRCP](62-ble-advanced.md) |
 | HFP-1.10.pdf | Hands-Free Profile 1.10（现行最新，AT 命令/eSCO） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hands-free-profile-1-10/) | [经典 Profile 详解 · HFP](62-ble-advanced.md) |
-| Bluetooth-Core-7.0.pdf | Bluetooth Core Specification **7.0**（bluetooth.com 发布于 2026-11-03，**现行最新**；LLCP 新增 0x3D~0x47；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/core-specification-7-0/) | BLE 子树（正文仍以 6.0 为引用基线，差异逐条标注） |
+| Bluetooth-Core-7.0.pdf | Bluetooth Core Specification **7.0**（bluetooth.com 发布于 2026-11-03，**现行最新**；LLCP 新增 0x3D~0x4A；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/core-specification-7-0/) | BLE 子树（正文仍以 6.0 为引用基线，差异逐条标注） |
 | HOGP-latest.pdf | HID over GATT Profile **1.1**（2025-08-05 采纳，新增 HID ISO；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hid-over-gatt-profile/) | [HOGP](60-usb-wireless-intersection.md) |
 | BAS-latest.pdf / DIS-latest.pdf | Battery Service 1.1（2022-12-20）/ Device Information Service 1.2（2026-11 新增） | [BAS](https://www.bluetooth.com/specifications/specs/battery-service/) · [DIS](https://www.bluetooth.com/specifications/specs/device-information-service/) | HOGP 必备服务 |
 | Assigned_Numbers.pdf | Bluetooth Assigned Numbers（UUID/AD Type/公司 ID 等编号权威来源；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/assigned-numbers/) | [标准 UUID 全表](63-ble-uuid.md) |
@@ -20032,7 +20035,7 @@ bash tools/spec_fetch.sh USB4
 
 > Source: [00-知识树总图.md](https://github.com/tangjianfang/USBTree/blob/main/00-知识树总图.md)
 
-<!-- usbtree-stats: articles=109 lines=19747 entities=89 edges=85 specs=71 checks=11 -->
+<!-- usbtree-stats: articles=109 lines=19750 entities=89 edges=85 specs=71 checks=11 -->
 
 >  本文件是整棵知识树的地图。树干 = USB 核心协议；枝干 = 依赖/关联 USB 的协议族；分枝 = 子协议模块；叶 = 具体知识点。
 >  本库定位：**USBTree · USB/BLE 领域知识系统** —— 知识树 × 关系图谱 × 可执行技能 × 官方规范缓存。图谱层（`graph/`，89 实体/85 边）与技能层（`skills/`，4 个技能包）已建成，见 [README](https://github.com/tangjianfang/USBTree/blob/main/README.md) 的 Agent 使用指南。

@@ -9,7 +9,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/05-包格式与事务.md"
 spec_refs: ["USB 2.0 Specification ch.8"]
 related: ["05-transfer-types-bandwidth", "09-errors-testmode", "30-usb3-superspeed"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 

@@ -9,7 +9,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md"
 spec_refs: ["Bluetooth SIG Assigned Numbers"]
 related: ["61-ble-core", "60-usb-wireless-intersection"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 

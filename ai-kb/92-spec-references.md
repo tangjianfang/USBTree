@@ -11,7 +11,7 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/00-知识树总图.md"
 spec_refs: []
 related: ["index"]
-usbtree_commit: a5d329b
+usbtree_commit: 03306ba
 generated: 2026-11-28
 ---
 
@@ -94,7 +94,7 @@ generated: 2026-11-28
 | AVDTP-1.3.pdf | A/V Distribution Transport Protocol 1.3（Table 8.6 信令码/§8.21 编码能力） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-distribution-transport-protocol-1-3/) · DocMan `doc_id=260860` | 同上 |
 | AVRCP-1.6.3.pdf | A/V Remote Control Profile 1.6.3（绝对音量/浏览） | **MANUAL（2026-11 起）**：files.bluetooth.com 现返回 HTML 下载页而非 PDF，须在 [bluetooth.com 规范页](https://www.bluetooth.com/specifications/specs/a-v-remote-control-profile1-6-3/) 用浏览器下载 | [经典 Profile 详解 · AVRCP](62-ble-advanced.md) |
 | HFP-1.10.pdf | Hands-Free Profile 1.10（现行最新，AT 命令/eSCO） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hands-free-profile-1-10/) | [经典 Profile 详解 · HFP](62-ble-advanced.md) |
-| Bluetooth-Core-7.0.pdf | Bluetooth Core Specification **7.0**（bluetooth.com 发布于 2026-11-03，**现行最新**；LLCP 新增 0x3D~0x47；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/core-specification-7-0/) | BLE 子树（正文仍以 6.0 为引用基线，差异逐条标注） |
+| Bluetooth-Core-7.0.pdf | Bluetooth Core Specification **7.0**（bluetooth.com 发布于 2026-11-03，**现行最新**；LLCP 新增 0x3D~0x4A；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/core-specification-7-0/) | BLE 子树（正文仍以 6.0 为引用基线，差异逐条标注） |
 | HOGP-latest.pdf | HID over GATT Profile **1.1**（2025-08-05 采纳，新增 HID ISO；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hid-over-gatt-profile/) | [HOGP](60-usb-wireless-intersection.md) |
 | BAS-latest.pdf / DIS-latest.pdf | Battery Service 1.1（2022-12-20）/ Device Information Service 1.2（2026-11 新增） | [BAS](https://www.bluetooth.com/specifications/specs/battery-service/) · [DIS](https://www.bluetooth.com/specifications/specs/device-information-service/) | HOGP 必备服务 |
 | Assigned_Numbers.pdf | Bluetooth Assigned Numbers（UUID/AD Type/公司 ID 等编号权威来源；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/assigned-numbers/) | [标准 UUID 全表](63-ble-uuid.md) |
@@ -147,7 +147,7 @@ bash tools/spec_fetch.sh USB4
 
 > Source: [00-知识树总图.md](https://github.com/tangjianfang/USBTree/blob/main/00-知识树总图.md)
 
-<!-- usbtree-stats: articles=109 lines=19747 entities=89 edges=85 specs=71 checks=11 -->
+<!-- usbtree-stats: articles=109 lines=19750 entities=89 edges=85 specs=71 checks=11 -->
 
 >  本文件是整棵知识树的地图。树干 = USB 核心协议；枝干 = 依赖/关联 USB 的协议族；分枝 = 子协议模块；叶 = 具体知识点。
 >  本库定位：**USBTree · USB/BLE 领域知识系统** —— 知识树 × 关系图谱 × 可执行技能 × 官方规范缓存。图谱层（`graph/`，89 实体/85 边）与技能层（`skills/`，4 个技能包）已建成，见 [README](https://github.com/tangjianfang/USBTree/blob/main/README.md) 的 Agent 使用指南。
