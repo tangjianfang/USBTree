@@ -41,7 +41,7 @@ UAC2 的 GET_INFO 返回能力位（bit0=可读，bit1=可写），驱动先问�
 - CS_INTERFACE 子类型新增：CLOCK_SOURCE 0x0A、CLOCK_SELECTOR 0x0B、CLOCK_MULTIPLIER 0x0C、SAMPLE_RATE_CONVERTER 0x0D；
 - Terminal 实体多一个 **bCSourceID** 字段——直接声明"我由哪个时钟源驱动"，实体图从此含时钟拓扑；
 - AS 接口的 Type I 格式描述符支持高带宽同步端点（HS 微帧 ×2/×3 事务，[传输类型](../../10-树干-USB核心/06-四种传输类型.md)）；
-- 反馈端点数值格式从 10.14 改为 **16.16** 定点。
+- 反馈端点数值格式随**总线速度**而定（USB 2.0 §5.12.4.2）：UAC2 常跑高速，HS 下为 4 字节 **16.16**（样本/微帧）；若 UAC2 设备工作在全速，仍是 3 字节 10.14——并非 UAC2 规范本身改了格式。
 
 ### 1.4 高速带来的能力表
 
