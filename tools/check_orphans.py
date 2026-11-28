@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""检查 10~70（含 65）与 90 的内容页：每篇都有来自其他文件的入链，且能从 README 或总图走到。
+"""检查 10~70（含 65）、78 与 90 的内容页：每篇都有来自其他文件的入链，且能从 README 或总图走到。
 
 退出码 0 = 通过。问题打印到 stdout，由 tools/validate.sh 调用。
 """
@@ -9,7 +9,7 @@ from pathlib import Path
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parent.parent
-CONTENT_TOP = ("10-", "20-", "30-", "40-", "50-", "60-", "65-", "70-", "90-")
+CONTENT_TOP = ("10-", "20-", "30-", "40-", "50-", "60-", "65-", "70-", "78-", "90-")
 SEEDS = ("README.md", "00-知识树总图.md")
 LINK = re.compile(r"\]\(([^)#][^)]*)\)")
 

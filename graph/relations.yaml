@@ -611,3 +611,17 @@ relations:
     to: winusb
     evidence: 65-枝干-框架与API/07-C与C++-libusb与hidapi.md
     note: Windows 首选子后端（另有 libusbK/UsbDk）
+
+  # ── AI 时代的 USB ──
+  - id: rel-101
+    from: syzkaller-usb
+    type: uses
+    to: linux-gadget
+    evidence: 78-AI时代的USB/04-AI辅助驱动固件开发与模糊测试.md
+    note: Raw Gadget + Dummy HCD/UDC 在内核内仿真外部设备
+  - id: rel-102
+    from: mcp
+    type: uses
+    to: descriptors
+    evidence: 78-AI时代的USB/03-AI辅助抓包分析与MCP工具.md
+    note: 只读 MCP 工具把 sysfs 描述符字段交给模型；设备字符串属不可信输入
