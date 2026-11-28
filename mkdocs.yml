@@ -1,0 +1,90 @@
+# USBTree 静态站点配置（MkDocs Material）。构建入口：bash tools/site/build.sh
+# 实际构建使用 tools/site/prepare.py 生成的 _site_src/mkdocs.gen.yml（INHERIT 本文件并追加 nav）。
+site_name: USBTree · USB/BLE 知识树
+site_url: https://usbtree.gumuhub.com/
+site_description: 中文 USB / 蓝牙低功耗（BLE）领域知识系统：知识树 × 关系图谱 × 可执行技能 × 官方规范索引
+site_author: tangjianfang
+repo_url: https://github.com/tangjianfang/USBTree
+repo_name: tangjianfang/USBTree
+edit_uri: ""
+copyright: 内容以 MIT 许可发布 · 第三方规范原文不随站点分发
+use_directory_urls: true
+
+theme:
+  name: material
+  language: zh
+  font: false            # 不加载 Google Fonts（国内不可达），使用系统字体
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: 切换到深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到浅色模式
+  features:
+    - navigation.indexes
+    - navigation.top
+    - navigation.tracking
+    - navigation.footer
+    - navigation.path
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;'
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra_css:
+  - assets/css/extra.css
+
+validation:
+  links:
+    absolute_links: info
+    unrecognized_links: info
+    anchors: info
+  nav:
+    absolute_links: ignore
+    omitted_files: info
+    not_found: warn

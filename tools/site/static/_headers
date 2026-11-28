@@ -1,0 +1,13 @@
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+  Access-Control-Allow-Origin: *
+/*.yaml
+  Content-Type: text/plain; charset=utf-8
+  Access-Control-Allow-Origin: *
+/*.mmd
+  Content-Type: text/plain; charset=utf-8
+/*.txt
+  Content-Type: text/plain; charset=utf-8
+  Access-Control-Allow-Origin: *
+/assets/*
+  Cache-Control: public, max-age=604800
