@@ -16,3 +16,8 @@ __pycache__/
 tech-doc/build/os-kb/
 tech-doc/**/*.bak
 tech-doc/shots-check/
+
+# 静态站点构建产物（tools/site/build.sh）
+_site/
+_site_src/
+.site-cache/

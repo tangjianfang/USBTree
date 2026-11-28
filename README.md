@@ -7,6 +7,8 @@
 
 > **知识树 × 关系图谱 × 可执行技能 × 官方规范缓存**
 >
+> 🌐 在线阅读（可搜索、手机友好）：<https://usbtree.gumuhub.com> · 构建方式见 [tools/site/README.md](tools/site/README.md)
+>
 > English TL;DR — A Chinese knowledge system for USB & Bluetooth LE: a hierarchical
 > knowledge tree (109 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,
 > Type-C/PD, USB4 and BLE), a typed knowledge graph (89 entities / 85 relations),
