@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>协议规范：Linux 虚拟 USB（USB/IP、ConfigFS、FunctionFS、Raw Gadget）</title>
+<style>
+:root{color-scheme:light;--bg:#fff;--fg:#1f2328;--muted:#59636e;--line:#d8dee4;--soft:#f6f8fa;--link:#0969da;--code-fg:#0a6a7a;--mark:#ffec99;
+--tk-comment:#59636e;--tk-keyword:#cf222e;--tk-string:#0a3069;--tk-number:#0550ae;--tk-fn:#6639ba;--tk-var:#953800;--tk-tag:#116329;--tk-del:#82071e;
+--info-bg:#ddf4ff;--info-fg:#0550ae;--info-bd:#b6e3ff;--success-bg:#dafbe1;--success-fg:#116329;--success-bd:#aceebb;
+--warn-bg:#fff8c5;--warn-fg:#7d4e00;--warn-bd:#eac54f;--danger-bg:#ffebe9;--danger-fg:#a40e26;--danger-bd:#ffcecb;
+--neutral-bg:#eaeef2;--neutral-fg:#424a53;--neutral-bd:#d0d7de;--accent-bg:#fbefff;--accent-fg:#6639ba;--accent-bd:#e2c5ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+.content p a,.content li a,.content td a,.callout a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.content p a:hover,.content li a:hover,.content td a:hover,.callout a:hover{text-decoration-thickness:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--bg);padding:6px 12px;z-index:10}.skip:focus{left:8px}
+.progress{display:none}
+@supports (animation-timeline:scroll()){.progress{display:block;position:sticky;top:0;z-index:5;height:3px;margin-bottom:-3px;background:var(--link);transform:scaleX(0);transform-origin:0 50%;animation:adoc-progress linear both;animation-timeline:scroll(root block)}
+@keyframes adoc-progress{to{transform:scaleX(1)}}}
+.layout{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:48px;padding:32px 32px 72px;align-items:start}
+nav.sidebar{position:sticky;top:24px;width:210px;min-width:150px;max-width:min(560px,45vw);max-height:calc(100vh - 48px);overflow:auto;resize:horizontal;font-size:13px;padding-right:8px}
+.js nav.sidebar{resize:none}
+.resizer{position:absolute;top:0;bottom:0;width:12px;cursor:col-resize;touch-action:none;user-select:none;z-index:3}
+.resizer::after{content:"";position:absolute;top:24px;bottom:24px;left:5px;width:2px;border-radius:1px;background:transparent}
+.resizer:hover::after,.resizer:focus-visible::after,.dragging .resizer::after{background:var(--link)}
+.resizer:focus-visible{outline:none}
+.dragging,.dragging *{cursor:col-resize!important;user-select:none!important}
+nav.sidebar .nav-title{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px}
+nav.sidebar ol{list-style:none;margin:0;padding:0;counter-reset:n}
+nav.sidebar li{counter-increment:n}
+nav.sidebar a{display:block;padding:3px 0;color:var(--muted);line-height:1.45}
+.numbered nav.sidebar a::before{content:counter(n) ".";display:inline-block;min-width:1.7em}
+nav.sidebar a:hover{color:var(--link);text-decoration:none}
+nav.sidebar ol.sub{margin:0 0 4px 1.2em;counter-reset:m}
+nav.sidebar ol.sub li{counter-increment:m}
+nav.sidebar ol.sub a{font-size:12.5px;padding:2px 0}
+.numbered nav.sidebar ol.sub a::before{content:counter(n) "." counter(m);min-width:2.5em}
+main{min-width:0}
+.hero{padding:0 0 14px;border-bottom:1px solid var(--line)}
+.hero h1{margin:0 0 8px;font-size:28px;line-height:1.3;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.chip:not(:last-child)::after{content:"·";margin:0 .6em}
+.chip b{font-weight:600;margin-right:.4em}
+.chip .age.stale{font-weight:600;color:var(--warn-fg)}
+.hero code{font-size:.92em}
+.statusbar{margin-top:8px;font-size:13px}
+.stat{margin-right:1.3em;color:var(--fg);white-space:nowrap}a.stat:hover{text-decoration:underline}
+.stat b{font-weight:600}.stat.danger b{color:var(--danger-fg)}.stat.warn b{color:var(--warn-fg)}.stat.accent b{color:var(--accent-fg)}
+.content{counter-reset:sec;padding:0}
+.content>p,.content>ul,.content>ol,.content>details>p,.content>details>ul{max-width:48em}
+html:lang(en) .content>p,html:lang(en) .content>ul,html:lang(en) .content>ol,html:lang(en) .content>details>p,html:lang(en) .content>details>ul{max-width:42em}
+h1,h2,h3,h4{line-height:1.3;color:var(--fg);font-weight:600}
+.content h2{counter-increment:sec;counter-reset:sub;font-size:22px;margin:2em 0 .6em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+.numbered .content h2::before{content:counter(sec) ".";margin-right:.45em;color:var(--muted);font-weight:400}
+.content h3{counter-increment:sub;font-size:17px;margin:1.6em 0 .5em}
+.numbered .content h3::before{content:counter(sec) "." counter(sub);margin-right:.45em;color:var(--muted);font-weight:400}
+.content h4{font-size:15px;margin:1.3em 0 .4em}
+.anchor{margin-left:.4em;opacity:0;font-weight:400;font-size:.8em;color:var(--muted)}
+h2:hover .anchor,h3:hover .anchor,.anchor:focus{opacity:1}
+p,ul,ol,pre,figure,.tbl,.callout,details{margin:0 0 1em}
+li{margin:.25em 0}
+p.sub{margin:1.4em 0 .4em}
+p.caption{margin-top:-.2em;color:var(--muted);font-size:14px}
+code{font:.9em/1.4 Consolas,"Cascadia Mono",monospace;color:var(--code-fg)}
+pre{position:relative;background:var(--soft);padding:12px 16px;border-radius:6px;overflow-x:auto;border:1px solid var(--line);line-height:1.5}
+pre code{color:inherit}
+pre[data-lang]::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:11px;line-height:1;color:var(--muted)}
+.tk-file{color:var(--tk-tag)}.tk-flag,.tk-num,.tk-const,.tk-lit{color:var(--tk-number)}.tk-fn{color:var(--tk-fn)}.tk-var{color:var(--tk-var)}.tk-str{color:var(--tk-string)}.tk-arg{color:var(--fg)}.tk-op,.tk-kw{color:var(--tk-keyword)}
+.hljs-comment,.hljs-quote{color:var(--tk-comment)}
+.hljs-keyword,.hljs-doctag,.hljs-template-tag,.hljs-meta,.hljs-meta .hljs-keyword{color:var(--tk-keyword)}
+.hljs-string,.hljs-regexp,.hljs-meta .hljs-string{color:var(--tk-string)}
+.hljs-number,.hljs-literal,.hljs-symbol,.hljs-bullet,.hljs-attr,.hljs-attribute,.hljs-property,.hljs-selector-id,.hljs-selector-class,.hljs-selector-attr{color:var(--tk-number)}
+.hljs-title,.hljs-title.function_,.hljs-built_in{color:var(--tk-fn)}
+.hljs-title.class_,.hljs-type,.hljs-variable,.hljs-template-variable{color:var(--tk-var)}
+.hljs-name,.hljs-tag,.hljs-selector-tag{color:var(--tk-tag)}
+.hljs-section{color:var(--tk-number);font-weight:600}.hljs-strong{font-weight:600}.hljs-emphasis{font-style:italic}
+.hljs-addition{color:var(--tk-tag);background:var(--success-bg)}.hljs-deletion{color:var(--tk-del);background:var(--danger-bg)}
+blockquote{margin:0 0 1em;padding:0 1em;color:var(--muted);border-left:3px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+strong{font-weight:600}
+strong.kw{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:.5em;text-underline-offset:-.3em;text-decoration-skip-ink:none}
+mark{padding:0 .2em;border-radius:3px;background:var(--mark);color:inherit}
+kbd{padding:.1em .45em;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;background:var(--soft);font:.85em Consolas,"Cascadia Mono",monospace}
+p.lead,ul.lead,ol.lead{border-left:3px solid var(--link);font-size:16px}
+p.lead{padding-left:14px}
+ul.lead,ol.lead{padding-left:2.2em}
+td.key{font-weight:600}
+.callout{padding:10px 14px;background:var(--soft);border-left:3px solid var(--neutral-fg);border-radius:0 6px 6px 0;color:var(--fg)}
+.content>.callout{max-width:60em}
+.callout>*:last-child{margin-bottom:0}
+.callout p{max-width:none}
+.callout-title{margin-bottom:4px;font-size:14px;font-weight:600;color:var(--neutral-fg)}
+.callout.note{border-left-color:var(--info-fg)}.callout.note .callout-title{color:var(--info-fg)}
+.callout.key,.callout.action{padding:12px 16px;border-left-width:4px;font-size:16px}
+.callout.key .callout-title,.callout.action .callout-title{font-size:15px}
+.callout.key{background:var(--info-bg);border-left-color:var(--link)}.callout.key .callout-title{color:var(--info-fg)}
+.callout.action{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.action .callout-title{color:var(--accent-fg)}
+.callout.tip,.callout.tldr{background:var(--success-bg);border-left-color:var(--success-fg)}.callout.tip .callout-title,.callout.tldr .callout-title{color:var(--success-fg)}
+.callout.important{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.important .callout-title{color:var(--accent-fg)}
+.callout.warning{background:var(--warn-bg);border-left-color:var(--warn-fg)}.callout.warning .callout-title{color:var(--warn-fg)}
+.callout.caution{background:var(--danger-bg);border-left-color:var(--danger-fg)}.callout.caution .callout-title{color:var(--danger-fg)}
+.callout.tldr ul{margin:.2em 0 .3em;padding-left:1.2em}
+details.basis{padding:2px 0 2px 12px;border-left:3px solid var(--line);color:var(--muted);font-size:14px}
+details.basis summary{cursor:pointer;font-weight:600}
+details.basis[open] summary{margin-bottom:4px}
+details.fold{margin:2em 0 1em;border-top:1px solid var(--line)}
+details.fold>summary{cursor:pointer;list-style:none}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary h2{display:flex;align-items:baseline;margin:0;padding:.6em 0;border:0;font-size:18px}
+details.fold>summary h2::after{content:"▸";margin-left:.5em;color:var(--muted);font-size:.75em}
+details.fold[open]>summary h2::after{content:"▾"}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55}
+.tbl th{padding:6px 12px;border:1px solid var(--line);background:var(--soft);font-weight:600;text-align:left;white-space:nowrap}
+.tbl td{padding:6px 12px;border:1px solid var(--line);vertical-align:top}
+.tbl code{font-size:.88em;overflow-wrap:break-word}
+.tbl td.fit,.tbl th.fit{white-space:nowrap}
+.cell-list{margin:0;padding-left:1.15em}
+.cell-list li{margin:.2em 0}
+td.id{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;padding:0 8px;border:1px solid var(--neutral-bd);border-radius:4px;background:var(--neutral-bg);color:var(--neutral-fg);font-size:12px;font-weight:600;line-height:1.7;white-space:nowrap}
+.tone-info{background:var(--info-bg);color:var(--info-fg);border-color:var(--info-bd)}
+.tone-success{background:var(--success-bg);color:var(--success-fg);border-color:var(--success-bd)}
+.tone-warn{background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-bd)}
+.tone-danger{background:var(--danger-bg);color:var(--danger-fg);border-color:var(--danger-bd)}
+.tone-accent{background:var(--accent-bg);color:var(--accent-fg);border-color:var(--accent-bd)}
+.tag.verdict{padding:1px 12px;font-size:14px}
+.status-note{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+.infer{border-bottom:1px dotted var(--warn-fg);cursor:help}
+ul.tasks{list-style:none;padding-left:.2em}
+li.task::before{content:"☐";margin-right:.55em;color:var(--muted)}
+li.task.done::before{content:"☑";color:var(--success-fg)}
+figure.mermaid-figure,pre.mermaid{margin:1.2em 0;padding:16px 8px;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#fff;color:#1f2937;text-align:center}
+figure.mermaid-figure svg{max-width:100%;height:auto}
+.fig{position:relative}
+.fig figure.mermaid-figure svg{width:min(100%,calc(var(--w)*.85));max-height:max(85vh,calc(var(--h)*.7));max-width:none!important;height:auto}
+.fig-toggle:checked~figure.mermaid-figure svg{width:var(--w);max-height:none}
+.fig .fig-zoom{display:block!important;position:absolute;top:calc(1.2em + 8px);right:10px;z-index:1;padding:1px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--muted);font-size:12px;line-height:1.6;cursor:pointer}
+.fig .fig-zoom::after{content:attr(data-off)}
+.fig-toggle:checked~.fig-zoom::after{content:attr(data-on)}
+.fig .fig-zoom:hover{color:var(--link);border-color:var(--link)}
+.fig-toggle:focus-visible~.fig-zoom{outline:2px solid var(--link);outline-offset:2px}
+.mermaid-error{text-align:left;color:#b42318;background:#fef3f2;border:1px solid #fecdca}
+footer{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+@media (max-width:1000px){.resizer{display:none}.layout{grid-template-columns:1fr;gap:16px;padding:20px 16px}nav.sidebar{position:static;width:auto!important;max-width:none;max-height:none;resize:none;padding-bottom:12px;border-bottom:1px solid var(--line)}}
+@media print{.progress,.resizer,.fig .fig-zoom{display:none!important}.fig figure.mermaid-figure svg{width:min(100%,var(--w))!important;max-height:none!important}body{font-size:11pt}.layout{display:block;padding:0}nav.sidebar,.skip,.anchor{display:none}.hero{border-bottom:2px solid #000}.tbl,figure,.callout,tr{break-inside:avoid}.tbl{overflow:visible}details.fold{border:0}a{color:inherit}}
+</style>
+</head>
+<body id="top" class="numbered">
+<a class="skip" href="#content">跳到正文</a>
+<div class="progress" aria-hidden="true"></div>
+<div class="layout">
+<nav class="sidebar" aria-label="目录"><div class="nav-title">目录</div><ol><li><a href="#overview">Overview</a></li><li><a href="#message-flow">Message Flow</a></li><li><a href="#operations">Operations</a></li><li><a href="#data-types">Data Types</a></li><li><a href="#errors">Errors</a></li><li><a href="#versioning--compatibility">Versioning &amp; Compatibility</a></li><li><a href="#examples">Examples</a></li><li><a href="#待确认项">待确认项</a></li></ol></nav>
+<main id="content">
+<header class="hero"><h1>协议规范：Linux 虚拟 USB（USB/IP、ConfigFS、FunctionFS、Raw Gadget）</h1><div class="chips"><span class="chip"><b>类型</b>api</span><span class="chip"><b>模式</b>Reverse</span><span class="chip"><b>状态</b>Stable</span><span class="chip"><b>版本</b>USB/IP v1.1.1 / Linux 内核文档</span><span class="chip"><b>代码基线</b>&lt;code&gt;docs.kernel.org（2026-11 抓取）&lt;/code&gt;</span><span class="chip"><b>最后核对</b>2026-11-28 <span class="age">· 今天核对</span></span><span class="chip"><b>范围</b>&lt;code&gt;usb-specs/linux/usbip_protocol.html&lt;/code&gt;, &lt;code&gt;usb-specs/linux/gadget_configfs.html&lt;/code&gt;, &lt;code&gt;usb-specs/linux/functionfs.html&lt;/code&gt;, &lt;code&gt;usb-specs/linux/raw-gadget.html&lt;/code&gt;</span><span class="chip">约 2 分钟读完</span></div><div class="statusbar"><a class="stat accent" href="#待确认项"><b>2</b> 待确认</a></div></header>
+<div class="content">
+
+
+<h2 id="overview">Overview<a class="anchor" href="#overview" aria-label="链接到本节">#</a></h2>
+<p class="lead">本文内容来自 Linux 内核官方文档，不是 USB-IF 规范；它是这些接口唯一的权威定义。</p>
+<ul>
+<li><strong class="lead-in">USB/IP</strong>：服务端导出 USB 设备，客户端导入；设备驱动跑在客户端（usbip_protocol §Architecture）。</li>
+<li>字段一律为网络字节序（大端）；头部版本号 <code>0x0111</code> 表示 v1.1.1。</li>
+<li><strong class="lead-in">ConfigFS</strong>：用目录与符号链接拼出 gadget，最后写 <code class="tk-const">UDC</code> 绑定控制器（gadget_configfs）。</li>
+<li><strong class="lead-in">FunctionFS</strong>：用户态向 <code>ep0</code> 写描述符与字符串，之后出现 <code>ep#</code> 文件（functionfs）。</li>
+<li><strong class="lead-in">Raw Gadget</strong>：打开 <code class="tk-file">/dev/raw-gadget</code>，用 ioctl 实现任意 gadget（raw-gadget）。</li>
+</ul>
+<h2 id="message-flow">Message Flow<a class="anchor" href="#message-flow" aria-label="链接到本节">#</a></h2>
+<p>蓝色 = 客户端（虚拟主机控制器），灰色 = 服务端（导出设备的主机）。</p>
+<div class="fig" style="--w:674px;--h:621px"><input class="fig-toggle" type="checkbox" id="adoc-fig-1" aria-label="查看原始大小" style="position:absolute;opacity:0;width:0;height:0"><figure class="mermaid-figure"><svg id="adoc-diagram-1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="max-width: 674px; background-color: white;" viewBox="-50 -10 674 621" role="graphics-document document" aria-roledescription="sequence"><g><rect x="424" y="-5" fill="rgba(243,244,246,0.45)" stroke="rgb(0,0,0, 0.5)" width="170" height="606" class="rect"/><text x="509" y="13.5" dominant-baseline="central" alignment-baseline="central" class="text" style="text-anchor: middle; font-size: 16px; font-weight: 400;"><tspan x="509" dy="0">Server</tspan></text></g><g><rect x="-20" y="-5" fill="rgba(219,234,254,0.45)" stroke="rgb(0,0,0, 0.5)" width="170" height="606" class="rect"/><text x="65" y="13.5" dominant-baseline="central" alignment-baseline="central" class="text" style="text-anchor: middle; font-size: 16px; font-weight: 400;"><tspan x="65" dy="0">Client</tspan></text></g><g><line id="actor1" x1="509" y1="77" x2="509" y2="2000" class="actor-line 200" stroke-width="0.5px" stroke="#999" name="S" data-et="life-line" data-id="S"/><g id="root-1" data-et="participant" data-type="participant" data-id="S"><rect x="449" y="27" fill="#eaeaea" stroke="#666" width="120" height="50" name="S" rx="3" ry="3" class="actor actor-top"/><text x="509" y="52" dominant-baseline="central" alignment-baseline="central" class="actor actor-box" style="text-anchor: middle; font-size: 16px; font-weight: 400;"><tspan x="509" dy="0">usbip 服务端</tspan></text></g></g><g><line id="actor0" x1="65" y1="77" x2="65" y2="2000" class="actor-line 200" stroke-width="0.5px" stroke="#999" name="C" data-et="life-line" data-id="C"/><g id="root-0" data-et="participant" data-type="participant" data-id="C"><rect x="5" y="27" fill="#eaeaea" stroke="#666" width="120" height="50" name="C" rx="3" ry="3" class="actor actor-top"/><text x="65" y="52" dominant-baseline="central" alignment-baseline="central" class="actor actor-box" style="text-anchor: middle; font-size: 16px; font-weight: 400;"><tspan x="65" dy="0">vhci 客户端</tspan></text></g></g><style>#adoc-diagram-1{font-size:14px;fill:#111827;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#adoc-diagram-1 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .error-icon{fill:hsl(40, 14.2857142857%, 100%);}#adoc-diagram-1 .error-text{fill:#000000;stroke:#000000;}#adoc-diagram-1 .edge-thickness-normal{stroke-width:1px;}#adoc-diagram-1 .edge-thickness-thick{stroke-width:3.5px;}#adoc-diagram-1 .edge-pattern-solid{stroke-dasharray:0;}#adoc-diagram-1 .edge-thickness-invisible{stroke-width:0;fill:none;}#adoc-diagram-1 .edge-pattern-dashed{stroke-dasharray:3;}#adoc-diagram-1 .edge-pattern-dotted{stroke-dasharray:2;}#adoc-diagram-1 .marker{fill:#4b5563;stroke:#4b5563;}#adoc-diagram-1 .marker.cross{stroke:#4b5563;}#adoc-diagram-1 svg{font-size:14px;}#adoc-diagram-1 p{margin:0;}#adoc-diagram-1 .actor{stroke:#6b7280;fill:#ffffff;stroke-width:1;}#adoc-diagram-1 rect.actor.outer-path[data-look="neo"]{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 rect.note[data-look="neo"]{stroke:#9ca3af;fill:#ffffff;filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 text.actor&gt;tspan{fill:#111827;stroke:none;}#adoc-diagram-1 .actor-line{stroke:#9ca3af;}#adoc-diagram-1 .innerArc{stroke-width:1.5;stroke-dasharray:none;}#adoc-diagram-1 .messageLine0{stroke-width:1.5;stroke-dasharray:none;stroke:#4b5563;}#adoc-diagram-1 .messageLine1{stroke-width:1.5;stroke-dasharray:2,2;stroke:#4b5563;}#adoc-diagram-1 [id$="-arrowhead"] path{fill:#4b5563;stroke:#4b5563;}#adoc-diagram-1 .sequenceNumber{fill:#ffffff;}#adoc-diagram-1 [id$="-sequencenumber"]{fill:#4b5563;}#adoc-diagram-1 [id$="-crosshead"] path{fill:#4b5563;stroke:#4b5563;}#adoc-diagram-1 .messageText{fill:#111827;stroke:none;}#adoc-diagram-1 .labelBox{stroke:#6b7280;fill:#ffffff;filter:none;}#adoc-diagram-1 .labelText,#adoc-diagram-1 .labelText&gt;tspan{fill:#111827;stroke:none;}#adoc-diagram-1 .loopText,#adoc-diagram-1 .loopText&gt;tspan{fill:#111827;stroke:none;}#adoc-diagram-1 .sectionTitle,#adoc-diagram-1 .sectionTitle&gt;tspan{fill:#111827;stroke:none;}#adoc-diagram-1 .loopLine{stroke-width:2px;stroke-dasharray:2,2;stroke:#6b7280;fill:#6b7280;}#adoc-diagram-1 .note{stroke:#9ca3af;fill:#ffffff;}#adoc-diagram-1 .noteText,#adoc-diagram-1 .noteText&gt;tspan{fill:#374151;stroke:none;font-weight:normal;}#adoc-diagram-1 .activation0{fill:hsl(100, 14.2857142857%, 95.8823529412%);stroke:hsl(100, 14.2857142857%, 85.8823529412%);}#adoc-diagram-1 .activation1{fill:hsl(100, 14.2857142857%, 95.8823529412%);stroke:hsl(100, 14.2857142857%, 85.8823529412%);}#adoc-diagram-1 .activation2{fill:hsl(100, 14.2857142857%, 95.8823529412%);stroke:hsl(100, 14.2857142857%, 85.8823529412%);}#adoc-diagram-1 .actorPopupMenu{position:absolute;}#adoc-diagram-1 .actorPopupMenuPanel{position:absolute;fill:#ffffff;box-shadow:0px 8px 16px 0px rgba(0,0,0,0.2);filter:drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));}#adoc-diagram-1 .actor-man circle,#adoc-diagram-1 line{fill:#ffffff;stroke-width:2px;}#adoc-diagram-1 g rect.rect{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));stroke:#d1d5db;}#adoc-diagram-1 .node .neo-node{stroke:#d1d5db;}#adoc-diagram-1 [data-look="neo"].node rect,#adoc-diagram-1 [data-look="neo"].cluster rect,#adoc-diagram-1 [data-look="neo"].node polygon{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].swimlane.cluster rect{filter:none;}#adoc-diagram-1 [data-look="neo"].node path{stroke:url(#adoc-diagram-1-gradient);stroke-width:1px;}#adoc-diagram-1 [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node .neo-line path{stroke:#d1d5db;filter:none;}#adoc-diagram-1 [data-look="neo"].node circle{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node circle .state-start{fill:#000000;}#adoc-diagram-1 [data-look="neo"].icon-shape .icon{fill:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].icon-shape .icon-neo path{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g/><defs><symbol id="adoc-diagram-1-computer" width="24" height="24"><path transform="scale(.5)" d="M2 2v13h20v-13h-20zm18 11h-16v-9h16v9zm-10.228 6l.466-1h3.524l.467 1h-4.457zm14.228 3h-24l2-6h2.104l-1.33 4h18.45l-1.297-4h2.073l2 6zm-5-10h-14v-7h14v7z"/></symbol></defs><defs><symbol id="adoc-diagram-1-database" fill-rule="evenodd" clip-rule="evenodd"><path transform="scale(.5)" d="M12.258.001l.256.004.255.005.253.008.251.01.249.012.247.015.246.016.242.019.241.02.239.023.236.024.233.027.231.028.229.031.225.032.223.034.22.036.217.038.214.04.211.041.208.043.205.045.201.046.198.048.194.05.191.051.187.053.183.054.18.056.175.057.172.059.168.06.163.061.16.063.155.064.15.066.074.033.073.033.071.034.07.034.069.035.068.035.067.035.066.035.064.036.064.036.062.036.06.036.06.037.058.037.058.037.055.038.055.038.053.038.052.038.051.039.05.039.048.039.047.039.045.04.044.04.043.04.041.04.04.041.039.041.037.041.036.041.034.041.033.042.032.042.03.042.029.042.027.042.026.043.024.043.023.043.021.043.02.043.018.044.017.043.015.044.013.044.012.044.011.045.009.044.007.045.006.045.004.045.002.045.001.045v17l-.001.045-.002.045-.004.045-.006.045-.007.045-.009.044-.011.045-.012.044-.013.044-.015.044-.017.043-.018.044-.02.043-.021.043-.023.043-.024.043-.026.043-.027.042-.029.042-.03.042-.032.042-.033.042-.034.041-.036.041-.037.041-.039.041-.04.041-.041.04-.043.04-.044.04-.045.04-.047.039-.048.039-.05.039-.051.039-.052.038-.053.038-.055.038-.055.038-.058.037-.058.037-.06.037-.06.036-.062.036-.064.036-.064.036-.066.035-.067.035-.068.035-.069.035-.07.034-.071.034-.073.033-.074.033-.15.066-.155.064-.16.063-.163.061-.168.06-.172.059-.175.057-.18.056-.183.054-.187.053-.191.051-.194.05-.198.048-.201.046-.205.045-.208.043-.211.041-.214.04-.217.038-.22.036-.223.034-.225.032-.229.031-.231.028-.233.027-.236.024-.239.023-.241.02-.242.019-.246.016-.247.015-.249.012-.251.01-.253.008-.255.005-.256.004-.258.001-.258-.001-.256-.004-.255-.005-.253-.008-.251-.01-.249-.012-.247-.015-.245-.016-.243-.019-.241-.02-.238-.023-.236-.024-.234-.027-.231-.028-.228-.031-.226-.032-.223-.034-.22-.036-.217-.038-.214-.04-.211-.041-.208-.043-.204-.045-.201-.046-.198-.048-.195-.05-.19-.051-.187-.053-.184-.054-.179-.056-.176-.057-.172-.059-.167-.06-.164-.061-.159-.063-.155-.064-.151-.066-.074-.033-.072-.033-.072-.034-.07-.034-.069-.035-.068-.035-.067-.035-.066-.035-.064-.036-.063-.036-.062-.036-.061-.036-.06-.037-.058-.037-.057-.037-.056-.038-.055-.038-.053-.038-.052-.038-.051-.039-.049-.039-.049-.039-.046-.039-.046-.04-.044-.04-.043-.04-.041-.04-.04-.041-.039-.041-.037-.041-.036-.041-.034-.041-.033-.042-.032-.042-.03-.042-.029-.042-.027-.042-.026-.043-.024-.043-.023-.043-.021-.043-.02-.043-.018-.044-.017-.043-.015-.044-.013-.044-.012-.044-.011-.045-.009-.044-.007-.045-.006-.045-.004-.045-.002-.045-.001-.045v-17l.001-.045.002-.045.004-.045.006-.045.007-.045.009-.044.011-.045.012-.044.013-.044.015-.044.017-.043.018-.044.02-.043.021-.043.023-.043.024-.043.026-.043.027-.042.029-.042.03-.042.032-.042.033-.042.034-.041.036-.041.037-.041.039-.041.04-.041.041-.04.043-.04.044-.04.046-.04.046-.039.049-.039.049-.039.051-.039.052-.038.053-.038.055-.038.056-.038.057-.037.058-.037.06-.037.061-.036.062-.036.063-.036.064-.036.066-.035.067-.035.068-.035.069-.035.07-.034.072-.034.072-.033.074-.033.151-.066.155-.064.159-.063.164-.061.167-.06.172-.059.176-.057.179-.056.184-.054.187-.053.19-.051.195-.05.198-.048.201-.046.204-.045.208-.043.211-.041.214-.04.217-.038.22-.036.223-.034.226-.032.228-.031.231-.028.234-.027.236-.024.238-.023.241-.02.243-.019.245-.016.247-.015.249-.012.251-.01.253-.008.255-.005.256-.004.258-.001.258.001zm-9.258 20.499v.01l.001.021.003.021.004.022.005.021.006.022.007.022.009.023.01.022.011.023.012.023.013.023.015.023.016.024.017.023.018.024.019.024.021.024.022.025.023.024.024.025.052.049.056.05.061.051.066.051.07.051.075.051.079.052.084.052.088.052.092.052.097.052.102.051.105.052.11.052.114.051.119.051.123.051.127.05.131.05.135.05.139.048.144.049.147.047.152.047.155.047.16.045.163.045.167.043.171.043.176.041.178.041.183.039.187.039.19.037.194.035.197.035.202.033.204.031.209.03.212.029.216.027.219.025.222.024.226.021.23.02.233.018.236.016.24.015.243.012.246.01.249.008.253.005.256.004.259.001.26-.001.257-.004.254-.005.25-.008.247-.011.244-.012.241-.014.237-.016.233-.018.231-.021.226-.021.224-.024.22-.026.216-.027.212-.028.21-.031.205-.031.202-.034.198-.034.194-.036.191-.037.187-.039.183-.04.179-.04.175-.042.172-.043.168-.044.163-.045.16-.046.155-.046.152-.047.148-.048.143-.049.139-.049.136-.05.131-.05.126-.05.123-.051.118-.052.114-.051.11-.052.106-.052.101-.052.096-.052.092-.052.088-.053.083-.051.079-.052.074-.052.07-.051.065-.051.06-.051.056-.05.051-.05.023-.024.023-.025.021-.024.02-.024.019-.024.018-.024.017-.024.015-.023.014-.024.013-.023.012-.023.01-.023.01-.022.008-.022.006-.022.006-.022.004-.022.004-.021.001-.021.001-.021v-4.127l-.077.055-.08.053-.083.054-.085.053-.087.052-.09.052-.093.051-.095.05-.097.05-.1.049-.102.049-.105.048-.106.047-.109.047-.111.046-.114.045-.115.045-.118.044-.12.043-.122.042-.124.042-.126.041-.128.04-.13.04-.132.038-.134.038-.135.037-.138.037-.139.035-.142.035-.143.034-.144.033-.147.032-.148.031-.15.03-.151.03-.153.029-.154.027-.156.027-.158.026-.159.025-.161.024-.162.023-.163.022-.165.021-.166.02-.167.019-.169.018-.169.017-.171.016-.173.015-.173.014-.175.013-.175.012-.177.011-.178.01-.179.008-.179.008-.181.006-.182.005-.182.004-.184.003-.184.002h-.37l-.184-.002-.184-.003-.182-.004-.182-.005-.181-.006-.179-.008-.179-.008-.178-.01-.176-.011-.176-.012-.175-.013-.173-.014-.172-.015-.171-.016-.17-.017-.169-.018-.167-.019-.166-.02-.165-.021-.163-.022-.162-.023-.161-.024-.159-.025-.157-.026-.156-.027-.155-.027-.153-.029-.151-.03-.15-.03-.148-.031-.146-.032-.145-.033-.143-.034-.141-.035-.14-.035-.137-.037-.136-.037-.134-.038-.132-.038-.13-.04-.128-.04-.126-.041-.124-.042-.122-.042-.12-.044-.117-.043-.116-.045-.113-.045-.112-.046-.109-.047-.106-.047-.105-.048-.102-.049-.1-.049-.097-.05-.095-.05-.093-.052-.09-.051-.087-.052-.085-.053-.083-.054-.08-.054-.077-.054v4.127zm0-5.654v.011l.001.021.003.021.004.021.005.022.006.022.007.022.009.022.01.022.011.023.012.023.013.023.015.024.016.023.017.024.018.024.019.024.021.024.022.024.023.025.024.024.052.05.056.05.061.05.066.051.07.051.075.052.079.051.084.052.088.052.092.052.097.052.102.052.105.052.11.051.114.051.119.052.123.05.127.051.131.05.135.049.139.049.144.048.147.048.152.047.155.046.16.045.163.045.167.044.171.042.176.042.178.04.183.04.187.038.19.037.194.036.197.034.202.033.204.032.209.03.212.028.216.027.219.025.222.024.226.022.23.02.233.018.236.016.24.014.243.012.246.01.249.008.253.006.256.003.259.001.26-.001.257-.003.254-.006.25-.008.247-.01.244-.012.241-.015.237-.016.233-.018.231-.02.226-.022.224-.024.22-.025.216-.027.212-.029.21-.03.205-.032.202-.033.198-.035.194-.036.191-.037.187-.039.183-.039.179-.041.175-.042.172-.043.168-.044.163-.045.16-.045.155-.047.152-.047.148-.048.143-.048.139-.05.136-.049.131-.05.126-.051.123-.051.118-.051.114-.052.11-.052.106-.052.101-.052.096-.052.092-.052.088-.052.083-.052.079-.052.074-.051.07-.052.065-.051.06-.05.056-.051.051-.049.023-.025.023-.024.021-.025.02-.024.019-.024.018-.024.017-.024.015-.023.014-.023.013-.024.012-.022.01-.023.01-.023.008-.022.006-.022.006-.022.004-.021.004-.022.001-.021.001-.021v-4.139l-.077.054-.08.054-.083.054-.085.052-.087.053-.09.051-.093.051-.095.051-.097.05-.1.049-.102.049-.105.048-.106.047-.109.047-.111.046-.114.045-.115.044-.118.044-.12.044-.122.042-.124.042-.126.041-.128.04-.13.039-.132.039-.134.038-.135.037-.138.036-.139.036-.142.035-.143.033-.144.033-.147.033-.148.031-.15.03-.151.03-.153.028-.154.028-.156.027-.158.026-.159.025-.161.024-.162.023-.163.022-.165.021-.166.02-.167.019-.169.018-.169.017-.171.016-.173.015-.173.014-.175.013-.175.012-.177.011-.178.009-.179.009-.179.007-.181.007-.182.005-.182.004-.184.003-.184.002h-.37l-.184-.002-.184-.003-.182-.004-.182-.005-.181-.007-.179-.007-.179-.009-.178-.009-.176-.011-.176-.012-.175-.013-.173-.014-.172-.015-.171-.016-.17-.017-.169-.018-.167-.019-.166-.02-.165-.021-.163-.022-.162-.023-.161-.024-.159-.025-.157-.026-.156-.027-.155-.028-.153-.028-.151-.03-.15-.03-.148-.031-.146-.033-.145-.033-.143-.033-.141-.035-.14-.036-.137-.036-.136-.037-.134-.038-.132-.039-.13-.039-.128-.04-.126-.041-.124-.042-.122-.043-.12-.043-.117-.044-.116-.044-.113-.046-.112-.046-.109-.046-.106-.047-.105-.048-.102-.049-.1-.049-.097-.05-.095-.051-.093-.051-.09-.051-.087-.053-.085-.052-.083-.054-.08-.054-.077-.054v4.139zm0-5.666v.011l.001.02.003.022.004.021.005.022.006.021.007.022.009.023.01.022.011.023.012.023.013.023.015.023.016.024.017.024.018.023.019.024.021.025.022.024.023.024.024.025.052.05.056.05.061.05.066.051.07.051.075.052.079.051.084.052.088.052.092.052.097.052.102.052.105.051.11.052.114.051.119.051.123.051.127.05.131.05.135.05.139.049.144.048.147.048.152.047.155.046.16.045.163.045.167.043.171.043.176.042.178.04.183.04.187.038.19.037.194.036.197.034.202.033.204.032.209.03.212.028.216.027.219.025.222.024.226.021.23.02.233.018.236.017.24.014.243.012.246.01.249.008.253.006.256.003.259.001.26-.001.257-.003.254-.006.25-.008.247-.01.244-.013.241-.014.237-.016.233-.018.231-.02.226-.022.224-.024.22-.025.216-.027.212-.029.21-.03.205-.032.202-.033.198-.035.194-.036.191-.037.187-.039.183-.039.179-.041.175-.042.172-.043.168-.044.163-.045.16-.045.155-.047.152-.047.148-.048.143-.049.139-.049.136-.049.131-.051.126-.05.123-.051.118-.052.114-.051.11-.052.106-.052.101-.052.096-.052.092-.052.088-.052.083-.052.079-.052.074-.052.07-.051.065-.051.06-.051.056-.05.051-.049.023-.025.023-.025.021-.024.02-.024.019-.024.018-.024.017-.024.015-.023.014-.024.013-.023.012-.023.01-.022.01-.023.008-.022.006-.022.006-.022.004-.022.004-.021.001-.021.001-.021v-4.153l-.077.054-.08.054-.083.053-.085.053-.087.053-.09.051-.093.051-.095.051-.097.05-.1.049-.102.048-.105.048-.106.048-.109.046-.111.046-.114.046-.115.044-.118.044-.12.043-.122.043-.124.042-.126.041-.128.04-.13.039-.132.039-.134.038-.135.037-.138.036-.139.036-.142.034-.143.034-.144.033-.147.032-.148.032-.15.03-.151.03-.153.028-.154.028-.156.027-.158.026-.159.024-.161.024-.162.023-.163.023-.165.021-.166.02-.167.019-.169.018-.169.017-.171.016-.173.015-.173.014-.175.013-.175.012-.177.01-.178.01-.179.009-.179.007-.181.006-.182.006-.182.004-.184.003-.184.001-.185.001-.185-.001-.184-.001-.184-.003-.182-.004-.182-.006-.181-.006-.179-.007-.179-.009-.178-.01-.176-.01-.176-.012-.175-.013-.173-.014-.172-.015-.171-.016-.17-.017-.169-.018-.167-.019-.166-.02-.165-.021-.163-.023-.162-.023-.161-.024-.159-.024-.157-.026-.156-.027-.155-.028-.153-.028-.151-.03-.15-.03-.148-.032-.146-.032-.145-.033-.143-.034-.141-.034-.14-.036-.137-.036-.136-.037-.134-.038-.132-.039-.13-.039-.128-.041-.126-.041-.124-.041-.122-.043-.12-.043-.117-.044-.116-.044-.113-.046-.112-.046-.109-.046-.106-.048-.105-.048-.102-.048-.1-.05-.097-.049-.095-.051-.093-.051-.09-.052-.087-.052-.085-.053-.083-.053-.08-.054-.077-.054v4.153zm8.74-8.179l-.257.004-.254.005-.25.008-.247.011-.244.012-.241.014-.237.016-.233.018-.231.021-.226.022-.224.023-.22.026-.216.027-.212.028-.21.031-.205.032-.202.033-.198.034-.194.036-.191.038-.187.038-.183.04-.179.041-.175.042-.172.043-.168.043-.163.045-.16.046-.155.046-.152.048-.148.048-.143.048-.139.049-.136.05-.131.05-.126.051-.123.051-.118.051-.114.052-.11.052-.106.052-.101.052-.096.052-.092.052-.088.052-.083.052-.079.052-.074.051-.07.052-.065.051-.06.05-.056.05-.051.05-.023.025-.023.024-.021.024-.02.025-.019.024-.018.024-.017.023-.015.024-.014.023-.013.023-.012.023-.01.023-.01.022-.008.022-.006.023-.006.021-.004.022-.004.021-.001.021-.001.021.001.021.001.021.004.021.004.022.006.021.006.023.008.022.01.022.01.023.012.023.013.023.014.023.015.024.017.023.018.024.019.024.02.025.021.024.023.024.023.025.051.05.056.05.06.05.065.051.07.052.074.051.079.052.083.052.088.052.092.052.096.052.101.052.106.052.11.052.114.052.118.051.123.051.126.051.131.05.136.05.139.049.143.048.148.048.152.048.155.046.16.046.163.045.168.043.172.043.175.042.179.041.183.04.187.038.191.038.194.036.198.034.202.033.205.032.21.031.212.028.216.027.22.026.224.023.226.022.231.021.233.018.237.016.241.014.244.012.247.011.25.008.254.005.257.004.26.001.26-.001.257-.004.254-.005.25-.008.247-.011.244-.012.241-.014.237-.016.233-.018.231-.021.226-.022.224-.023.22-.026.216-.027.212-.028.21-.031.205-.032.202-.033.198-.034.194-.036.191-.038.187-.038.183-.04.179-.041.175-.042.172-.043.168-.043.163-.045.16-.046.155-.046.152-.048.148-.048.143-.048.139-.049.136-.05.131-.05.126-.051.123-.051.118-.051.114-.052.11-.052.106-.052.101-.052.096-.052.092-.052.088-.052.083-.052.079-.052.074-.051.07-.052.065-.051.06-.05.056-.05.051-.05.023-.025.023-.024.021-.024.02-.025.019-.024.018-.024.017-.023.015-.024.014-.023.013-.023.012-.023.01-.023.01-.022.008-.022.006-.023.006-.021.004-.022.004-.021.001-.021.001-.021-.001-.021-.001-.021-.004-.021-.004-.022-.006-.021-.006-.023-.008-.022-.01-.022-.01-.023-.012-.023-.013-.023-.014-.023-.015-.024-.017-.023-.018-.024-.019-.024-.02-.025-.021-.024-.023-.024-.023-.025-.051-.05-.056-.05-.06-.05-.065-.051-.07-.052-.074-.051-.079-.052-.083-.052-.088-.052-.092-.052-.096-.052-.101-.052-.106-.052-.11-.052-.114-.052-.118-.051-.123-.051-.126-.051-.131-.05-.136-.05-.139-.049-.143-.048-.148-.048-.152-.048-.155-.046-.16-.046-.163-.045-.168-.043-.172-.043-.175-.042-.179-.041-.183-.04-.187-.038-.191-.038-.194-.036-.198-.034-.202-.033-.205-.032-.21-.031-.212-.028-.216-.027-.22-.026-.224-.023-.226-.022-.231-.021-.233-.018-.237-.016-.241-.014-.244-.012-.247-.011-.25-.008-.254-.005-.257-.004-.26-.001-.26.001z"/></symbol></defs><defs><symbol id="adoc-diagram-1-clock" width="24" height="24"><path transform="scale(.5)" d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.848 12.459c.202.038.202.333.001.372-1.907.361-6.045 1.111-6.547 1.111-.719 0-1.301-.582-1.301-1.301 0-.512.77-5.447 1.125-7.445.034-.192.312-.181.343.014l.985 6.238 5.394 1.011z"/></symbol></defs><defs><marker id="adoc-diagram-1-arrowhead" refX="7.9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M -1 0 L 10 5 L 0 10 z"/></marker></defs><defs><marker id="adoc-diagram-1-crosshead" markerWidth="15" markerHeight="8" orient="auto" refX="4" refY="4.5"><path fill="none" stroke="#000000" stroke-width="1pt" d="M 1,2 L 6,7 M 6,2 L 1,7" style="stroke-dasharray: 0, 0;"/></marker></defs><defs><marker id="adoc-diagram-1-filled-head" refX="15.5" refY="7" markerWidth="20" markerHeight="28" orient="auto"><path d="M 18,7 L9,13 L14,7 L9,1 Z"/></marker></defs><defs><marker id="adoc-diagram-1-sequencenumber" refX="15" refY="15" markerWidth="60" markerHeight="40" orient="auto"><circle cx="15" cy="15" r="6"/></marker></defs><defs><marker id="adoc-diagram-1-solidTopArrowHead" refX="7.9" refY="7.25" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M 0 0 L 10 8 L 0 8 z"/></marker></defs><defs><marker id="adoc-diagram-1-solidBottomArrowHead" refX="7.9" refY="0.75" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M 0 0 L 10 0 L 0 8 z"/></marker></defs><defs><marker id="adoc-diagram-1-stickTopArrowHead" refX="7.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M 0 0 L 7 7" stroke="black" stroke-width="1.5" fill="none"/></marker></defs><defs><marker id="adoc-diagram-1-stickBottomArrowHead" refX="7.5" refY="0" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M 0 7 L 7 0" stroke="black" stroke-width="1.5" fill="none"/></marker></defs><g data-et="control-structure" data-id="i12"><line x1="54" y1="409" x2="520" y2="409" class="loopLine"/><line x1="520" y1="409" x2="520" y2="591" class="loopLine"/><line x1="54" y1="591" x2="520" y2="591" class="loopLine"/><line x1="54" y1="409" x2="54" y2="591" class="loopLine"/><line x1="54" y1="505" x2="520" y2="505" class="loopLine" style="stroke-dasharray: 3, 3;"/><polygon points="54,409 104,409 104,422 95.6,429 54,429" class="labelBox"/><text x="79" y="422" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="labelText" style="font-size: 16px; font-weight: 400;">alt</text><text x="312" y="427" text-anchor="middle" class="loopText" style="font-size: 16px; font-weight: 400;"><tspan x="312">[URB 仍未完成]</tspan></text><text x="287" y="523" text-anchor="middle" class="sectionTitle" style="font-size: 16px; font-weight: 400;">[URB 已经回过 RET_SUBMIT]</text></g><text x="286" y="92" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-size: 16px; font-weight: 600; fill: #1e3a8a;">OP_REQ_DEVLIST (0x8005)</text><line x1="72" y1="123" x2="505" y2="123" class="messageLine0" data-et="message" data-id="i1" data-from="C" data-to="S" stroke-width="2" stroke="none" marker-end="url(#adoc-diagram-1-arrowhead)" style="fill: none;"/><line x1="65" y1="123" x2="65" y2="123" stroke-width="0" marker-start="url(#adoc-diagram-1-sequencenumber)"/><text x="65" y="127" font-family="sans-serif" font-size="12px" text-anchor="middle" class="sequenceNumber">1</text><text x="289" y="138" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-size: 16px; font-weight: 400; fill: #374151; fill-opacity: 0.82;">OP_REP_DEVLIST (0x0005)，随后关闭 TCP</text><line x1="514" y1="169" x2="69" y2="169" class="messageLine1" data-et="message" data-id="i2" data-from="S" data-to="C" stroke-width="2" stroke="none" marker-end="url(#adoc-diagram-1-arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"/><line x1="509" y1="169" x2="509" y2="169" stroke-width="0" marker-start="url(#adoc-diagram-1-sequencenumber)"/><text x="509" y="173" font-family="sans-serif" font-size="12px" text-anchor="middle" class="sequenceNumber">2</text><text x="286" y="184" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-size: 16px; font-weight: 600; fill: #1e3a8a;">新 TCP 连接：OP_REQ_IMPORT (0x8003)</text><line x1="72" y1="215" x2="505" y2="215" class="messageLine0" data-et="message" data-id="i3" data-from="C" data-to="S" stroke-width="2" stroke="none" marker-end="url(#adoc-diagram-1-arrowhead)" style="fill: none;"/><line x1="65" y1="215" x2="65" y2="215" stroke-width="0" marker-start="url(#adoc-diagram-1-sequencenumber)"/><text x="65" y="219" font-family="sans-serif" font-size="12px" text-anchor="middle" class="sequenceNumber">3</text><text x="289" y="230" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-size: 16px; font-weight: 400; fill: #374151; fill-opacity: 0.82;">OP_REP_IMPORT (0x0003)，成功则连接保持</text><line x1="514" y1="261" x2="69" y2="261" class="messageLine1" data-et="message" data-id="i4" data-from="S" data-to="C" stroke-width="2" stroke="none" marker-end="url(#adoc-diagram-1-arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"/><line x1="509" y1="261" x2="509" y2="261" stroke-width="0" marker-start="url(#adoc-diagram-1-sequencenumber)"/><text x="509" y="265" font-family="sans-serif" font-size="12px" text-anchor="middle" class="sequenceNumber">4</text><text x="286" y="276" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-size: 16px; font-weight: 600; fill: #1e3a8a;">USBIP_CMD_SUBMIT（seqnum = n）</text><line x1="72" y1="307" x2="505" y2="307" class="messageLine0" data-et="message" data-id="i5" data-from="C" data-to="S" stroke-width="2" stroke="none" marker-end="url(#adoc-diagram-1-arrowhead)" style="fill: none;"/><line x1="65" y1="307" x2="65" y2="307" stroke-width="0" marker-start="url(#adoc-diagram-1-sequencenumber)"/><text x="65" y="311" font-family="sans-serif" font-size="12px" text-anchor="middle" class="sequenceNumber">5</text><text x="289" y="322" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-size: 16px; font-weight: 400; fill: #374151; fill-opacity: 0.82;">USBIP_RET_SUBMIT（seqnum = n）</text><line x1="514" y1="353" x2="69" y2="353" class="messageLine1" data-et="message" data-id="i6" data-from="S" data-to="C" stroke-width="2" stroke="none" marker-end="url(#adoc-diagram-1-arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"/><line x1="509" y1="353" x2="509" y2="353" stroke-width="0" marker-start="url(#adoc-diagram-1-sequencenumber)"/><text x="509" y="357" font-family="sans-serif" font-size="12px" text-anchor="middle" class="sequenceNumber">6</text><text x="286" y="368" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-size: 16px; font-weight: 600; fill: #1e3a8a;">USBIP_CMD_UNLINK（unlink_seqnum = n）</text><line x1="72" y1="399" x2="505" y2="399" class="messageLine0" data-et="message" data-id="i7" data-from="C" data-to="S" stroke-width="2" stroke="none" marker-end="url(#adoc-diagram-1-arrowhead)" style="fill: none;"/><line x1="65" y1="399" x2="65" y2="399" stroke-width="0" marker-start="url(#adoc-diagram-1-sequencenumber)"/><text x="65" y="403" font-family="sans-serif" font-size="12px" text-anchor="middle" class="sequenceNumber">7</text><text x="289" y="459" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-size: 16px; font-weight: 400; fill: #374151; fill-opacity: 0.82;">USBIP_RET_UNLINK（status = -ECONNRESET）</text><line x1="514" y1="490" x2="69" y2="490" class="messageLine1" data-et="message" data-id="i9" data-from="S" data-to="C" stroke-width="2" stroke="none" marker-end="url(#adoc-diagram-1-arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"/><line x1="509" y1="490" x2="509" y2="490" stroke-width="0" marker-start="url(#adoc-diagram-1-sequencenumber)"/><text x="509" y="494" font-family="sans-serif" font-size="12px" text-anchor="middle" class="sequenceNumber">8</text><text x="289" y="550" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-size: 16px; font-weight: 400; fill: #374151; fill-opacity: 0.82;">USBIP_RET_UNLINK（status = 0）</text><line x1="514" y1="581" x2="69" y2="581" class="messageLine1" data-et="message" data-id="i11" data-from="S" data-to="C" stroke-width="2" stroke="none" marker-end="url(#adoc-diagram-1-arrowhead)" style="stroke-dasharray: 3, 3; fill: none;"/><line x1="509" y1="581" x2="509" y2="581" stroke-width="0" marker-start="url(#adoc-diagram-1-sequencenumber)"/><text x="509" y="585" font-family="sans-serif" font-size="12px" text-anchor="middle" class="sequenceNumber">9</text></svg></figure><label class="fig-zoom" for="adoc-fig-1" data-off="查看原始大小" data-on="适应宽度" style="display:none"></label></div>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>参与方</th>
+<th>动作</th>
+<th>源码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="id">1</td>
+<td>客户端</td>
+<td>打开 TCP 连接请求导出列表</td>
+<td>usbip_protocol §Architecture</td>
+</tr>
+<tr>
+<td class="id">2</td>
+<td>服务端</td>
+<td>返回导出设备列表后关闭连接</td>
+<td>§Architecture</td>
+</tr>
+<tr>
+<td class="id">3</td>
+<td>客户端</td>
+<td>新开 TCP 连接请求导入某个 busid</td>
+<td>§Message Format</td>
+</tr>
+<tr>
+<td class="id">4</td>
+<td>服务端</td>
+<td>导入成功后该连接用于 URB 流量</td>
+<td>§Architecture</td>
+</tr>
+<tr>
+<td class="id">5</td>
+<td>客户端</td>
+<td>提交 URB；seqnum 每连接递增，用于匹配请求与响应</td>
+<td>usbip_header_basic</td>
+</tr>
+<tr>
+<td class="id">6</td>
+<td>服务端</td>
+<td>返回 URB 结果，<code>status</code> 为 0 表示成功</td>
+<td>USBIP_RET_SUBMIT</td>
+</tr>
+<tr>
+<td class="id">7</td>
+<td>客户端</td>
+<td>撤销先前提交的 URB</td>
+<td>USBIP_CMD_UNLINK</td>
+</tr>
+<tr>
+<td class="id">8</td>
+<td>服务端</td>
+<td>撤销成功时 status 为 -ECONNRESET</td>
+<td>USBIP_RET_UNLINK</td>
+</tr>
+<tr>
+<td class="id">9</td>
+<td>服务端</td>
+<td>UNLINK 晚于 RET_SUBMIT 到达时 status 为 0</td>
+<td>USBIP_RET_UNLINK</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="operations">Operations<a class="anchor" href="#operations" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Direction</th>
+<th>Request</th>
+<th>Response</th>
+<th>Errors</th>
+<th>Since</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="tk-const">OP_REQ_DEVLIST</code> (0x8005)</td>
+<td>客户端 → 服务端</td>
+<td>版本 + 命令码 + status</td>
+<td><code class="tk-const">OP_REP_DEVLIST</code> (0x0005)</td>
+<td><code class="tk-const">OP_STATUS_ERROR</code></td>
+<td>USB/IP v1.1.1</td>
+</tr>
+<tr>
+<td><code class="tk-const">OP_REQ_IMPORT</code> (0x8003)</td>
+<td>客户端 → 服务端</td>
+<td>busid（32 字节）</td>
+<td><code class="tk-const">OP_REP_IMPORT</code> (0x0003)</td>
+<td><code class="tk-const">OP_STATUS_ERROR</code></td>
+<td>USB/IP v1.1.1</td>
+</tr>
+<tr>
+<td><code class="tk-const">USBIP_CMD_SUBMIT</code> (0x00000001)</td>
+<td>客户端 → 服务端</td>
+<td>usbip_header + 传输缓冲</td>
+<td><code class="tk-const">USBIP_RET_SUBMIT</code> (0x00000003)</td>
+<td><code class="tk-const">URB_STATUS</code></td>
+<td>USB/IP v1.1.1</td>
+</tr>
+<tr>
+<td><code class="tk-const">USBIP_CMD_UNLINK</code> (0x00000002)</td>
+<td>客户端 → 服务端</td>
+<td>unlink_seqnum</td>
+<td><code class="tk-const">USBIP_RET_UNLINK</code> (0x00000004)</td>
+<td><code class="tk-const">URB_STATUS</code></td>
+<td>USB/IP v1.1.1</td>
+</tr>
+<tr>
+<td>ConfigFS 绑定</td>
+<td>用户态 → 内核</td>
+<td><code>echo &lt;udc name&gt; &gt; UDC</code></td>
+<td>gadget 上线</td>
+<td><code class="tk-const">UDC_BIND_FAIL</code></td>
+<td>Linux 内核文档</td>
+</tr>
+<tr>
+<td>FunctionFS 挂载</td>
+<td>用户态 → 内核</td>
+<td><code>mount -t functionfs &lt;name&gt; &lt;dir&gt;</code></td>
+<td>出现 <code>ep0</code></td>
+<td><code class="tk-const">UDC_BIND_FAIL</code></td>
+<td>Linux 内核文档</td>
+</tr>
+<tr>
+<td>Raw Gadget 启动</td>
+<td>用户态 → 内核</td>
+<td><code class="tk-const">USB_RAW_IOCTL_INIT</code>，再 <code class="tk-const">USB_RAW_IOCTL_RUN</code></td>
+<td>事件经 <code class="tk-const">USB_RAW_IOCTL_EVENT_FETCH</code></td>
+<td><code class="tk-const">UDC_BIND_FAIL</code></td>
+<td>Linux 内核文档</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="data-types">Data Types<a class="anchor" href="#data-types" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th class="fit">Type</th>
+<th>Field</th>
+<th class="fit">Format</th>
+<th class="fit">Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="fit"><span class="tag tone-neutral">usbip_header_basic</span></td>
+<td><code>command</code></td>
+<td class="fit">4 字节，大端</td>
+<td class="fit">是</td>
+<td>1 SUBMIT，2 UNLINK，3 RET_SUBMIT，4 RET_UNLINK</td>
+</tr>
+<tr>
+<td class="fit"><span class="tag tone-neutral">usbip_header_basic</span></td>
+<td><code>seqnum</code></td>
+<td class="fit">4 字节</td>
+<td class="fit">是</td>
+<td>每连接递增</td>
+</tr>
+<tr>
+<td class="fit"><span class="tag tone-neutral">usbip_header_basic</span></td>
+<td><code>devid</code></td>
+<td class="fit">4 字节</td>
+<td class="fit">是</td>
+<td>请求方为 <code>(busnum &lt;&lt; 16) | devnum</code>；服务端填 0</td>
+</tr>
+<tr>
+<td class="fit"><span class="tag tone-neutral">usbip_header_basic</span></td>
+<td><code>direction</code></td>
+<td class="fit">4 字节</td>
+<td class="fit">是</td>
+<td>0 OUT，1 IN；只客户端使用，服务端填 0</td>
+</tr>
+<tr>
+<td class="fit"><span class="tag tone-neutral">usbip_header_basic</span></td>
+<td><code>ep</code></td>
+<td class="fit">4 字节</td>
+<td class="fit">是</td>
+<td>端点号；服务端与 UNLINK 填 0</td>
+</tr>
+<tr>
+<td class="fit"><span class="tag tone-neutral">ConfigFS 路径</span></td>
+<td><code class="tk-file">usb_gadget/g1</code>、<code class="tk-file">strings/0x409</code>、<code class="tk-file">configs/c.1/MaxPower</code>、<code class="tk-file">functions/ncm.usb0</code></td>
+<td class="fit">目录与属性文件</td>
+<td class="fit">是</td>
+<td>gadget_configfs 第 1~4 节</td>
+</tr>
+<tr>
+<td class="fit"><span class="tag tone-neutral">Raw Gadget</span></td>
+<td><code class="tk-const">USB_RAW_IOCTL_EPS_INFO</code></td>
+<td class="fit">ioctl</td>
+<td class="fit">否</td>
+<td>收到 <code class="tk-const">USB_RAW_EVENT_CONNECT</code> 后查询 UDC 端点</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="errors">Errors<a class="anchor" href="#errors" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+<th>Caller action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="tk-const">OP_STATUS_ERROR</code></td>
+<td>OP_REP 的 status 非 0；导入失败时回复只到 status 字段为止（本文命名）</td>
+<td>关闭连接，检查 busid 与导出状态</td>
+</tr>
+<tr>
+<td><code class="tk-const">URB_STATUS</code></td>
+<td>RET 包中的 <code>status</code>，语义同 Linux URB 状态；撤销成功为 <code class="tk-flag">-ECONNRESET</code>（本文命名）</td>
+<td>按 errno 处理；<code class="tk-flag">-ECONNRESET</code> 表示撤销生效</td>
+</tr>
+<tr>
+<td><code class="tk-const">UDC_BIND_FAIL</code></td>
+<td>写 <code class="tk-const">UDC</code> 或启动 Raw Gadget 失败（本文命名，推断）</td>
+<td>检查 <code class="tk-file">/sys/class/udc/*</code> 是否有可用 UDC</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="versioning--compatibility">Versioning &amp; Compatibility<a class="anchor" href="#versioning--compatibility" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Change</th>
+<th>Breaking</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>USB/IP v1.1.1</td>
+<td>头部版本号 <code>0x0111</code>，定义于 <code class="tk-file">tools/usb/usbip/configure.ac</code></td>
+<td><span class="tag tone-success">No</span></td>
+</tr>
+<tr>
+<td>Linux 内核文档</td>
+<td>ConfigFS、FunctionFS、Raw Gadget 文档随内核演进，无独立版本号</td>
+<td><span class="tag tone-success">No</span></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="examples">Examples<a class="anchor" href="#examples" aria-label="链接到本节">#</a></h2>
+<p>ConfigFS 拼一个 NCM 网卡 gadget（gadget_configfs 原文命令）：</p>
+<pre data-lang="bash"><code class="hljs language-bash"><span class="tk-fn">mount</span> none <span class="tk-var">$CONFIGFS_HOME</span> <span class="tk-flag">-t</span> configfs
+<span class="tk-fn">mkdir</span> <span class="tk-var">$CONFIGFS_HOME/usb_gadget/g1</span> <span class="tk-op">&amp;&amp;</span> <span class="tk-fn">cd</span> <span class="tk-var">$CONFIGFS_HOME/usb_gadget/g1</span>
+<span class="tk-fn">echo</span> <span class="tk-op">&lt;</span>VID<span class="tk-op">&gt;</span> <span class="tk-op">&gt;</span> idVendor<span class="tk-op">;</span> <span class="tk-fn">echo</span> <span class="tk-op">&lt;</span>PID<span class="tk-op">&gt;</span> <span class="tk-op">&gt;</span> idProduct
+<span class="tk-fn">mkdir</span> <span class="tk-file">strings/0x409</span> <span class="tk-file">configs/c.1</span> <span class="tk-file">functions/ncm.usb0</span>
+<span class="tk-fn">echo</span> <span class="tk-num">120</span> <span class="tk-op">&gt;</span> <span class="tk-file">configs/c.1/MaxPower</span>
+<span class="tk-fn">ln</span> <span class="tk-flag">-s</span> <span class="tk-file">functions/ncm.usb0</span> <span class="tk-file">configs/c.1</span>
+<span class="tk-fn">echo</span> <span class="tk-op">&lt;</span>udc name<span class="tk-op">&gt;</span> <span class="tk-op">&gt;</span> UDC      <span class="hljs-comment"># &lt;udc name&gt; 取自 /sys/class/udc/*</span>
+<span class="tk-fn">echo</span> <span class="tk-str">""</span> <span class="tk-op">&gt;</span> UDC              <span class="hljs-comment"># 解绑</span>
+</code></pre>
+
+<p>失败调用：FunctionFS 的 gadget 在所有函数文件系统挂载完、且每个 <code>ep0</code> 写入描述符之前不会注册。</p>
+<pre><code class="language-text">mount -t functionfs hid /dev/ffs-hid   # 未写 ep0 描述符 -&gt; gadget 不注册
+</code></pre>
+<h2 id="待确认项">待确认项<a class="anchor" href="#待确认项" aria-label="链接到本节">#</a></h2>
+<ul class="tasks">
+<li class="task">USB/IP 的 TCP 端口号在内核文档中没有写明，本文不列出。</li>
+<li class="task"><code class="tk-const">OP_STATUS_ERROR</code>、<code class="tk-const">URB_STATUS</code>、<code class="tk-const">UDC_BIND_FAIL</code> 是本文为结构化起的名字，内核文档无此命名。</li>
+</ul>
+
+<footer>导出自 06-linux-virtual-usb.md · 2026-11-28 15:13 · tech-doc export_html (static, Mermaid 11, reader theme)</footer>
+</div>
+</main>
+</div>
+<script>(function () {
+  var nav = document.querySelector("nav.sidebar"), lay = document.querySelector(".layout");
+  if (!nav || !lay || !window.PointerEvent) return;
+  var root = document.documentElement, KEY = "tech-doc:contents-width", MIN = 150, cur = 0;
+  var bar = document.createElement("div");
+  bar.className = "resizer"; bar.tabIndex = 0;
+  bar.setAttribute("role", "separator"); bar.setAttribute("aria-orientation", "vertical");
+  bar.setAttribute("aria-label", nav.getAttribute("aria-label") || "Contents");
+  lay.appendChild(bar); root.classList.add("js");
+  function place() { bar.style.left = nav.offsetLeft + nav.offsetWidth + (parseFloat(getComputedStyle(lay).columnGap) || 0) / 2 - bar.offsetWidth / 2 + "px"; }
+  function set(w) {
+    cur = Math.round(Math.max(MIN, Math.min(Math.min(560, window.innerWidth * 0.45), w)));
+    nav.style.width = cur + "px"; place();
+  }
+  function save() { try { localStorage.setItem(KEY, cur); } catch (e) {} }
+  try { var s = +localStorage.getItem(KEY); if (s) set(s); } catch (e) {}
+  place();
+  function reset() { cur = 0; nav.style.width = ""; place(); try { localStorage.removeItem(KEY); } catch (e) {} }
+  var last = 0;
+  bar.addEventListener("pointerdown", function (e) {
+    if (e.button) return;
+    var x0 = e.clientX, w0 = nav.offsetWidth, moved = false;
+    bar.setPointerCapture(e.pointerId); root.classList.add("dragging"); e.preventDefault();
+    function move(ev) { if (Math.abs(ev.clientX - x0) > 3) moved = true; set(w0 + ev.clientX - x0); }
+    function stop() {
+      bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", stop); bar.removeEventListener("pointercancel", stop);
+      root.classList.remove("dragging");
+      if (moved) { last = 0; save(); return; }
+      var t = Date.now();
+      if (t - last < 500) { last = 0; reset(); } else { last = t; }
+    }
+    bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", stop); bar.addEventListener("pointercancel", stop);
+  });
+  bar.addEventListener("keydown", function (e) {
+    var d = e.key === "ArrowLeft" ? -16 : e.key === "ArrowRight" ? 16 : 0;
+    if (d) { e.preventDefault(); set(nav.offsetWidth + d); save(); }
+  });
+  window.addEventListener("resize", function () { if (cur) set(cur); place(); });
+  window.addEventListener("load", place);
+  if (window.ResizeObserver) new ResizeObserver(place).observe(nav);
+})();</script>
+
+</body>
+</html>

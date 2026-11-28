@@ -57,6 +57,7 @@ USBTree/
 ├── 80-参考资料/               (官方规范原文缓存: 71 份（清单 tools/spec_fetch.sh，二进制不入库） + 索引 README + 提取文本)
 ├── 90-附录/                   (3 篇: 术语表/速查表大全/时序参数全表)
 ├── ai-kb/                     (给 AI 参考的技术文档: index.md · 38 个主题 · llms-full.md；python3 tools/ai-kb/build_kb.py 重建)
+├── tech-doc/                  (官方规范可追溯的结构化知识库 + HTML 阅读版: 00–12 共 13 篇 .md/.html · llms-full.md · build/；见 tech-doc/README.md)
 ├── docs/                      (epics · evolve-log · lessons)
 ├── graph/                     (entities.yaml · relations.yaml · naming.yaml · export.mmd)
 ├── scripts/                   (retired/ 历史驱动脚本)
@@ -112,7 +113,8 @@ USBTree/
   4. [build-usb-device](skills/build-usb-device/SKILL.md)：TinyUSB/libusb/gadget 三路工程模板路由。
 - **激活方式**：将 `skills/<name>/` 拷贝到所用 Agent 平台的技能目录（如 ZCode 的 skills 目录），或直接把 SKILL.md 作为系统提示的一部分引用。
 - **给 AI 检索的派生文库**：`ai-kb/` 把正文收成带 frontmatter 的主题文件（用途与重建方式见 [ai-kb/README.md](ai-kb/README.md)）。它是生成物，不计入上面的篇数；改完树干/枝干后在仓库根目录运行 `python3 tools/ai-kb/build_kb.py`。
-- **一致性保障**：`bash tools/validate.sh`（共 11 项检查：链接/围栏/图谱引用/frontmatter/边端点/标题/导出/H1 唯一/命名区块/孤页/统计）；`bash tools/gen_graph.sh` 在改动关系表后重新生成全景图。数字以 `python3 tools/gen_stats.py` 为准。`ai-kb/` 不参与内容页检查与篇数统计。
+- **规范可追溯知识库**：`tech-doc/` 用 [tech-doc 技能](https://github.com/tangjianfang/tech-doc) 从官方规范与平台文档整理，并带同名 HTML 阅读版（与正文、`ai-kb/` 的分工和重建方式见 [tech-doc/README.md](tech-doc/README.md)）。不计入上面的篇数。
+- **一致性保障**：`bash tools/validate.sh`（共 11 项检查：链接/围栏/图谱引用/frontmatter/边端点/标题/导出/H1 唯一/命名区块/孤页/统计）；`bash tools/gen_graph.sh` 在改动关系表后重新生成全景图。数字以 `python3 tools/gen_stats.py` 为准。`ai-kb/` 与 `tech-doc/` 不参与内容页检查与篇数统计。
 
 ## 🧾 声明
 

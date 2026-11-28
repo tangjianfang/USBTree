@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>USB / 蓝牙协议规范知识库</title>
+<style>
+:root{color-scheme:light;--bg:#fff;--fg:#1f2328;--muted:#59636e;--line:#d8dee4;--soft:#f6f8fa;--link:#0969da;--code-fg:#0a6a7a;--mark:#ffec99;
+--tk-comment:#59636e;--tk-keyword:#cf222e;--tk-string:#0a3069;--tk-number:#0550ae;--tk-fn:#6639ba;--tk-var:#953800;--tk-tag:#116329;--tk-del:#82071e;
+--info-bg:#ddf4ff;--info-fg:#0550ae;--info-bd:#b6e3ff;--success-bg:#dafbe1;--success-fg:#116329;--success-bd:#aceebb;
+--warn-bg:#fff8c5;--warn-fg:#7d4e00;--warn-bd:#eac54f;--danger-bg:#ffebe9;--danger-fg:#a40e26;--danger-bd:#ffcecb;
+--neutral-bg:#eaeef2;--neutral-fg:#424a53;--neutral-bd:#d0d7de;--accent-bg:#fbefff;--accent-fg:#6639ba;--accent-bd:#e2c5ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+.content p a,.content li a,.content td a,.callout a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.content p a:hover,.content li a:hover,.content td a:hover,.callout a:hover{text-decoration-thickness:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--bg);padding:6px 12px;z-index:10}.skip:focus{left:8px}
+.progress{display:none}
+@supports (animation-timeline:scroll()){.progress{display:block;position:sticky;top:0;z-index:5;height:3px;margin-bottom:-3px;background:var(--link);transform:scaleX(0);transform-origin:0 50%;animation:adoc-progress linear both;animation-timeline:scroll(root block)}
+@keyframes adoc-progress{to{transform:scaleX(1)}}}
+.layout{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:48px;padding:32px 32px 72px;align-items:start}
+nav.sidebar{position:sticky;top:24px;width:210px;min-width:150px;max-width:min(560px,45vw);max-height:calc(100vh - 48px);overflow:auto;resize:horizontal;font-size:13px;padding-right:8px}
+.js nav.sidebar{resize:none}
+.resizer{position:absolute;top:0;bottom:0;width:12px;cursor:col-resize;touch-action:none;user-select:none;z-index:3}
+.resizer::after{content:"";position:absolute;top:24px;bottom:24px;left:5px;width:2px;border-radius:1px;background:transparent}
+.resizer:hover::after,.resizer:focus-visible::after,.dragging .resizer::after{background:var(--link)}
+.resizer:focus-visible{outline:none}
+.dragging,.dragging *{cursor:col-resize!important;user-select:none!important}
+nav.sidebar .nav-title{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px}
+nav.sidebar ol{list-style:none;margin:0;padding:0;counter-reset:n}
+nav.sidebar li{counter-increment:n}
+nav.sidebar a{display:block;padding:3px 0;color:var(--muted);line-height:1.45}
+.numbered nav.sidebar a::before{content:counter(n) ".";display:inline-block;min-width:1.7em}
+nav.sidebar a:hover{color:var(--link);text-decoration:none}
+nav.sidebar ol.sub{margin:0 0 4px 1.2em;counter-reset:m}
+nav.sidebar ol.sub li{counter-increment:m}
+nav.sidebar ol.sub a{font-size:12.5px;padding:2px 0}
+.numbered nav.sidebar ol.sub a::before{content:counter(n) "." counter(m);min-width:2.5em}
+main{min-width:0}
+.hero{padding:0 0 14px;border-bottom:1px solid var(--line)}
+.hero h1{margin:0 0 8px;font-size:28px;line-height:1.3;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.chip:not(:last-child)::after{content:"·";margin:0 .6em}
+.chip b{font-weight:600;margin-right:.4em}
+.chip .age.stale{font-weight:600;color:var(--warn-fg)}
+.hero code{font-size:.92em}
+.statusbar{margin-top:8px;font-size:13px}
+.stat{margin-right:1.3em;color:var(--fg);white-space:nowrap}a.stat:hover{text-decoration:underline}
+.stat b{font-weight:600}.stat.danger b{color:var(--danger-fg)}.stat.warn b{color:var(--warn-fg)}.stat.accent b{color:var(--accent-fg)}
+.content{counter-reset:sec;padding:0}
+.content>p,.content>ul,.content>ol,.content>details>p,.content>details>ul{max-width:48em}
+html:lang(en) .content>p,html:lang(en) .content>ul,html:lang(en) .content>ol,html:lang(en) .content>details>p,html:lang(en) .content>details>ul{max-width:42em}
+h1,h2,h3,h4{line-height:1.3;color:var(--fg);font-weight:600}
+.content h2{counter-increment:sec;counter-reset:sub;font-size:22px;margin:2em 0 .6em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+.numbered .content h2::before{content:counter(sec) ".";margin-right:.45em;color:var(--muted);font-weight:400}
+.content h3{counter-increment:sub;font-size:17px;margin:1.6em 0 .5em}
+.numbered .content h3::before{content:counter(sec) "." counter(sub);margin-right:.45em;color:var(--muted);font-weight:400}
+.content h4{font-size:15px;margin:1.3em 0 .4em}
+.anchor{margin-left:.4em;opacity:0;font-weight:400;font-size:.8em;color:var(--muted)}
+h2:hover .anchor,h3:hover .anchor,.anchor:focus{opacity:1}
+p,ul,ol,pre,figure,.tbl,.callout,details{margin:0 0 1em}
+li{margin:.25em 0}
+p.sub{margin:1.4em 0 .4em}
+p.caption{margin-top:-.2em;color:var(--muted);font-size:14px}
+code{font:.9em/1.4 Consolas,"Cascadia Mono",monospace;color:var(--code-fg)}
+pre{position:relative;background:var(--soft);padding:12px 16px;border-radius:6px;overflow-x:auto;border:1px solid var(--line);line-height:1.5}
+pre code{color:inherit}
+pre[data-lang]::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:11px;line-height:1;color:var(--muted)}
+.tk-file{color:var(--tk-tag)}.tk-flag,.tk-num,.tk-const,.tk-lit{color:var(--tk-number)}.tk-fn{color:var(--tk-fn)}.tk-var{color:var(--tk-var)}.tk-str{color:var(--tk-string)}.tk-arg{color:var(--fg)}.tk-op,.tk-kw{color:var(--tk-keyword)}
+.hljs-comment,.hljs-quote{color:var(--tk-comment)}
+.hljs-keyword,.hljs-doctag,.hljs-template-tag,.hljs-meta,.hljs-meta .hljs-keyword{color:var(--tk-keyword)}
+.hljs-string,.hljs-regexp,.hljs-meta .hljs-string{color:var(--tk-string)}
+.hljs-number,.hljs-literal,.hljs-symbol,.hljs-bullet,.hljs-attr,.hljs-attribute,.hljs-property,.hljs-selector-id,.hljs-selector-class,.hljs-selector-attr{color:var(--tk-number)}
+.hljs-title,.hljs-title.function_,.hljs-built_in{color:var(--tk-fn)}
+.hljs-title.class_,.hljs-type,.hljs-variable,.hljs-template-variable{color:var(--tk-var)}
+.hljs-name,.hljs-tag,.hljs-selector-tag{color:var(--tk-tag)}
+.hljs-section{color:var(--tk-number);font-weight:600}.hljs-strong{font-weight:600}.hljs-emphasis{font-style:italic}
+.hljs-addition{color:var(--tk-tag);background:var(--success-bg)}.hljs-deletion{color:var(--tk-del);background:var(--danger-bg)}
+blockquote{margin:0 0 1em;padding:0 1em;color:var(--muted);border-left:3px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+strong{font-weight:600}
+strong.kw{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:.5em;text-underline-offset:-.3em;text-decoration-skip-ink:none}
+mark{padding:0 .2em;border-radius:3px;background:var(--mark);color:inherit}
+kbd{padding:.1em .45em;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;background:var(--soft);font:.85em Consolas,"Cascadia Mono",monospace}
+p.lead,ul.lead,ol.lead{border-left:3px solid var(--link);font-size:16px}
+p.lead{padding-left:14px}
+ul.lead,ol.lead{padding-left:2.2em}
+td.key{font-weight:600}
+.callout{padding:10px 14px;background:var(--soft);border-left:3px solid var(--neutral-fg);border-radius:0 6px 6px 0;color:var(--fg)}
+.content>.callout{max-width:60em}
+.callout>*:last-child{margin-bottom:0}
+.callout p{max-width:none}
+.callout-title{margin-bottom:4px;font-size:14px;font-weight:600;color:var(--neutral-fg)}
+.callout.note{border-left-color:var(--info-fg)}.callout.note .callout-title{color:var(--info-fg)}
+.callout.key,.callout.action{padding:12px 16px;border-left-width:4px;font-size:16px}
+.callout.key .callout-title,.callout.action .callout-title{font-size:15px}
+.callout.key{background:var(--info-bg);border-left-color:var(--link)}.callout.key .callout-title{color:var(--info-fg)}
+.callout.action{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.action .callout-title{color:var(--accent-fg)}
+.callout.tip,.callout.tldr{background:var(--success-bg);border-left-color:var(--success-fg)}.callout.tip .callout-title,.callout.tldr .callout-title{color:var(--success-fg)}
+.callout.important{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.important .callout-title{color:var(--accent-fg)}
+.callout.warning{background:var(--warn-bg);border-left-color:var(--warn-fg)}.callout.warning .callout-title{color:var(--warn-fg)}
+.callout.caution{background:var(--danger-bg);border-left-color:var(--danger-fg)}.callout.caution .callout-title{color:var(--danger-fg)}
+.callout.tldr ul{margin:.2em 0 .3em;padding-left:1.2em}
+details.basis{padding:2px 0 2px 12px;border-left:3px solid var(--line);color:var(--muted);font-size:14px}
+details.basis summary{cursor:pointer;font-weight:600}
+details.basis[open] summary{margin-bottom:4px}
+details.fold{margin:2em 0 1em;border-top:1px solid var(--line)}
+details.fold>summary{cursor:pointer;list-style:none}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary h2{display:flex;align-items:baseline;margin:0;padding:.6em 0;border:0;font-size:18px}
+details.fold>summary h2::after{content:"▸";margin-left:.5em;color:var(--muted);font-size:.75em}
+details.fold[open]>summary h2::after{content:"▾"}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55}
+.tbl th{padding:6px 12px;border:1px solid var(--line);background:var(--soft);font-weight:600;text-align:left;white-space:nowrap}
+.tbl td{padding:6px 12px;border:1px solid var(--line);vertical-align:top}
+.tbl code{font-size:.88em;overflow-wrap:break-word}
+.tbl td.fit,.tbl th.fit{white-space:nowrap}
+.cell-list{margin:0;padding-left:1.15em}
+.cell-list li{margin:.2em 0}
+td.id{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;padding:0 8px;border:1px solid var(--neutral-bd);border-radius:4px;background:var(--neutral-bg);color:var(--neutral-fg);font-size:12px;font-weight:600;line-height:1.7;white-space:nowrap}
+.tone-info{background:var(--info-bg);color:var(--info-fg);border-color:var(--info-bd)}
+.tone-success{background:var(--success-bg);color:var(--success-fg);border-color:var(--success-bd)}
+.tone-warn{background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-bd)}
+.tone-danger{background:var(--danger-bg);color:var(--danger-fg);border-color:var(--danger-bd)}
+.tone-accent{background:var(--accent-bg);color:var(--accent-fg);border-color:var(--accent-bd)}
+.tag.verdict{padding:1px 12px;font-size:14px}
+.status-note{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+.infer{border-bottom:1px dotted var(--warn-fg);cursor:help}
+ul.tasks{list-style:none;padding-left:.2em}
+li.task::before{content:"☐";margin-right:.55em;color:var(--muted)}
+li.task.done::before{content:"☑";color:var(--success-fg)}
+figure.mermaid-figure,pre.mermaid{margin:1.2em 0;padding:16px 8px;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#fff;color:#1f2937;text-align:center}
+figure.mermaid-figure svg{max-width:100%;height:auto}
+.fig{position:relative}
+.fig figure.mermaid-figure svg{width:min(100%,calc(var(--w)*.85));max-height:max(85vh,calc(var(--h)*.7));max-width:none!important;height:auto}
+.fig-toggle:checked~figure.mermaid-figure svg{width:var(--w);max-height:none}
+.fig .fig-zoom{display:block!important;position:absolute;top:calc(1.2em + 8px);right:10px;z-index:1;padding:1px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--muted);font-size:12px;line-height:1.6;cursor:pointer}
+.fig .fig-zoom::after{content:attr(data-off)}
+.fig-toggle:checked~.fig-zoom::after{content:attr(data-on)}
+.fig .fig-zoom:hover{color:var(--link);border-color:var(--link)}
+.fig-toggle:focus-visible~.fig-zoom{outline:2px solid var(--link);outline-offset:2px}
+.mermaid-error{text-align:left;color:#b42318;background:#fef3f2;border:1px solid #fecdca}
+footer{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+@media (max-width:1000px){.resizer{display:none}.layout{grid-template-columns:1fr;gap:16px;padding:20px 16px}nav.sidebar{position:static;width:auto!important;max-width:none;max-height:none;resize:none;padding-bottom:12px;border-bottom:1px solid var(--line)}}
+@media print{.progress,.resizer,.fig .fig-zoom{display:none!important}.fig figure.mermaid-figure svg{width:min(100%,var(--w))!important;max-height:none!important}body{font-size:11pt}.layout{display:block;padding:0}nav.sidebar,.skip,.anchor{display:none}.hero{border-bottom:2px solid #000}.tbl,figure,.callout,tr{break-inside:avoid}.tbl{overflow:visible}details.fold{border:0}a{color:inherit}}
+</style>
+</head>
+<body id="top" class="numbered">
+<a class="skip" href="#content">跳到正文</a>
+<div class="progress" aria-hidden="true"></div>
+<div class="layout">
+<nav class="sidebar" aria-label="目录"><div class="nav-title">目录</div><ol><li><a href="#overview">Overview</a></li><li><a href="#quick-start">Quick Start</a></li><li><a href="#usage">Usage</a></li><li><a href="#architecture-at-a-glance">Architecture at a Glance</a></li><li><a href="#project-structure">Project Structure</a></li><li><a href="#configuration">Configuration</a></li><li><a href="#development">Development</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ol></nav>
+<main id="content">
+<header class="hero"><h1>USB / 蓝牙协议规范知识库</h1><div class="chips"><span class="chip"><b>类型</b>readme</span><span class="chip"><b>最后核对</b>2026-11-28 <span class="age">· 今天核对</span></span><span class="chip">约 3 分钟读完</span></div></header>
+<div class="content">
+
+
+<p>给做 USB、Type-C PD 与 BLE 开发的工程师：每条事实都标出官方规范的章节或表号。</p>
+<h2 id="overview">Overview<a class="anchor" href="#overview" aria-label="链接到本节">#</a></h2>
+<p class="lead">本知识库由 tech-doc 技能按 Reverse 模式从官方规范原文整理而来，与 USBTree 仓库互补。</p>
+<ul>
+<li>规范来源只限官方站点：<a href="http://usb.org">usb.org</a>、<a href="http://bluetooth.com">bluetooth.com</a>、<a href="http://intel.com">intel.com</a>、<a href="http://learn.microsoft.com">learn.microsoft.com</a>、<a href="http://kernel.org">kernel.org</a>。</li>
+<li>本地缓存 96 项：93 项已下载并记 sha256，3 项蓝牙文档只能手动下载。</li>
+<li>07–12 号文档是平台软件栈篇（Linux、ARM、macOS、iOS/iPadOS、Android 与对比），来源同样只限官方文档；未能核实的点标为 <strong class="kw">待核实</strong>。</li>
+<li>非目标：不替代规范原文；位级字段布局以原文为准。</li>
+</ul>
+<h2 id="quick-start">Quick Start<a class="anchor" href="#quick-start" aria-label="链接到本节">#</a></h2>
+<p>前提：Python 3、curl、poppler-utils（<code>pdftotext</code>）、unzip。</p>
+<pre data-lang="bash"><code class="hljs language-bash"><span class="tk-fn">cd</span> <span class="tk-file">/workspace/usb-specs</span>
+<span class="tk-fn">python3</span> <span class="tk-file">tools/fetch_all.py</span>        <span class="hljs-comment"># 按清单下载，校验官方域名并写 manifest.json / manifest.md</span>
+<span class="tk-fn">bash</span> <span class="tk-file">tools/extract_text.sh</span>        <span class="hljs-comment"># 解压 ZIP，PDF 转文本到 text/</span>
+<span class="tk-fn">grep</span> <span class="tk-flag">-n</span> <span class="tk-str">"tSenderResponse"</span> <span class="tk-file">text/*PD_R3.3_V1.0_2026_10_16.pdf.txt</span>
+</code></pre>
+
+<h2 id="usage">Usage<a class="anchor" href="#usage" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>查某个数值：先看对应专题文档，再用其中的章节号在 <code class="tk-file">text/</code> 里 grep 原文核对。</li>
+<li>查规范版本：读 <code class="tk-file">/workspace/usb-specs/manifest.md</code>，里面有版本、日期、URL 与 sha256。</li>
+<li>看渲染版：打开同名 <code>.html</code>，离线可读。</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>文档</th>
+<th>主题</th>
+<th>主要来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="01-usb2-ch9-control.html">01-usb2-ch9-control.html</a></td>
+<td>标准请求、描述符、枚举时序</td>
+<td>USB 2.0 / 3.2 第 9 章</td>
+</tr>
+<tr>
+<td><a href="02-hid-class-hogp.html">02-hid-class-hogp.html</a></td>
+<td>HID 类请求与 HID over GATT</td>
+<td>HID 1.11、HUT 1.7、HOGP 1.1、HIDS 1.1</td>
+</tr>
+<tr>
+<td><a href="03-usb-pd-messages-timers.html">03-usb-pd-messages-timers.html</a></td>
+<td>PD 消息头、消息类型、定时器</td>
+<td>USB PD R3.3 V1.0</td>
+</tr>
+<tr>
+<td><a href="04-bc12-charger-detection.html">04-bc12-charger-detection.html</a></td>
+<td>SDP / CDP / DCP 检测</td>
+<td>BC 1.2</td>
+</tr>
+<tr>
+<td><a href="05-ble-llcp-ifs.html">05-ble-llcp-ifs.html</a></td>
+<td>LL 控制过程与帧间隔</td>
+<td>Bluetooth Core 7.0</td>
+</tr>
+<tr>
+<td><a href="06-linux-virtual-usb.html">06-linux-virtual-usb.html</a></td>
+<td>USB/IP、ConfigFS、FunctionFS、Raw Gadget</td>
+<td><a href="http://docs.kernel.org">docs.kernel.org</a></td>
+</tr>
+<tr>
+<td><a href="07-linux-usb-stack.html">07-linux-usb-stack.html</a></td>
+<td>Linux 主机栈、HID、gadget 框架、dummy_hcd、usbmon</td>
+<td><a href="http://docs.kernel.org">docs.kernel.org</a>、torvalds/linux</td>
+</tr>
+<tr>
+<td><a href="08-arm-embedded-usb.html">08-arm-embedded-usb.html</a></td>
+<td>ARM SoC 控制器 IP、设备树、双角色、Type-C、TinyUSB</td>
+<td>Linux DT binding 与 Kconfig、TinyUSB</td>
+</tr>
+<tr>
+<td><a href="09-macos-usb.html">09-macos-usb.html</a></td>
+<td>IOKit、DriverKit、HID 路径、签名与公证</td>
+<td><a href="http://developer.apple.com">developer.apple.com</a></td>
+</tr>
+<tr>
+<td><a href="10-ios-ipados-usb.html">10-ios-ipados-usb.html</a></td>
+<td>MFi、iPad DriverKit、USB-C 配件、配件安全</td>
+<td><a href="http://developer.apple.com">developer.apple.com</a>、<a href="http://support.apple.com">support.apple.com</a></td>
+</tr>
+<tr>
+<td><a href="11-android-usb.html">11-android-usb.html</a></td>
+<td>Host API、AOA、Gadget HAL、MTP、HID</td>
+<td><a href="http://developer.android.com">developer.android.com</a>、<a href="http://source.android.com">source.android.com</a></td>
+</tr>
+<tr>
+<td><a href="12-cross-platform-comparison.html">12-cross-platform-comparison.html</a></td>
+<td>五平台加 Windows 的异同大表与映射</td>
+<td>07–11 号文档、<a href="http://learn.microsoft.com">learn.microsoft.com</a></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="architecture-at-a-glance">Architecture at a Glance<a class="anchor" href="#architecture-at-a-glance" aria-label="链接到本节">#</a></h2>
+<div class="fig" style="--w:398.484375px;--h:588.4843139648438px"><input class="fig-toggle" type="checkbox" id="adoc-fig-1" aria-label="查看原始大小" style="position:absolute;opacity:0;width:0;height:0"><figure class="mermaid-figure"><svg id="adoc-diagram-1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 398.484px; background-color: white;" viewBox="0 0 398.484375 588.4843139648438" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#adoc-diagram-1{font-size:14px;fill:#111827;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#adoc-diagram-1 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .error-icon{fill:#ffffff;}#adoc-diagram-1 .error-text{fill:#000000;stroke:#000000;}#adoc-diagram-1 .edge-thickness-normal{stroke-width:1px;}#adoc-diagram-1 .edge-thickness-thick{stroke-width:3.5px;}#adoc-diagram-1 .edge-pattern-solid{stroke-dasharray:0;}#adoc-diagram-1 .edge-thickness-invisible{stroke-width:0;fill:none;}#adoc-diagram-1 .edge-pattern-dashed{stroke-dasharray:3;}#adoc-diagram-1 .edge-pattern-dotted{stroke-dasharray:2;}#adoc-diagram-1 .marker{fill:#4b5563;stroke:#4b5563;}#adoc-diagram-1 .marker.cross{stroke:#4b5563;}#adoc-diagram-1 svg{font-size:14px;}#adoc-diagram-1 p{margin:0;}#adoc-diagram-1 .label{color:#111827;}#adoc-diagram-1 .cluster-label text{fill:#000000;}#adoc-diagram-1 .cluster-label span{color:#000000;}#adoc-diagram-1 .cluster-label span p{background-color:transparent;}#adoc-diagram-1 .label text,#adoc-diagram-1 span{fill:#111827;color:#111827;}#adoc-diagram-1 .node rect,#adoc-diagram-1 .node circle,#adoc-diagram-1 .node ellipse,#adoc-diagram-1 .node polygon,#adoc-diagram-1 .node path{fill:#f3f4f6;stroke:#6b7280;stroke-width:1px;}#adoc-diagram-1 .rough-node .label text,#adoc-diagram-1 .node .label text,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-anchor:middle;}#adoc-diagram-1 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#adoc-diagram-1 .rough-node .label,#adoc-diagram-1 .node .label,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-align:center;}#adoc-diagram-1 .node.clickable{cursor:pointer;}#adoc-diagram-1 .root .anchor path{fill:#4b5563!important;stroke-width:0;stroke:#4b5563;}#adoc-diagram-1 .arrowheadPath{fill:#0b0b0b;}#adoc-diagram-1 .edgePaths .path{stroke:#4b5563;stroke-width:1px;}#adoc-diagram-1 .flowchart-link{stroke:#4b5563;fill:none;}#adoc-diagram-1 .edgeLabel{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .edgeLabel p{background-color:#ffffff;}#adoc-diagram-1 .edgeLabel rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .labelBkg{background-color:rgba(255, 255, 255, 0.5);}#adoc-diagram-1 .cluster rect{fill:#ffffff;stroke:hsl(0, 0%, 90%);stroke-width:1px;}#adoc-diagram-1 .cluster text{fill:#000000;}#adoc-diagram-1 .cluster span{color:#000000;}#adoc-diagram-1 .node .collapsed-indicator{fill:hsl(0, 0%, 90%);stroke:none;opacity:0.6;}#adoc-diagram-1 .node .collapsed-separator{stroke:hsl(0, 0%, 90%);stroke-width:0.75px;}#adoc-diagram-1 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-size:12px;background:#ffffff;border:1px solid hsl(0, 0%, 90%);border-radius:2px;pointer-events:none;z-index:100;}#adoc-diagram-1 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#111827;}#adoc-diagram-1 rect.text{fill:none;stroke-width:0;}#adoc-diagram-1 .icon-shape,#adoc-diagram-1 .image-shape{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .icon-shape p,#adoc-diagram-1 .image-shape p{background-color:#ffffff;padding:2px;}#adoc-diagram-1 .icon-shape .label rect,#adoc-diagram-1 .image-shape .label rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#adoc-diagram-1 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#adoc-diagram-1 .node .neo-node{stroke:#6b7280;}#adoc-diagram-1 [data-look="neo"].node rect,#adoc-diagram-1 [data-look="neo"].cluster rect,#adoc-diagram-1 [data-look="neo"].node polygon{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].swimlane.cluster rect{filter:none;}#adoc-diagram-1 [data-look="neo"].node path{stroke:url(#adoc-diagram-1-gradient);stroke-width:1px;}#adoc-diagram-1 [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node .neo-line path{stroke:#6b7280;filter:none;}#adoc-diagram-1 [data-look="neo"].node circle{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node circle .state-start{fill:#000000;}#adoc-diagram-1 [data-look="neo"].icon-shape .icon{fill:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].icon-shape .icon-neo path{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#adoc-diagram-1 .renderer&gt;*{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer span{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer tspan{fill:rgb(30, 58, 138)!important;}#adoc-diagram-1 .main&gt;*{fill:rgb(255, 237, 213)!important;stroke:rgb(234, 88, 12)!important;color:rgb(124, 45, 18)!important;}#adoc-diagram-1 .main span{fill:rgb(255, 237, 213)!important;stroke:rgb(234, 88, 12)!important;color:rgb(124, 45, 18)!important;}#adoc-diagram-1 .main tspan{fill:rgb(124, 45, 18)!important;}#adoc-diagram-1 .outside&gt;*{fill:rgb(243, 244, 246)!important;stroke:rgb(107, 114, 128)!important;color:rgb(55, 65, 81)!important;}#adoc-diagram-1 .outside span{fill:rgb(243, 244, 246)!important;stroke:rgb(107, 114, 128)!important;color:rgb(55, 65, 81)!important;}#adoc-diagram-1 .outside tspan{fill:rgb(55, 65, 81)!important;}</style><g><marker id="adoc-diagram-1_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"/></marker><g class="root"><g class="clusters"/><g class="edgePaths"><path d="M195.738,59L195.738,64.917C195.738,70.833,195.738,82.667,195.738,93.833C195.738,105,195.738,115.5,195.738,120.75L195.738,126" id="adoc-diagram-1-L_O_C_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_O_C_0" data-points="W3sieCI6MTk1LjczODI4MTI1LCJ5Ijo1OX0seyJ4IjoxOTUuNzM4MjgxMjUsInkiOjk0LjV9LHsieCI6MTk1LjczODI4MTI1LCJ5IjoxMzB9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M195.738,202.122L195.738,208.039C195.738,213.956,195.738,225.789,195.738,236.956C195.738,248.122,195.738,258.622,195.738,263.872L195.738,269.122" id="adoc-diagram-1-L_C_T_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_C_T_0" data-points="W3sieCI6MTk1LjczODI4MTI1LCJ5IjoyMDIuMTIyMjc2MzA2MTUyMzR9LHsieCI6MTk1LjczODI4MTI1LCJ5IjoyMzcuNjIyMjc2MzA2MTUyMzR9LHsieCI6MTk1LjczODI4MTI1LCJ5IjoyNzMuMTIyMjc2MzA2MTUyMzR9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M159.84,318.516L148.219,327.427C136.599,336.339,113.358,354.162,101.738,368.323C90.117,382.484,90.117,392.984,90.117,398.234L90.117,403.484" id="adoc-diagram-1-L_T_K_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_T_K_0" data-points="W3sieCI6MTU5LjgzOTg0Mzc1LCJ5IjozMTguNTE2MDY2NjA3NDAyMn0seyJ4Ijo5MC4xMTcxODc1LCJ5IjozNzEuOTg0MzI1NDA4OTM1NTV9LHsieCI6OTAuMTE3MTg3NSwieSI6NDA3LjQ4NDMyNTQwODkzNTU1fV0=" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M231.637,318.516L243.257,327.427C254.878,336.339,278.118,354.162,289.739,368.323C301.359,382.484,301.359,392.984,301.359,398.234L301.359,403.484" id="adoc-diagram-1-L_T_U_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_T_U_0" data-points="W3sieCI6MjMxLjYzNjcxODc1LCJ5IjozMTguNTE2MDY2NjA3NDAyMn0seyJ4IjozMDEuMzU5Mzc1LCJ5IjozNzEuOTg0MzI1NDA4OTM1NTV9LHsieCI6MzAxLjM1OTM3NSwieSI6NDA3LjQ4NDMyNTQwODkzNTU1fV0=" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M90.117,458.484L90.117,464.401C90.117,470.318,90.117,482.151,90.117,493.318C90.117,504.484,90.117,514.984,90.117,520.234L90.117,525.484" id="adoc-diagram-1-L_K_H_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_K_H_0" data-points="W3sieCI6OTAuMTE3MTg3NSwieSI6NDU4LjQ4NDMyNTQwODkzNTU1fSx7IngiOjkwLjExNzE4NzUsInkiOjQ5My45ODQzMjU0MDg5MzU1NX0seyJ4Ijo5MC4xMTcxODc1LCJ5Ijo1MjkuNDg0MzI1NDA4OTM1NX1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(195.73828125, 94.5)"><g class="label" data-id="L_O_C_0" transform="translate(-51.359375, -10.5)"><foreignObject width="102.71875" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p>fetch_all.py 下载</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(195.73828125, 237.62227630615234)"><g class="label" data-id="L_C_T_0" transform="translate(-49.796875, -10.5)"><foreignObject width="99.59375" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p>pdftotext 转文本</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(90.1171875, 371.98432540893555)"><g class="label" data-id="L_T_K_0" transform="translate(-28, -10.5)"><foreignObject width="56" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p>逐条核对</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(301.359375, 371.98432540893555)"><g class="label" data-id="L_T_U_0" transform="translate(-28, -10.5)"><foreignObject width="56" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p>逐条核对</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(90.1171875, 493.98432540893555)"><g class="label" data-id="L_K_H_0" transform="translate(-36.578125, -10.5)"><foreignObject width="73.15625" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p>export_html</p></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default outside" id="adoc-diagram-1-flowchart-O-0" data-look="classic" transform="translate(195.73828125, 33.5)"><rect class="basic label-container" style="fill:#f3f4f6 !important;stroke:#6b7280 !important" x="-58" y="-25.5" width="116" height="51"/><g class="label" style="color:#374151 !important" transform="translate(-28, -10.5)"><rect/><foreignObject width="56" height="21"><div style="color: rgb(55, 65, 81) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#374151 !important" class="nodeLabel"><p><b>官方站点</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-C-1" data-look="classic" transform="translate(195.73828125, 166.06113815307617)"><path d="M0,12.040756819801725 a58.0703125,12.040756819801725 0,0,0 116.140625,0 a58.0703125,12.040756819801725 0,0,0 -116.140625,0 l0,48.04075681980173 a58.0703125,12.040756819801725 0,0,0 116.140625,0 l0,-48.04075681980173" class="basic label-container outer-path" style="fill:#dbeafe !important;stroke:#2563eb !important" transform="translate(-58.0703125, -36.061135229702586)"/><g class="label" style="color:#1e3a8a !important" transform="translate(-50.5703125, -0.5)"><rect/><foreignObject width="101.140625" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>usb-specs 缓存</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-T-3" data-look="classic" transform="translate(195.73828125, 304.80330085754395)"><path d="M0,9.120682810639142 a35.8984375,9.120682810639142 0,0,0 71.796875,0 a35.8984375,9.120682810639142 0,0,0 -71.796875,0 l0,45.12068281063914 a35.8984375,9.120682810639142 0,0,0 71.796875,0 l0,-45.12068281063914" class="basic label-container outer-path" style="fill:#dbeafe !important;stroke:#2563eb !important" transform="translate(-35.8984375, -31.68102421595871)"/><g class="label" style="color:#1e3a8a !important" transform="translate(-28.3984375, -0.5)"><rect/><foreignObject width="56.796875" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>text 目录</b></p></span></div></foreignObject></g></g><g class="node default main" id="adoc-diagram-1-flowchart-K-5" data-look="classic" transform="translate(90.1171875, 432.98432540893555)"><rect class="basic label-container" style="fill:#ffedd5 !important;stroke:#ea580c !important" x="-82.1171875" y="-25.5" width="164.234375" height="51"/><g class="label" style="color:#7c2d12 !important" transform="translate(-52.1171875, -10.5)"><rect/><foreignObject width="104.234375" height="21"><div style="color: rgb(124, 45, 18) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7c2d12 !important" class="nodeLabel"><p><b>tech-doc 知识库</b></p></span></div></foreignObject></g></g><g class="node default main" id="adoc-diagram-1-flowchart-U-7" data-look="classic" transform="translate(301.359375, 432.98432540893555)"><rect class="basic label-container" style="fill:#ffedd5 !important;stroke:#ea580c !important" x="-89.125" y="-25.5" width="178.25" height="51"/><g class="label" style="color:#7c2d12 !important" transform="translate(-59.125, -10.5)"><rect/><foreignObject width="118.25" height="21"><div style="color: rgb(124, 45, 18) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7c2d12 !important" class="nodeLabel"><p><b>USBTree 修订补丁</b></p></span></div></foreignObject></g></g><g class="node default main" id="adoc-diagram-1-flowchart-H-9" data-look="classic" transform="translate(90.1171875, 554.9843254089355)"><rect class="basic label-container" style="fill:#ffedd5 !important;stroke:#ea580c !important" x="-65.2578125" y="-25.5" width="130.515625" height="51"/><g class="label" style="color:#7c2d12 !important" transform="translate(-35.2578125, -10.5)"><rect/><foreignObject width="70.515625" height="21"><div style="color: rgb(124, 45, 18) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7c2d12 !important" class="nodeLabel"><p><b>HTML 文档</b></p></span></div></foreignObject></g></g></g></g></g><defs><filter id="adoc-diagram-1-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><defs><filter id="adoc-diagram-1-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><linearGradient id="adoc-diagram-1-gradient" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6b7280" stop-opacity="1"/><stop offset="100%" stop-color="hsl(100, 0%, 85.8823529412%)" stop-opacity="1"/></linearGradient></svg></figure><label class="fig-zoom" for="adoc-fig-1" data-off="查看原始大小" data-on="适应宽度" style="display:none"></label></div>
+<h2 id="project-structure">Project Structure<a class="anchor" href="#project-structure" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="tk-file">/workspace/usb-specs/usb-core/</code></td>
+<td>USB 2.0/3.2/USB4、PD、Type-C、BC 1.2 等核心规范（16 项）</td>
+</tr>
+<tr>
+<td><code class="tk-file">/workspace/usb-specs/device-classes/</code></td>
+<td>HID、CDC、MSC、UAC、UVC 等设备类规范（40 项）</td>
+</tr>
+<tr>
+<td><code class="tk-file">/workspace/usb-specs/host-controllers/</code></td>
+<td>xHCI 1.2、EHCI 1.0（2 项）</td>
+</tr>
+<tr>
+<td><code class="tk-file">/workspace/usb-specs/bluetooth/</code></td>
+<td>Core 6.0/7.0、HOGP、HIDS、BAS、DIS、Assigned Numbers（12 项已下载，3 项手动）</td>
+</tr>
+<tr>
+<td><code class="tk-file">/workspace/usb-specs/microsoft/</code>、<code class="tk-file">linux/</code></td>
+<td>微软与内核官方在线文档（10 + 13 项）</td>
+</tr>
+<tr>
+<td><code class="tk-file">/workspace/usb-specs/manifest.md</code></td>
+<td>清单：名称、版本、日期、URL、sha256、状态</td>
+</tr>
+<tr>
+<td><code class="tk-file">/workspace/usb-os-kb-src/</code></td>
+<td>07–12 号文档抓取的官方页面文本缓存（约 100 页）</td>
+</tr>
+<tr>
+<td><code class="tk-file">/workspace/usb-techdoc/kb/</code></td>
+<td>本知识库的 Markdown 与 HTML</td>
+</tr>
+<tr>
+<td><code class="tk-file">/workspace/usb-techdoc/llms-full.md</code></td>
+<td>00–12 号文档拼接的单文件版，供 AI 使用</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="configuration">Configuration<a class="anchor" href="#configuration" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="tk-file">tools/fetch_all.py</code> 内的条目表</td>
+<td>96 项</td>
+<td>增删规范时改这里；非官方域名会被拒绝</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="development">Development<a class="anchor" href="#development" aria-label="链接到本节">#</a></h2>
+<p>改完任何一篇后运行检查与导出：</p>
+<pre data-lang="bash"><code class="hljs language-bash"><span class="tk-fn">python3</span> <span class="tk-flag">-I</span> <span class="tk-file">~/.claude/skills/tech-doc/scripts/check_doc.py</span> <span class="tk-file">kb/03-usb-pd-messages-timers.md</span> <span class="tk-flag">--fix-style</span> <span class="tk-op">&amp;&amp;</span> <span class="tk-fn">rm</span> <span class="tk-flag">-f</span> <span class="tk-file">kb/*.bak</span>
+<span class="tk-fn">node</span> <span class="tk-file">~/.claude/skills/tech-doc/scripts/mermaid-tools/export_html.mjs</span> <span class="tk-file">kb/03-usb-pd-messages-timers.md</span>
+</code></pre>
+
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting" aria-label="链接到本节">#</a></h2>
+<ul>
+<li><a href="http://bluetooth.com">bluetooth.com</a> 返回 HTML 而非 PDF：该文件需要登录或浏览器下载，清单中标为 <code>manual-only</code>。</li>
+<li><a href="http://intel.com">intel.com</a> 返回 403：不要设置浏览器 User-Agent，用 curl 默认值。</li>
+<li>数值和 USBTree 不一致：以本库引用的规范原文为准，USBTree 修订见 <code class="tk-file">/workspace/usbtree-full-patch/</code>。</li>
+</ul>
+
+<footer>导出自 00-README.md · 2026-11-28 15:13 · tech-doc export_html (static, Mermaid 11, reader theme)</footer>
+</div>
+</main>
+</div>
+<script>(function () {
+  var nav = document.querySelector("nav.sidebar"), lay = document.querySelector(".layout");
+  if (!nav || !lay || !window.PointerEvent) return;
+  var root = document.documentElement, KEY = "tech-doc:contents-width", MIN = 150, cur = 0;
+  var bar = document.createElement("div");
+  bar.className = "resizer"; bar.tabIndex = 0;
+  bar.setAttribute("role", "separator"); bar.setAttribute("aria-orientation", "vertical");
+  bar.setAttribute("aria-label", nav.getAttribute("aria-label") || "Contents");
+  lay.appendChild(bar); root.classList.add("js");
+  function place() { bar.style.left = nav.offsetLeft + nav.offsetWidth + (parseFloat(getComputedStyle(lay).columnGap) || 0) / 2 - bar.offsetWidth / 2 + "px"; }
+  function set(w) {
+    cur = Math.round(Math.max(MIN, Math.min(Math.min(560, window.innerWidth * 0.45), w)));
+    nav.style.width = cur + "px"; place();
+  }
+  function save() { try { localStorage.setItem(KEY, cur); } catch (e) {} }
+  try { var s = +localStorage.getItem(KEY); if (s) set(s); } catch (e) {}
+  place();
+  function reset() { cur = 0; nav.style.width = ""; place(); try { localStorage.removeItem(KEY); } catch (e) {} }
+  var last = 0;
+  bar.addEventListener("pointerdown", function (e) {
+    if (e.button) return;
+    var x0 = e.clientX, w0 = nav.offsetWidth, moved = false;
+    bar.setPointerCapture(e.pointerId); root.classList.add("dragging"); e.preventDefault();
+    function move(ev) { if (Math.abs(ev.clientX - x0) > 3) moved = true; set(w0 + ev.clientX - x0); }
+    function stop() {
+      bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", stop); bar.removeEventListener("pointercancel", stop);
+      root.classList.remove("dragging");
+      if (moved) { last = 0; save(); return; }
+      var t = Date.now();
+      if (t - last < 500) { last = 0; reset(); } else { last = t; }
+    }
+    bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", stop); bar.addEventListener("pointercancel", stop);
+  });
+  bar.addEventListener("keydown", function (e) {
+    var d = e.key === "ArrowLeft" ? -16 : e.key === "ArrowRight" ? 16 : 0;
+    if (d) { e.preventDefault(); set(nav.offsetWidth + d); save(); }
+  });
+  window.addEventListener("resize", function () { if (cur) set(cur); place(); });
+  window.addEventListener("load", place);
+  if (window.ResizeObserver) new ResizeObserver(place).observe(nav);
+})();</script>
+
+</body>
+</html>

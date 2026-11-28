@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>架构文档：iOS / iPadOS USB（MFi、iPad DriverKit 与配件安全）</title>
+<style>
+:root{color-scheme:light;--bg:#fff;--fg:#1f2328;--muted:#59636e;--line:#d8dee4;--soft:#f6f8fa;--link:#0969da;--code-fg:#0a6a7a;--mark:#ffec99;
+--tk-comment:#59636e;--tk-keyword:#cf222e;--tk-string:#0a3069;--tk-number:#0550ae;--tk-fn:#6639ba;--tk-var:#953800;--tk-tag:#116329;--tk-del:#82071e;
+--info-bg:#ddf4ff;--info-fg:#0550ae;--info-bd:#b6e3ff;--success-bg:#dafbe1;--success-fg:#116329;--success-bd:#aceebb;
+--warn-bg:#fff8c5;--warn-fg:#7d4e00;--warn-bd:#eac54f;--danger-bg:#ffebe9;--danger-fg:#a40e26;--danger-bd:#ffcecb;
+--neutral-bg:#eaeef2;--neutral-fg:#424a53;--neutral-bd:#d0d7de;--accent-bg:#fbefff;--accent-fg:#6639ba;--accent-bd:#e2c5ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+.content p a,.content li a,.content td a,.callout a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.content p a:hover,.content li a:hover,.content td a:hover,.callout a:hover{text-decoration-thickness:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--bg);padding:6px 12px;z-index:10}.skip:focus{left:8px}
+.progress{display:none}
+@supports (animation-timeline:scroll()){.progress{display:block;position:sticky;top:0;z-index:5;height:3px;margin-bottom:-3px;background:var(--link);transform:scaleX(0);transform-origin:0 50%;animation:adoc-progress linear both;animation-timeline:scroll(root block)}
+@keyframes adoc-progress{to{transform:scaleX(1)}}}
+.layout{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:48px;padding:32px 32px 72px;align-items:start}
+nav.sidebar{position:sticky;top:24px;width:210px;min-width:150px;max-width:min(560px,45vw);max-height:calc(100vh - 48px);overflow:auto;resize:horizontal;font-size:13px;padding-right:8px}
+.js nav.sidebar{resize:none}
+.resizer{position:absolute;top:0;bottom:0;width:12px;cursor:col-resize;touch-action:none;user-select:none;z-index:3}
+.resizer::after{content:"";position:absolute;top:24px;bottom:24px;left:5px;width:2px;border-radius:1px;background:transparent}
+.resizer:hover::after,.resizer:focus-visible::after,.dragging .resizer::after{background:var(--link)}
+.resizer:focus-visible{outline:none}
+.dragging,.dragging *{cursor:col-resize!important;user-select:none!important}
+nav.sidebar .nav-title{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px}
+nav.sidebar ol{list-style:none;margin:0;padding:0;counter-reset:n}
+nav.sidebar li{counter-increment:n}
+nav.sidebar a{display:block;padding:3px 0;color:var(--muted);line-height:1.45}
+.numbered nav.sidebar a::before{content:counter(n) ".";display:inline-block;min-width:1.7em}
+nav.sidebar a:hover{color:var(--link);text-decoration:none}
+nav.sidebar ol.sub{margin:0 0 4px 1.2em;counter-reset:m}
+nav.sidebar ol.sub li{counter-increment:m}
+nav.sidebar ol.sub a{font-size:12.5px;padding:2px 0}
+.numbered nav.sidebar ol.sub a::before{content:counter(n) "." counter(m);min-width:2.5em}
+main{min-width:0}
+.hero{padding:0 0 14px;border-bottom:1px solid var(--line)}
+.hero h1{margin:0 0 8px;font-size:28px;line-height:1.3;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.chip:not(:last-child)::after{content:"·";margin:0 .6em}
+.chip b{font-weight:600;margin-right:.4em}
+.chip .age.stale{font-weight:600;color:var(--warn-fg)}
+.hero code{font-size:.92em}
+.statusbar{margin-top:8px;font-size:13px}
+.stat{margin-right:1.3em;color:var(--fg);white-space:nowrap}a.stat:hover{text-decoration:underline}
+.stat b{font-weight:600}.stat.danger b{color:var(--danger-fg)}.stat.warn b{color:var(--warn-fg)}.stat.accent b{color:var(--accent-fg)}
+.content{counter-reset:sec;padding:0}
+.content>p,.content>ul,.content>ol,.content>details>p,.content>details>ul{max-width:48em}
+html:lang(en) .content>p,html:lang(en) .content>ul,html:lang(en) .content>ol,html:lang(en) .content>details>p,html:lang(en) .content>details>ul{max-width:42em}
+h1,h2,h3,h4{line-height:1.3;color:var(--fg);font-weight:600}
+.content h2{counter-increment:sec;counter-reset:sub;font-size:22px;margin:2em 0 .6em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+.numbered .content h2::before{content:counter(sec) ".";margin-right:.45em;color:var(--muted);font-weight:400}
+.content h3{counter-increment:sub;font-size:17px;margin:1.6em 0 .5em}
+.numbered .content h3::before{content:counter(sec) "." counter(sub);margin-right:.45em;color:var(--muted);font-weight:400}
+.content h4{font-size:15px;margin:1.3em 0 .4em}
+.anchor{margin-left:.4em;opacity:0;font-weight:400;font-size:.8em;color:var(--muted)}
+h2:hover .anchor,h3:hover .anchor,.anchor:focus{opacity:1}
+p,ul,ol,pre,figure,.tbl,.callout,details{margin:0 0 1em}
+li{margin:.25em 0}
+p.sub{margin:1.4em 0 .4em}
+p.caption{margin-top:-.2em;color:var(--muted);font-size:14px}
+code{font:.9em/1.4 Consolas,"Cascadia Mono",monospace;color:var(--code-fg)}
+pre{position:relative;background:var(--soft);padding:12px 16px;border-radius:6px;overflow-x:auto;border:1px solid var(--line);line-height:1.5}
+pre code{color:inherit}
+pre[data-lang]::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:11px;line-height:1;color:var(--muted)}
+.tk-file{color:var(--tk-tag)}.tk-flag,.tk-num,.tk-const,.tk-lit{color:var(--tk-number)}.tk-fn{color:var(--tk-fn)}.tk-var{color:var(--tk-var)}.tk-str{color:var(--tk-string)}.tk-arg{color:var(--fg)}.tk-op,.tk-kw{color:var(--tk-keyword)}
+.hljs-comment,.hljs-quote{color:var(--tk-comment)}
+.hljs-keyword,.hljs-doctag,.hljs-template-tag,.hljs-meta,.hljs-meta .hljs-keyword{color:var(--tk-keyword)}
+.hljs-string,.hljs-regexp,.hljs-meta .hljs-string{color:var(--tk-string)}
+.hljs-number,.hljs-literal,.hljs-symbol,.hljs-bullet,.hljs-attr,.hljs-attribute,.hljs-property,.hljs-selector-id,.hljs-selector-class,.hljs-selector-attr{color:var(--tk-number)}
+.hljs-title,.hljs-title.function_,.hljs-built_in{color:var(--tk-fn)}
+.hljs-title.class_,.hljs-type,.hljs-variable,.hljs-template-variable{color:var(--tk-var)}
+.hljs-name,.hljs-tag,.hljs-selector-tag{color:var(--tk-tag)}
+.hljs-section{color:var(--tk-number);font-weight:600}.hljs-strong{font-weight:600}.hljs-emphasis{font-style:italic}
+.hljs-addition{color:var(--tk-tag);background:var(--success-bg)}.hljs-deletion{color:var(--tk-del);background:var(--danger-bg)}
+blockquote{margin:0 0 1em;padding:0 1em;color:var(--muted);border-left:3px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+strong{font-weight:600}
+strong.kw{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:.5em;text-underline-offset:-.3em;text-decoration-skip-ink:none}
+mark{padding:0 .2em;border-radius:3px;background:var(--mark);color:inherit}
+kbd{padding:.1em .45em;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;background:var(--soft);font:.85em Consolas,"Cascadia Mono",monospace}
+p.lead,ul.lead,ol.lead{border-left:3px solid var(--link);font-size:16px}
+p.lead{padding-left:14px}
+ul.lead,ol.lead{padding-left:2.2em}
+td.key{font-weight:600}
+.callout{padding:10px 14px;background:var(--soft);border-left:3px solid var(--neutral-fg);border-radius:0 6px 6px 0;color:var(--fg)}
+.content>.callout{max-width:60em}
+.callout>*:last-child{margin-bottom:0}
+.callout p{max-width:none}
+.callout-title{margin-bottom:4px;font-size:14px;font-weight:600;color:var(--neutral-fg)}
+.callout.note{border-left-color:var(--info-fg)}.callout.note .callout-title{color:var(--info-fg)}
+.callout.key,.callout.action{padding:12px 16px;border-left-width:4px;font-size:16px}
+.callout.key .callout-title,.callout.action .callout-title{font-size:15px}
+.callout.key{background:var(--info-bg);border-left-color:var(--link)}.callout.key .callout-title{color:var(--info-fg)}
+.callout.action{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.action .callout-title{color:var(--accent-fg)}
+.callout.tip,.callout.tldr{background:var(--success-bg);border-left-color:var(--success-fg)}.callout.tip .callout-title,.callout.tldr .callout-title{color:var(--success-fg)}
+.callout.important{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.important .callout-title{color:var(--accent-fg)}
+.callout.warning{background:var(--warn-bg);border-left-color:var(--warn-fg)}.callout.warning .callout-title{color:var(--warn-fg)}
+.callout.caution{background:var(--danger-bg);border-left-color:var(--danger-fg)}.callout.caution .callout-title{color:var(--danger-fg)}
+.callout.tldr ul{margin:.2em 0 .3em;padding-left:1.2em}
+details.basis{padding:2px 0 2px 12px;border-left:3px solid var(--line);color:var(--muted);font-size:14px}
+details.basis summary{cursor:pointer;font-weight:600}
+details.basis[open] summary{margin-bottom:4px}
+details.fold{margin:2em 0 1em;border-top:1px solid var(--line)}
+details.fold>summary{cursor:pointer;list-style:none}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary h2{display:flex;align-items:baseline;margin:0;padding:.6em 0;border:0;font-size:18px}
+details.fold>summary h2::after{content:"▸";margin-left:.5em;color:var(--muted);font-size:.75em}
+details.fold[open]>summary h2::after{content:"▾"}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55}
+.tbl th{padding:6px 12px;border:1px solid var(--line);background:var(--soft);font-weight:600;text-align:left;white-space:nowrap}
+.tbl td{padding:6px 12px;border:1px solid var(--line);vertical-align:top}
+.tbl code{font-size:.88em;overflow-wrap:break-word}
+.tbl td.fit,.tbl th.fit{white-space:nowrap}
+.cell-list{margin:0;padding-left:1.15em}
+.cell-list li{margin:.2em 0}
+td.id{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;padding:0 8px;border:1px solid var(--neutral-bd);border-radius:4px;background:var(--neutral-bg);color:var(--neutral-fg);font-size:12px;font-weight:600;line-height:1.7;white-space:nowrap}
+.tone-info{background:var(--info-bg);color:var(--info-fg);border-color:var(--info-bd)}
+.tone-success{background:var(--success-bg);color:var(--success-fg);border-color:var(--success-bd)}
+.tone-warn{background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-bd)}
+.tone-danger{background:var(--danger-bg);color:var(--danger-fg);border-color:var(--danger-bd)}
+.tone-accent{background:var(--accent-bg);color:var(--accent-fg);border-color:var(--accent-bd)}
+.tag.verdict{padding:1px 12px;font-size:14px}
+.status-note{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+.infer{border-bottom:1px dotted var(--warn-fg);cursor:help}
+ul.tasks{list-style:none;padding-left:.2em}
+li.task::before{content:"☐";margin-right:.55em;color:var(--muted)}
+li.task.done::before{content:"☑";color:var(--success-fg)}
+figure.mermaid-figure,pre.mermaid{margin:1.2em 0;padding:16px 8px;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#fff;color:#1f2937;text-align:center}
+figure.mermaid-figure svg{max-width:100%;height:auto}
+.fig{position:relative}
+.fig figure.mermaid-figure svg{width:min(100%,calc(var(--w)*.85));max-height:max(85vh,calc(var(--h)*.7));max-width:none!important;height:auto}
+.fig-toggle:checked~figure.mermaid-figure svg{width:var(--w);max-height:none}
+.fig .fig-zoom{display:block!important;position:absolute;top:calc(1.2em + 8px);right:10px;z-index:1;padding:1px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--muted);font-size:12px;line-height:1.6;cursor:pointer}
+.fig .fig-zoom::after{content:attr(data-off)}
+.fig-toggle:checked~.fig-zoom::after{content:attr(data-on)}
+.fig .fig-zoom:hover{color:var(--link);border-color:var(--link)}
+.fig-toggle:focus-visible~.fig-zoom{outline:2px solid var(--link);outline-offset:2px}
+.mermaid-error{text-align:left;color:#b42318;background:#fef3f2;border:1px solid #fecdca}
+footer{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+@media (max-width:1000px){.resizer{display:none}.layout{grid-template-columns:1fr;gap:16px;padding:20px 16px}nav.sidebar{position:static;width:auto!important;max-width:none;max-height:none;resize:none;padding-bottom:12px;border-bottom:1px solid var(--line)}}
+@media print{.progress,.resizer,.fig .fig-zoom{display:none!important}.fig figure.mermaid-figure svg{width:min(100%,var(--w))!important;max-height:none!important}body{font-size:11pt}.layout{display:block;padding:0}nav.sidebar,.skip,.anchor{display:none}.hero{border-bottom:2px solid #000}.tbl,figure,.callout,tr{break-inside:avoid}.tbl{overflow:visible}details.fold{border:0}a{color:inherit}}
+</style>
+</head>
+<body id="top" class="numbered">
+<a class="skip" href="#content">跳到正文</a>
+<div class="progress" aria-hidden="true"></div>
+<div class="layout">
+<nav class="sidebar" aria-label="目录"><div class="nav-title">目录</div><ol><li><a href="#overview">Overview</a></li><li><a href="#核心事实-key-facts已核对">核心事实 Key Facts（已核对）</a></li><li><a href="#访问路径四条通道只有-ipad-能写驱动">访问路径：四条通道，只有 iPad 能写驱动</a></li><li><a href="#mfi-与-externalaccessory">MFi 与 ExternalAccessory</a></li><li><a href="#m-系列-ipad-上的-driverkit">M 系列 iPad 上的 DriverKit</a></li><li><a href="#usb-c-与标准类设备">USB-C 与标准类设备</a></li><li><a href="#hid-与-ble">HID 与 BLE</a></li><li><a href="#虚拟-usb--设备模式">虚拟 USB / 设备模式</a></li><li><a href="#安全模型">安全模型</a></li><li><a href="#调试">调试</a></li><li><a href="#与-windows-的映射">与 Windows 的映射</a></li><li><a href="#参考来源">参考来源</a><ol class="sub"><li><a href="#来源组-1">来源组 1</a></li><li><a href="#来源组-2">来源组 2</a></li><li><a href="#来源组-3">来源组 3</a></li></ol></li><li><a href="#待确认项">待确认项</a><ol class="sub"><li><a href="#待确认组-1">待确认组 1</a></li><li><a href="#待确认组-2">待确认组 2</a></li></ol></li></ol></nav>
+<main id="content">
+<header class="hero"><h1>架构文档：iOS / iPadOS USB（MFi、iPad DriverKit 与配件安全）</h1><div class="chips"><span class="chip"><b>类型</b>arch</span><span class="chip"><b>模式</b>Reverse</span><span class="chip"><b>代码基线</b>&lt;code&gt;developer.apple.com、support.apple.com、mfi.apple.com（2026-11-28 抓取）&lt;/code&gt;</span><span class="chip"><b>最后核对</b>2026-11-28 <span class="age">· 今天核对</span></span><span class="chip"><b>范围</b>&lt;code&gt;ExternalAccessory, DriverKit(iPadOS), USBDriverKit, GameController, CoreBluetooth, 有线配件设置&lt;/code&gt;</span><span class="chip">约 7 分钟读完</span></div><div class="statusbar"><a class="stat accent" href="#待确认项"><b>10</b> 待确认</a></div></header>
+<div class="content">
+
+
+<h2 id="overview">Overview<a class="anchor" href="#overview" aria-label="链接到本节">#</a></h2>
+<p class="lead">iOS 是最封闭的 USB 平台：第三方 App 没有通用 USB 主机 API，只有 <strong class="lead-in">4 条通道</strong>——MFi/ExternalAccessory、系统内建标准类驱动、M 系列 iPad 的 DriverKit、蓝牙。iPhone 15 起为 USB-C，Pro 机型配 USB 3 线可达 10 Gbit/s。“某 API 不存在”这类否定性结论无法由单页官方文档证实，一律标 <strong class="kw">待核实</strong>。</p>
+<div class="callout tldr"><div class="callout-title">TL;DR</div><ul>
+<li>私有协议配件：MFi 计划 + ExternalAccessory，由配件厂商决定哪些 App 能通信。</li>
+<li>自定义 USB 设备：只有 M 系列 iPad 能用 USBDriverKit，驱动随 App 分发。</li>
+<li>没有 HIDDriverKit，CoreHID 仅 macOS，iOS 上无公开原始 HID 报告 API（<strong>待核实</strong>）。</li>
+<li>安全：锁定超 1 小时后不允许新数据连接，已知配件记忆 30 天。</li>
+</ul></div>
+
+<p>蓝 = 用户空间应用，红 = 内核/系统级驱动，绿 = 用户态驱动或守护进程，橙 = 系统框架，灰 = 硬件与外部。</p>
+<h2 id="核心事实-key-facts已核对">核心事实 Key Facts（已核对）<a class="anchor" href="#核心事实-key-facts已核对" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th class="fit">#</th>
+<th>事实</th>
+<th>值 / 说明</th>
+<th class="fit">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="id fit">1</td>
+<td>ExternalAccessory 框架</td>
+<td>与 <strong>MFi 配件</strong>通信</td>
+<td class="fit">[I1]</td>
+</tr>
+<tr>
+<td class="id fit">1.2</td>
+<td>ExternalAccessory 框架</td>
+<td>官方描述的物理连接为 Apple Lightning / 30-pin，或蓝牙</td>
+<td class="fit">[I1]</td>
+</tr>
+<tr>
+<td class="id fit">1.3</td>
+<td>ExternalAccessory 框架</td>
+<td>iOS/iPadOS 3.0+</td>
+<td class="fit">[I1]</td>
+</tr>
+<tr>
+<td class="id fit">2</td>
+<td>谁能与 MFi 配件通信</td>
+<td>由<strong>配件制造商</strong>决定哪些第三方 App 可通信；App 在 Info.plist <code>UISupportedExternalAccessoryProtocols</code> 声明协议字符串</td>
+<td class="fit">[I1][I2]</td>
+</tr>
+<tr>
+<td class="id fit">3</td>
+<td>EA 核心类</td>
+<td><code>EAAccessoryManager</code>（识别已连接配件、连接/断开通知）、<code>EASession</code>（与配件的通信会话）</td>
+<td class="fit">[I2]</td>
+</tr>
+<tr>
+<td class="id fit">4</td>
+<td>Apple silicon Mac 上运行的 iPad/iPhone App</td>
+<td><strong>不能</strong>通过 ExternalAccessory 连接外部配件</td>
+<td class="fit">[I1]</td>
+</tr>
+<tr>
+<td class="id fit">5</td>
+<td>MFi 计划</td>
+<td>提供与 Apple 设备有线/无线连接配件的技术规范与资源（含游戏手柄、CarPlay、电源与线缆等类别）</td>
+<td class="fit">[I3]</td>
+</tr>
+<tr>
+<td class="id fit">6</td>
+<td>DriverKit on iPadOS</td>
+<td>DriverKit 框架 iOS/iPadOS 16.0+</td>
+<td class="fit">[I4][I5]</td>
+</tr>
+<tr>
+<td class="id fit">6.2</td>
+<td>DriverKit on iPadOS</td>
+<td><strong>需 M 系列芯片 iPad</strong></td>
+<td class="fit">[I4][I5]</td>
+</tr>
+<tr>
+<td class="id fit">6.3</td>
+<td>DriverKit on iPadOS</td>
+<td>驱动随宿主 App 由系统自动发现与升级（无需 SystemExtensions）</td>
+<td class="fit">[I4][I5]</td>
+</tr>
+<tr>
+<td class="id fit">7</td>
+<td>USBDriverKit on iPadOS</td>
+<td>可用于 M 系列芯片 iPadOS 设备</td>
+<td class="fit">[I6]</td>
+</tr>
+<tr>
+<td class="id fit">8</td>
+<td>HIDDriverKit</td>
+<td>文档标注<strong>仅 macOS</strong> → iPad 上没有 HID dext</td>
+<td class="fit">[I7]</td>
+</tr>
+<tr>
+<td class="id fit">9</td>
+<td>iPadOS 专用 entitlement</td>
+<td><code>com.apple.developer.driverkit.communicates-with-drivers</code>（App 可与驱动通信）、<code>com.apple.developer.driverkit.allow-third-party-userclients</code>（驱动接受第三方 user client），均 iOS/iPadOS 16.0+</td>
+<td class="fit">[I8]</td>
+</tr>
+<tr>
+<td class="id fit">10</td>
+<td>iPhone USB-C</td>
+<td>iPhone 15 及以后为 USB-C</td>
+<td class="fit">[I9]</td>
+</tr>
+<tr>
+<td class="id fit">10.2</td>
+<td>iPhone USB-C</td>
+<td>Pro 机型（iPhone 15 Pro 至 18 Pro 等）配 USB 3 线可达 <strong>USB 3.2 Gen 2 10 Gbit/s</strong></td>
+<td class="fit">[I9]</td>
+</tr>
+<tr>
+<td class="id fit">10.3</td>
+<td>iPhone USB-C</td>
+<td>DisplayPort 连接 USB-C 显示器最高 4K 60Hz</td>
+<td class="fit">[I9]</td>
+</tr>
+<tr>
+<td class="id fit">10.4</td>
+<td>iPhone USB-C</td>
+<td>支持外置存储、显示器、麦克风、USB 以太网转接器等基于标准的配件</td>
+<td class="fit">[I9]</td>
+</tr>
+<tr>
+<td class="id fit">10.5</td>
+<td>iPhone USB-C</td>
+<td>可给 AirPods/Apple Watch 等供电</td>
+<td class="fit">[I9]</td>
+</tr>
+<tr>
+<td class="id fit">11</td>
+<td>有线配件授权（USB Restricted Mode 演进）</td>
+<td>设置 › 隐私与安全性 › 有线配件。USB-C 机型：始终询问 / 新配件询问 / 解锁时自动允许（默认）/ 始终允许；Lightning 机型只有后两项。存储类配件<strong>始终</strong>需先解锁</td>
+<td class="fit">[I10]</td>
+</tr>
+<tr>
+<td class="id fit">12</td>
+<td>数据连接激活规则</td>
+<td>锁定超 1 小时后不允许新数据连接直到解锁</td>
+<td class="fit">[I11]</td>
+</tr>
+<tr>
+<td class="id fit">12.2</td>
+<td>数据连接激活规则</td>
+<td>期间仅允许曾在解锁状态下连接过的配件（记忆 30 天）</td>
+<td class="fit">[I11]</td>
+</tr>
+<tr>
+<td class="id fit">12.3</td>
+<td>数据连接激活规则</td>
+<td>若 3 天以上未建立配件数据连接，则锁屏后立即禁止新连接</td>
+<td class="fit">[I11]</td>
+</tr>
+<tr>
+<td class="id fit">13</td>
+<td>GameController</td>
+<td>iOS/iPadOS 7.0+</td>
+<td class="fit">[I12]</td>
+</tr>
+<tr>
+<td class="id fit">13.2</td>
+<td>GameController</td>
+<td>支持 DualShock 4、DualSense、Xbox 等第三方手柄以及鼠标、键盘、Siri Remote、赛车方向盘</td>
+<td class="fit">[I12]</td>
+</tr>
+<tr>
+<td class="id fit">13.3</td>
+<td>GameController</td>
+<td>也可显示虚拟手柄</td>
+<td class="fit">[I12]</td>
+</tr>
+<tr>
+<td class="id fit">14</td>
+<td>CoreHID</td>
+<td>文档仅标注 <strong>macOS 15+</strong>，iOS 不可用</td>
+<td class="fit">[I13]</td>
+</tr>
+<tr>
+<td class="id fit">15</td>
+<td>CoreBluetooth</td>
+<td>iOS/iPadOS 5.0+，BLE GATT 中心/外设 API</td>
+<td class="fit">[I14]</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="访问路径四条通道只有-ipad-能写驱动">访问路径：四条通道，只有 iPad 能写驱动<a class="anchor" href="#访问路径四条通道只有-ipad-能写驱动" aria-label="链接到本节">#</a></h2>
+<div class="fig" style="--w:845.1328125px;--h:353px"><input class="fig-toggle" type="checkbox" id="adoc-fig-1" aria-label="查看原始大小" style="position:absolute;opacity:0;width:0;height:0"><figure class="mermaid-figure"><svg id="adoc-diagram-1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 845.133px; background-color: white;" viewBox="0 0 845.1328125 353" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#adoc-diagram-1{font-size:14px;fill:#111827;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#adoc-diagram-1 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .error-icon{fill:#ffffff;}#adoc-diagram-1 .error-text{fill:#000000;stroke:#000000;}#adoc-diagram-1 .edge-thickness-normal{stroke-width:1px;}#adoc-diagram-1 .edge-thickness-thick{stroke-width:3.5px;}#adoc-diagram-1 .edge-pattern-solid{stroke-dasharray:0;}#adoc-diagram-1 .edge-thickness-invisible{stroke-width:0;fill:none;}#adoc-diagram-1 .edge-pattern-dashed{stroke-dasharray:3;}#adoc-diagram-1 .edge-pattern-dotted{stroke-dasharray:2;}#adoc-diagram-1 .marker{fill:#4b5563;stroke:#4b5563;}#adoc-diagram-1 .marker.cross{stroke:#4b5563;}#adoc-diagram-1 svg{font-size:14px;}#adoc-diagram-1 p{margin:0;}#adoc-diagram-1 .label{color:#111827;}#adoc-diagram-1 .cluster-label text{fill:#000000;}#adoc-diagram-1 .cluster-label span{color:#000000;}#adoc-diagram-1 .cluster-label span p{background-color:transparent;}#adoc-diagram-1 .label text,#adoc-diagram-1 span{fill:#111827;color:#111827;}#adoc-diagram-1 .node rect,#adoc-diagram-1 .node circle,#adoc-diagram-1 .node ellipse,#adoc-diagram-1 .node polygon,#adoc-diagram-1 .node path{fill:#f3f4f6;stroke:#6b7280;stroke-width:1px;}#adoc-diagram-1 .rough-node .label text,#adoc-diagram-1 .node .label text,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-anchor:middle;}#adoc-diagram-1 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#adoc-diagram-1 .rough-node .label,#adoc-diagram-1 .node .label,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-align:center;}#adoc-diagram-1 .node.clickable{cursor:pointer;}#adoc-diagram-1 .root .anchor path{fill:#4b5563!important;stroke-width:0;stroke:#4b5563;}#adoc-diagram-1 .arrowheadPath{fill:#0b0b0b;}#adoc-diagram-1 .edgePaths .path{stroke:#4b5563;stroke-width:1px;}#adoc-diagram-1 .flowchart-link{stroke:#4b5563;fill:none;}#adoc-diagram-1 .edgeLabel{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .edgeLabel p{background-color:#ffffff;}#adoc-diagram-1 .edgeLabel rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .labelBkg{background-color:rgba(255, 255, 255, 0.5);}#adoc-diagram-1 .cluster rect{fill:#ffffff;stroke:hsl(0, 0%, 90%);stroke-width:1px;}#adoc-diagram-1 .cluster text{fill:#000000;}#adoc-diagram-1 .cluster span{color:#000000;}#adoc-diagram-1 .node .collapsed-indicator{fill:hsl(0, 0%, 90%);stroke:none;opacity:0.6;}#adoc-diagram-1 .node .collapsed-separator{stroke:hsl(0, 0%, 90%);stroke-width:0.75px;}#adoc-diagram-1 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-size:12px;background:#ffffff;border:1px solid hsl(0, 0%, 90%);border-radius:2px;pointer-events:none;z-index:100;}#adoc-diagram-1 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#111827;}#adoc-diagram-1 rect.text{fill:none;stroke-width:0;}#adoc-diagram-1 .icon-shape,#adoc-diagram-1 .image-shape{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .icon-shape p,#adoc-diagram-1 .image-shape p{background-color:#ffffff;padding:2px;}#adoc-diagram-1 .icon-shape .label rect,#adoc-diagram-1 .image-shape .label rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#adoc-diagram-1 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#adoc-diagram-1 .node .neo-node{stroke:#6b7280;}#adoc-diagram-1 [data-look="neo"].node rect,#adoc-diagram-1 [data-look="neo"].cluster rect,#adoc-diagram-1 [data-look="neo"].node polygon{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].swimlane.cluster rect{filter:none;}#adoc-diagram-1 [data-look="neo"].node path{stroke:url(#adoc-diagram-1-gradient);stroke-width:1px;}#adoc-diagram-1 [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node .neo-line path{stroke:#6b7280;filter:none;}#adoc-diagram-1 [data-look="neo"].node circle{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node circle .state-start{fill:#000000;}#adoc-diagram-1 [data-look="neo"].icon-shape .icon{fill:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].icon-shape .icon-neo path{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#adoc-diagram-1 .outside&gt;*{fill:rgb(243, 244, 246)!important;stroke:rgb(107, 114, 128)!important;color:rgb(55, 65, 81)!important;}#adoc-diagram-1 .outside span{fill:rgb(243, 244, 246)!important;stroke:rgb(107, 114, 128)!important;color:rgb(55, 65, 81)!important;}#adoc-diagram-1 .outside tspan{fill:rgb(55, 65, 81)!important;}#adoc-diagram-1 .renderer&gt;*{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer span{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer tspan{fill:rgb(30, 58, 138)!important;}#adoc-diagram-1 .driver&gt;*{fill:rgb(254, 226, 226)!important;stroke:rgb(220, 38, 38)!important;color:rgb(127, 29, 29)!important;}#adoc-diagram-1 .driver span{fill:rgb(254, 226, 226)!important;stroke:rgb(220, 38, 38)!important;color:rgb(127, 29, 29)!important;}#adoc-diagram-1 .driver tspan{fill:rgb(127, 29, 29)!important;}#adoc-diagram-1 .service&gt;*{fill:rgb(220, 252, 231)!important;stroke:rgb(22, 163, 74)!important;color:rgb(20, 83, 45)!important;}#adoc-diagram-1 .service span{fill:rgb(220, 252, 231)!important;stroke:rgb(22, 163, 74)!important;color:rgb(20, 83, 45)!important;}#adoc-diagram-1 .service tspan{fill:rgb(20, 83, 45)!important;}</style><g><marker id="adoc-diagram-1_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"/></marker><g class="root"><g class="clusters"/><g class="edgePaths"><path d="M101.039,69.5L101.039,77.167C101.039,84.833,101.039,100.167,101.039,113.083C101.039,126,101.039,136.5,101.039,141.75L101.039,147" id="adoc-diagram-1-L_ACC1_EA_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_ACC1_EA_0" data-points="W3sieCI6MTAxLjAzOTA2MjUsInkiOjY5LjV9LHsieCI6MTAxLjAzOTA2MjUsInkiOjExNS41fSx7IngiOjEwMS4wMzkwNjI1LCJ5IjoxNTF9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M313.078,69.5L313.078,77.167C313.078,84.833,313.078,100.167,313.078,113.083C313.078,126,313.078,136.5,313.078,141.75L313.078,147" id="adoc-diagram-1-L_ACC2_SYS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_ACC2_SYS_0" data-points="W3sieCI6MzEzLjA3ODEyNSwieSI6NjkuNX0seyJ4IjozMTMuMDc4MTI1LCJ5IjoxMTUuNX0seyJ4IjozMTMuMDc4MTI1LCJ5IjoxNTF9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M313.078,202L313.078,207.917C313.078,213.833,313.078,225.667,313.078,238.583C313.078,251.5,313.078,265.5,313.078,272.5L313.078,279.5" id="adoc-diagram-1-L_SYS_GC_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_SYS_GC_0" data-points="W3sieCI6MzEzLjA3ODEyNSwieSI6MjAyfSx7IngiOjMxMy4wNzgxMjUsInkiOjIzNy41fSx7IngiOjMxMy4wNzgxMjUsInkiOjI4My41fV0=" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M549.227,80L549.227,85.917C549.227,91.833,549.227,103.667,549.227,114.833C549.227,126,549.227,136.5,549.227,141.75L549.227,147" id="adoc-diagram-1-L_ACC3_DK_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_ACC3_DK_0" data-points="W3sieCI6NTQ5LjIyNjU2MjUsInkiOjgwfSx7IngiOjU0OS4yMjY1NjI1LCJ5IjoxMTUuNX0seyJ4Ijo1NDkuMjI2NTYyNSwieSI6MTUxfV0=" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M549.227,202L549.227,207.917C549.227,213.833,549.227,225.667,549.227,236.833C549.227,248,549.227,258.5,549.227,263.75L549.227,269" id="adoc-diagram-1-L_DK_APP_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_DK_APP_0" data-points="W3sieCI6NTQ5LjIyNjU2MjUsInkiOjIwMn0seyJ4Ijo1NDkuMjI2NTYyNSwieSI6MjM3LjV9LHsieCI6NTQ5LjIyNjU2MjUsInkiOjI3M31d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M758.523,69.5L758.523,77.167C758.523,84.833,758.523,100.167,758.523,113.083C758.523,126,758.523,136.5,758.523,141.75L758.523,147" id="adoc-diagram-1-L_ACC4_CB_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_ACC4_CB_0" data-points="W3sieCI6NzU4LjUyMzQzNzUsInkiOjY5LjV9LHsieCI6NzU4LjUyMzQzNzUsInkiOjExNS41fSx7IngiOjc1OC41MjM0Mzc1LCJ5IjoxNTF9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(101.0390625, 115.5)"><g class="label" data-id="L_ACC1_EA_0" transform="translate(-43.2265625, -10.5)"><foreignObject width="86.453125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>①</b> 协议字符串</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(313.078125, 115.5)"><g class="label" data-id="L_ACC2_SYS_0" transform="translate(-36.2265625, -10.5)"><foreignObject width="72.453125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>②</b> 系统驱动</p></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_SYS_GC_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(549.2265625, 115.5)"><g class="label" data-id="L_ACC3_DK_0" transform="translate(-35.0625, -10.5)"><foreignObject width="70.125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>③</b> DriverKit</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(549.2265625, 237.5)"><g class="label" data-id="L_DK_APP_0" transform="translate(-31.90625, -10.5)"><foreignObject width="63.8125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p>user client</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(758.5234375, 115.5)"><g class="label" data-id="L_ACC4_CB_0" transform="translate(-26.375, -10.5)"><foreignObject width="52.75" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>④</b> GATT</p></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default outside" id="adoc-diagram-1-flowchart-ACC1-0" data-look="classic" transform="translate(101.0390625, 44)"><rect class="basic label-container" style="fill:#f3f4f6 !important;stroke:#6b7280 !important" x="-58" y="-25.5" width="116" height="51"/><g class="label" style="color:#374151 !important" transform="translate(-28, -10.5)"><rect/><foreignObject width="56" height="21"><div style="color: rgb(55, 65, 81) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#374151 !important" class="nodeLabel"><p><b>MFi 配件</b></p></span></div></foreignObject></g></g><g class="node default outside" id="adoc-diagram-1-flowchart-ACC2-1" data-look="classic" transform="translate(313.078125, 44)"><rect class="basic label-container" style="fill:#f3f4f6 !important;stroke:#6b7280 !important" x="-84.0625" y="-25.5" width="168.125" height="51"/><g class="label" style="color:#374151 !important" transform="translate(-54.0625, -10.5)"><rect/><foreignObject width="108.125" height="21"><div style="color: rgb(55, 65, 81) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#374151 !important" class="nodeLabel"><p><b>标准 USB-C 配件</b></p></span></div></foreignObject></g></g><g class="node default outside" id="adoc-diagram-1-flowchart-ACC3-2" data-look="classic" transform="translate(549.2265625, 44)"><rect class="basic label-container" style="fill:#f3f4f6 !important;stroke:#6b7280 !important" x="-83.671875" y="-36" width="167.34375" height="72"/><g class="label" style="color:#374151 !important" transform="translate(-53.671875, -21)"><rect/><foreignObject width="107.34375" height="42"><div style="color: rgb(55, 65, 81) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#374151 !important" class="nodeLabel"><p><b>自定义 USB 设备</b><br /><span style="color:#6b7280font-size:12px">仅 M 系列 iPad</span></p></span></div></foreignObject></g></g><g class="node default outside" id="adoc-diagram-1-flowchart-ACC4-3" data-look="classic" transform="translate(758.5234375, 44)"><rect class="basic label-container" style="fill:#f3f4f6 !important;stroke:#6b7280 !important" x="-59.9453125" y="-25.5" width="119.890625" height="51"/><g class="label" style="color:#374151 !important" transform="translate(-29.9453125, -10.5)"><rect/><foreignObject width="59.890625" height="21"><div style="color: rgb(55, 65, 81) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#374151 !important" class="nodeLabel"><p><b>BLE 设备</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-EA-4" data-look="classic" transform="translate(101.0390625, 176.5)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-93.0390625" y="-25.5" width="186.078125" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-63.0390625, -10.5)"><rect/><foreignObject width="126.078125" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>ExternalAccessory</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-SYS-5" data-look="classic" transform="translate(313.078125, 176.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-79" y="-25.5" width="158" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-49, -10.5)"><rect/><foreignObject width="98" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>系统内建类驱动</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-GC-6" data-look="classic" transform="translate(313.078125, 309)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-82.90625" y="-25.5" width="165.8125" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-52.90625, -10.5)"><rect/><foreignObject width="105.8125" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>GameController</b></p></span></div></foreignObject></g></g><g class="node default service" id="adoc-diagram-1-flowchart-DK-7" data-look="classic" transform="translate(549.2265625, 176.5)"><rect class="basic label-container" style="fill:#dcfce7 !important;stroke:#16a34a !important" x="-90.6875" y="-25.5" width="181.375" height="51"/><g class="label" style="color:#14532d !important" transform="translate(-60.6875, -10.5)"><rect/><foreignObject width="121.375" height="21"><div style="color: rgb(20, 83, 45) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#14532d !important" class="nodeLabel"><p><b>USBDriverKit dext</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-APP-8" data-look="classic" transform="translate(549.2265625, 309)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-113.2421875" y="-36" width="226.484375" height="72"/><g class="label" style="color:#1e3a8a !important" transform="translate(-83.2421875, -21)"><rect/><foreignObject width="166.484375" height="42"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>宿主 App</b><br /><span style="color:#6b7280font-size:12px">communicates-with-drivers</span></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-CB-9" data-look="classic" transform="translate(758.5234375, 176.5)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-78.609375" y="-25.5" width="157.21875" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-48.609375, -10.5)"><rect/><foreignObject width="97.21875" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>CoreBluetooth</b></p></span></div></foreignObject></g></g></g></g></g><defs><filter id="adoc-diagram-1-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><defs><filter id="adoc-diagram-1-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><linearGradient id="adoc-diagram-1-gradient" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6b7280" stop-opacity="1"/><stop offset="100%" stop-color="hsl(100, 0%, 85.8823529412%)" stop-opacity="1"/></linearGradient></svg></figure><label class="fig-zoom" for="adoc-fig-1" data-off="查看原始大小" data-on="适应宽度" style="display:none"></label></div>
+<p class="caption">① 到 ④ 对应四条通道；绿色 dext 只在 M 系列 iPad 上存在，其余机型只能走 ①②④。</p>
+<h2 id="mfi-与-externalaccessory">MFi 与 ExternalAccessory<a class="anchor" href="#mfi-与-externalaccessory" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>适用：需要与 App 交换私有协议数据的配件（POS、医疗、工业等）。流程：加入 MFi 计划获得规范与认证组件 → 配件声明协议字符串 → App 在 <code>UISupportedExternalAccessoryProtocols</code> 中声明 → 运行时用 <code>EAAccessoryManager</code> 发现、<code>EASession</code> 打开输入/输出流 [I1][I2][I3]。</li>
+<li>官方文档仍写 Lightning/30-pin/蓝牙；<strong>USB-C iPhone/iPad 上 EA 的具体传输方式（如是否走 iAP2 over USB）本轮未找到公开官方说明，待核实</strong>。MFi 规范本身需注册会员才能查看。</li>
+</ul>
+<h2 id="m-系列-ipad-上的-driverkit">M 系列 iPad 上的 DriverKit<a class="anchor" href="#m-系列-ipad-上的-driverkit" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>同一 DriverKit/USBDriverKit 代码可面向 macOS 与 iPadOS；官方示例工程同时含 macOS 与 iPadOS App 目标，并说明 DriverKit on iPadOS 需要 M 系列 iPad [I5]。</li>
+<li>部署：iPadOS 上系统随宿主 App 自动发现与升级驱动 [I4]；App 需 <code>communicates-with-drivers</code>，驱动需 <code>allow-third-party-userclients</code> 才能接受第三方 user client 调用 [I8]。</li>
+<li>注意：<code class="tk-file">com.apple.developer.driverkit.transport.usb</code> 的官方 entitlement 页面平台元数据只列 macOS 10.15+，而 USBDriverKit 文档又写支持 M 系列 iPadOS——iPadOS 上 USB 设备匹配所需 entitlement 的确切形式 <strong class="kw">待核实</strong> [I6][I15]。</li>
+<li>没有 HIDDriverKit → iPad 上无法写 HID 驱动；HID 设备只能走系统内建支持或 GameController [I7][I12]。</li>
+</ul>
+<h2 id="usb-c-与标准类设备">USB-C 与标准类设备<a class="anchor" href="#usb-c-与标准类设备" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>iPhone 15 起的 USB-C 支持基于标准的配件（存储、显示、麦克风、以太网、SD 读卡器、CarPlay 车机等）[I9]。这些由系统驱动处理，App 通过高层框架（文件、AVFoundation 等）使用，<strong class="kw">不是</strong>直接 USB 访问。</li>
+<li>速率：Pro 机型 USB 3（10 Gbit/s，需 USB 3 线）[I9]；非 Pro 机型如 iPhone 15 Plus 官方技术规格写为 USB 2（最高 480 Mb/s），以具体机型技术规格为准 [I16]。</li>
+</ul>
+<h2 id="hid-与-ble">HID 与 BLE<a class="anchor" href="#hid-与-ble" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>键盘/鼠标/手柄：系统内建支持；App 通过 GameController（<code>GCController</code>、键盘/鼠标对象）读取输入 [I12]。原始 HID 报告级访问在 iOS 上没有公开 API（<strong class="kw">待核实</strong>）。</li>
+<li>BLE：CoreBluetooth 访问自定义 GATT 服务；系统蓝牙设置配对的 BLE HID（HoG）键鼠由系统处理（实现细节 <strong class="kw">待核实</strong>）[I14]。</li>
+</ul>
+<h2 id="虚拟-usb--设备模式">虚拟 USB / 设备模式<a class="anchor" href="#虚拟-usb--设备模式" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>iPhone/iPad 连接电脑时作为 USB 设备由系统实现（同步、网络共享等），<strong class="kw">第三方无 gadget/设备模式 API</strong>（否定性结论，<strong class="kw">待核实</strong>）。</li>
+<li>无公开虚拟 HID API（CoreHID 仅 macOS）[I13]。</li>
+</ul>
+<h2 id="安全模型">安全模型<a class="anchor" href="#安全模型" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>有线配件授权与 USB Restricted Mode：见 Key Facts #11–#12 [I10][I11]。受监管设备可由 Apple Configurator 或 MDM 控制该设置 [I10]。</li>
+<li>锁定模式下连接配件或电脑需设备解锁 [I17]。</li>
+<li>对硬件开发的影响：自动化测试台需考虑“锁屏 1 小时后新配件不能建立数据连接”。</li>
+</ul>
+<h2 id="调试">调试<a class="anchor" href="#调试" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>Xcode 设备日志 / Console.app 查看系统日志（<strong class="lead-in">待核实</strong>：未逐条核对官方页面）。</li>
+<li>无用户可用的 USB 抓包接口；协议分析需外部硬件分析仪（<strong class="kw">待核实</strong>）。</li>
+</ul>
+<h2 id="与-windows-的映射">与 Windows 的映射<a class="anchor" href="#与-windows-的映射" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th class="fit">Windows</th>
+<th>iOS/iPadOS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="fit">WinUSB 用户态访问</td>
+<td>无通用等价物；MFi 设备用 ExternalAccessory；M 系列 iPad 用 USBDriverKit dext + App [I1][I6]</td>
+</tr>
+<tr>
+<td class="fit">KMDF/UMDF 驱动</td>
+<td>仅 M 系列 iPad 的 DriverKit（用户态）[I5]</td>
+</tr>
+<tr>
+<td class="fit">HID API（HidD_*）</td>
+<td>GameController（高层）；无原始报告 API（<strong>待核实</strong>）</td>
+</tr>
+<tr>
+<td class="fit">设备安装/签名</td>
+<td>App Store 分发 + DriverKit entitlement；MFi 认证（配件端）[I3][I8]</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="参考来源">参考来源<a class="anchor" href="#参考来源" aria-label="链接到本节">#</a></h2>
+<h3 id="来源组-1">来源组 1<a class="anchor" href="#来源组-1" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[I1] ExternalAccessory <a href="https://developer.apple.com/documentation/externalaccessory">https://developer.apple.com/documentation/externalaccessory</a></li>
+<li>[I2] UISupportedExternalAccessoryProtocols <a href="https://developer.apple.com/documentation/bundleresources/information-property-list/uisupportedexternalaccessoryprotocols">https://developer.apple.com/documentation/bundleresources/information-property-list/uisupportedexternalaccessoryprotocols</a> ；EAAccessoryManager <a href="https://developer.apple.com/documentation/externalaccessory/eaaccessorymanager">https://developer.apple.com/documentation/externalaccessory/eaaccessorymanager</a> ；EASession <a href="https://developer.apple.com/documentation/externalaccessory/easession">https://developer.apple.com/documentation/externalaccessory/easession</a></li>
+<li>[I3] MFi Program <a href="https://mfi.apple.com/">https://mfi.apple.com/</a></li>
+<li>[I4] DriverKit <a href="https://developer.apple.com/documentation/driverkit">https://developer.apple.com/documentation/driverkit</a></li>
+<li>[I5] Communicating between a DriverKit extension and a client app（iPadOS 需 M 系列芯片）<a href="https://developer.apple.com/documentation/driverkit/communicating-between-a-driverkit-extension-and-a-client-app">https://developer.apple.com/documentation/driverkit/communicating-between-a-driverkit-extension-and-a-client-app</a></li>
+<li>[I6] USBDriverKit <a href="https://developer.apple.com/documentation/usbdriverkit">https://developer.apple.com/documentation/usbdriverkit</a></li>
+<li>[I7] HIDDriverKit <a href="https://developer.apple.com/documentation/hiddriverkit">https://developer.apple.com/documentation/hiddriverkit</a></li>
+<li>[I8] Entitlements: communicates-with-drivers <a href="https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.driverkit.communicates-with-drivers">https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.driverkit.communicates-with-drivers</a> ；allow-third-party-userclients <a href="https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.driverkit.allow-third-party-userclients">https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.driverkit.allow-third-party-userclients</a></li>
+</ul>
+<h3 id="来源组-2">来源组 2<a class="anchor" href="#来源组-2" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[I9] Charge and connect with the USB-C connector on your iPhone <a href="https://support.apple.com/en-us/105099">https://support.apple.com/en-us/105099</a></li>
+<li>[I10] Allow USB and other accessories to connect to your iPhone or iPad <a href="https://support.apple.com/en-us/111806">https://support.apple.com/en-us/111806</a></li>
+<li>[I11] Apple Platform Security: Activating data connections securely <a href="https://support.apple.com/guide/security/activating-data-connections-securely-sec5044aad1b/web">https://support.apple.com/guide/security/activating-data-connections-securely-sec5044aad1b/web</a></li>
+<li>[I12] Game Controller <a href="https://developer.apple.com/documentation/gamecontroller">https://developer.apple.com/documentation/gamecontroller</a></li>
+<li>[I13] CoreHID <a href="https://developer.apple.com/documentation/corehid">https://developer.apple.com/documentation/corehid</a></li>
+<li>[I14] Core Bluetooth <a href="https://developer.apple.com/documentation/corebluetooth">https://developer.apple.com/documentation/corebluetooth</a></li>
+<li>[I15] com.apple.developer.driverkit.transport.usb <a href="https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.driverkit.transport.usb">https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.driverkit.transport.usb</a></li>
+<li>[I16] iPhone 15 Plus - Tech Specs <a href="https://support.apple.com/en-us/111830%EF%BC%88%E5%88%97%E5%87%BA">https://support.apple.com/en-us/111830（列出</a> “USB 2 (up to 480Mb/s)”）</li>
+</ul>
+<h3 id="来源组-3">来源组 3<a class="anchor" href="#来源组-3" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[I17] About Lockdown Mode <a href="https://support.apple.com/en-us/105120">https://support.apple.com/en-us/105120</a></li>
+</ul>
+<h2 id="待确认项">待确认项<a class="anchor" href="#待确认项" aria-label="链接到本节">#</a></h2>
+<h3 id="待确认组-1">待确认组 1<a class="anchor" href="#待确认组-1" aria-label="链接到本节">#</a></h3>
+<ul class="tasks">
+<li class="task">…USB-C，Pro 机型配 USB 3 线可达 10 Gbit/s。“某 API 不存在”这类否定性结论无法由单页官方文档证实，一律标 <strong class="kw">待核实</strong>。…</li>
+<li class="task">…没有 HIDDriverKit，CoreHID 仅 macOS，iOS 上无公开原始 HID 报告 API（<strong class="kw">待核实</strong>）。…</li>
+<li class="task">…in/蓝牙；<strong>USB-C iPhone/iPad 上 EA 的具体传输方式（如是否走 iAP2 over USB）本轮未找到公开官方说明，待核实</strong>。MFi 规范本身需注册会员才能查看。…</li>
+<li class="task">…DriverKit 文档又写支持 M 系列 iPadOS——iPadOS 上 USB 设备匹配所需 entitlement 的确切形式 <strong class="kw">待核实</strong> [I6][I15]。…</li>
+<li class="task">…oller（<code>GCController</code>、键盘/鼠标对象）读取输入 [I12]。原始 HID 报告级访问在 iOS 上没有公开 API（<strong class="kw">待核实</strong>）。…</li>
+<li class="task">…BLE：CoreBluetooth 访问自定义 GATT 服务；系统蓝牙设置配对的 BLE HID（HoG）键鼠由系统处理（实现细节 <strong class="kw">待核实</strong>）[I14]。…</li>
+<li class="task">…e/iPad 连接电脑时作为 USB 设备由系统实现（同步、网络共享等），<strong class="kw">第三方无 gadget/设备模式 API</strong>（否定性结论，<strong class="kw">待核实</strong>）。…</li>
+<li class="task">…Xcode 设备日志 / Console.app 查看系统日志（<strong class="lead-in">待核实</strong>：未逐条核对官方页面）。…</li>
+</ul>
+<h3 id="待确认组-2">待确认组 2<a class="anchor" href="#待确认组-2" aria-label="链接到本节">#</a></h3>
+<ul class="tasks">
+<li class="task">…无用户可用的 USB 抓包接口；协议分析需外部硬件分析仪（<strong class="kw">待核实</strong>）。…</li>
+<li class="task">…HID API（HidD_*） | GameController（高层）；无原始报告 API（<strong class="kw">待核实</strong>）…</li>
+</ul>
+
+<footer>导出自 10-ios-ipados-usb.md · 2026-11-28 15:15 · tech-doc export_html (static, Mermaid 11, reader theme)</footer>
+</div>
+</main>
+</div>
+<script>(function () {
+  var nav = document.querySelector("nav.sidebar"), lay = document.querySelector(".layout");
+  if (!nav || !lay || !window.PointerEvent) return;
+  var root = document.documentElement, KEY = "tech-doc:contents-width", MIN = 150, cur = 0;
+  var bar = document.createElement("div");
+  bar.className = "resizer"; bar.tabIndex = 0;
+  bar.setAttribute("role", "separator"); bar.setAttribute("aria-orientation", "vertical");
+  bar.setAttribute("aria-label", nav.getAttribute("aria-label") || "Contents");
+  lay.appendChild(bar); root.classList.add("js");
+  function place() { bar.style.left = nav.offsetLeft + nav.offsetWidth + (parseFloat(getComputedStyle(lay).columnGap) || 0) / 2 - bar.offsetWidth / 2 + "px"; }
+  function set(w) {
+    cur = Math.round(Math.max(MIN, Math.min(Math.min(560, window.innerWidth * 0.45), w)));
+    nav.style.width = cur + "px"; place();
+  }
+  function save() { try { localStorage.setItem(KEY, cur); } catch (e) {} }
+  try { var s = +localStorage.getItem(KEY); if (s) set(s); } catch (e) {}
+  place();
+  function reset() { cur = 0; nav.style.width = ""; place(); try { localStorage.removeItem(KEY); } catch (e) {} }
+  var last = 0;
+  bar.addEventListener("pointerdown", function (e) {
+    if (e.button) return;
+    var x0 = e.clientX, w0 = nav.offsetWidth, moved = false;
+    bar.setPointerCapture(e.pointerId); root.classList.add("dragging"); e.preventDefault();
+    function move(ev) { if (Math.abs(ev.clientX - x0) > 3) moved = true; set(w0 + ev.clientX - x0); }
+    function stop() {
+      bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", stop); bar.removeEventListener("pointercancel", stop);
+      root.classList.remove("dragging");
+      if (moved) { last = 0; save(); return; }
+      var t = Date.now();
+      if (t - last < 500) { last = 0; reset(); } else { last = t; }
+    }
+    bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", stop); bar.addEventListener("pointercancel", stop);
+  });
+  bar.addEventListener("keydown", function (e) {
+    var d = e.key === "ArrowLeft" ? -16 : e.key === "ArrowRight" ? 16 : 0;
+    if (d) { e.preventDefault(); set(nav.offsetWidth + d); save(); }
+  });
+  window.addEventListener("resize", function () { if (cur) set(cur); place(); });
+  window.addEventListener("load", place);
+  if (window.ResizeObserver) new ResizeObserver(place).observe(nav);
+})();</script>
+
+</body>
+</html>

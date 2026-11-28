@@ -11,3 +11,8 @@ gs.tmp.json
 !tools/**
 __pycache__/
 *.pyc
+
+# tech-doc 重建的本地源笔记、备份与可选截图不入库
+tech-doc/build/os-kb/
+tech-doc/**/*.bak
+tech-doc/shots-check/
