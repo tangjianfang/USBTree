@@ -9,8 +9,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/60-枝干-主机侧与实现/08-WindowsUSB驱动开发.md"
 spec_refs: ["Microsoft Learn: USB driver development", "WDF", "Microsoft OS 2.0 Descriptors"]
 related: ["40-host-controller-os", "11-hid-core", "19-other-classes-b", "50-debug-troubleshooting"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: a5d329b
+generated: 2026-11-28
 ---
 
 # Windows USB 驱动开发：选型、WinUSB、KMDF/UMDF、调试

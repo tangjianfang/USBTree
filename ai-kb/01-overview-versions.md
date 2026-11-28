@@ -11,8 +11,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/40-枝干-高速演进/03-各版本对比速查.md"
 spec_refs: ["USB 2.0 Specification", "USB 3.2 Specification", "USB4 Specification v2.0"]
 related: ["02-architecture-topology", "30-usb3-superspeed", "31-usb4", "90-quick-reference"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: a5d329b
+generated: 2026-11-28
 ---
 
 # USB 概述、版本演进与命名
@@ -119,7 +119,7 @@ USB-IF 的市场命名在 2019 年彻底重编，"USB 3.0/3.1"的说法已被官
 |---|---|---|
 | USB 1.x/2.0 | 单位负载 (Unit Load) 100 mA，配置后高功耗 500 mA | 2.5 W (5V×0.5A) |
 | USB 3.x | 150 mA 单位负载，配置后 900 mA | 4.5 W |
-| BC 1.2（充电规范） | DCP/CDP 端口 | 7.5 W (1.5A) |
+| BC 1.2（充电规范） | DCP/CDP 端口 | 设备可取 IDEV_CHG ≤1.5 A（7.5 W）；端口额定 CDP 1.5~5.0 A、DCP 0.5~5.0 A（BC 1.2 Table 5-2） |
 | Type-C 电阻编码 | Rp 声明电流 | 15 W (5V×3A) |
 | USB PD 2.0/3.0 | CC 线数字协商 | 100 W (20V×5A) |
 | USB PD 3.1 EPR | 扩展功率范围 | 240 W (48V×5A) |

@@ -13,8 +13,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/70-枝干-调试测试与安全/05-合规测试实操.md"
 spec_refs: ["USB-IF Compliance Program", "USB 2.0 Electrical Test Spec", "USB4 Compliance"]
 related: ["09-errors-testmode", "50-debug-troubleshooting"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: a5d329b
+generated: 2026-11-28
 ---
 
 # USB-IF 合规认证、合规测试实操与 USB 安全

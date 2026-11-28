@@ -11,8 +11,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/13-总线带宽与调度计算.md"
 spec_refs: ["USB 2.0 Specification ch.5, §9.6.6"]
 related: ["04-packets-transactions", "06-descriptors", "12-hid-devices"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: a5d329b
+generated: 2026-11-28
 ---
 
 # 四种传输类型、bInterval 与带宽调度

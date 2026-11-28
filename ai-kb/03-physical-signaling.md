@@ -11,8 +11,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/04-信号编码与比特流.md"
 spec_refs: ["USB 2.0 Specification ch.7"]
 related: ["02-architecture-topology", "04-packets-transactions", "20-connectors-typec"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: a5d329b
+generated: 2026-11-28
 ---
 
 # 物理层、电气特性与信号编码

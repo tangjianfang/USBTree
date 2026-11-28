@@ -15,8 +15,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/Audio-UAC/03-UAC规范级-实体与请求全表.md"
 spec_refs: ["USB Audio 1.0", "USB Audio 2.0", "USB Audio 3.0"]
 related: ["16-uvc", "05-transfer-types-bandwidth"]
-usbtree_commit: c987a96
-generated: 2026-11-27
+usbtree_commit: a5d329b
+generated: 2026-11-28
 ---
 
 # UAC：音频类 1.0/2.0/3.0、实体与请求全表
