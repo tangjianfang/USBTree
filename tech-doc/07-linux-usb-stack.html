@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>架构文档：Linux USB 栈（主机、HID、Gadget 与虚拟 USB）</title>
+<style>
+:root{color-scheme:light;--bg:#fff;--fg:#1f2328;--muted:#59636e;--line:#d8dee4;--soft:#f6f8fa;--link:#0969da;--code-fg:#0a6a7a;--mark:#ffec99;
+--tk-comment:#59636e;--tk-keyword:#cf222e;--tk-string:#0a3069;--tk-number:#0550ae;--tk-fn:#6639ba;--tk-var:#953800;--tk-tag:#116329;--tk-del:#82071e;
+--info-bg:#ddf4ff;--info-fg:#0550ae;--info-bd:#b6e3ff;--success-bg:#dafbe1;--success-fg:#116329;--success-bd:#aceebb;
+--warn-bg:#fff8c5;--warn-fg:#7d4e00;--warn-bd:#eac54f;--danger-bg:#ffebe9;--danger-fg:#a40e26;--danger-bd:#ffcecb;
+--neutral-bg:#eaeef2;--neutral-fg:#424a53;--neutral-bd:#d0d7de;--accent-bg:#fbefff;--accent-fg:#6639ba;--accent-bd:#e2c5ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+.content p a,.content li a,.content td a,.callout a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.content p a:hover,.content li a:hover,.content td a:hover,.callout a:hover{text-decoration-thickness:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--bg);padding:6px 12px;z-index:10}.skip:focus{left:8px}
+.progress{display:none}
+@supports (animation-timeline:scroll()){.progress{display:block;position:sticky;top:0;z-index:5;height:3px;margin-bottom:-3px;background:var(--link);transform:scaleX(0);transform-origin:0 50%;animation:adoc-progress linear both;animation-timeline:scroll(root block)}
+@keyframes adoc-progress{to{transform:scaleX(1)}}}
+.layout{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:48px;padding:32px 32px 72px;align-items:start}
+nav.sidebar{position:sticky;top:24px;width:210px;min-width:150px;max-width:min(560px,45vw);max-height:calc(100vh - 48px);overflow:auto;resize:horizontal;font-size:13px;padding-right:8px}
+.js nav.sidebar{resize:none}
+.resizer{position:absolute;top:0;bottom:0;width:12px;cursor:col-resize;touch-action:none;user-select:none;z-index:3}
+.resizer::after{content:"";position:absolute;top:24px;bottom:24px;left:5px;width:2px;border-radius:1px;background:transparent}
+.resizer:hover::after,.resizer:focus-visible::after,.dragging .resizer::after{background:var(--link)}
+.resizer:focus-visible{outline:none}
+.dragging,.dragging *{cursor:col-resize!important;user-select:none!important}
+nav.sidebar .nav-title{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px}
+nav.sidebar ol{list-style:none;margin:0;padding:0;counter-reset:n}
+nav.sidebar li{counter-increment:n}
+nav.sidebar a{display:block;padding:3px 0;color:var(--muted);line-height:1.45}
+.numbered nav.sidebar a::before{content:counter(n) ".";display:inline-block;min-width:1.7em}
+nav.sidebar a:hover{color:var(--link);text-decoration:none}
+nav.sidebar ol.sub{margin:0 0 4px 1.2em;counter-reset:m}
+nav.sidebar ol.sub li{counter-increment:m}
+nav.sidebar ol.sub a{font-size:12.5px;padding:2px 0}
+.numbered nav.sidebar ol.sub a::before{content:counter(n) "." counter(m);min-width:2.5em}
+main{min-width:0}
+.hero{padding:0 0 14px;border-bottom:1px solid var(--line)}
+.hero h1{margin:0 0 8px;font-size:28px;line-height:1.3;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.chip:not(:last-child)::after{content:"·";margin:0 .6em}
+.chip b{font-weight:600;margin-right:.4em}
+.chip .age.stale{font-weight:600;color:var(--warn-fg)}
+.hero code{font-size:.92em}
+.statusbar{margin-top:8px;font-size:13px}
+.stat{margin-right:1.3em;color:var(--fg);white-space:nowrap}a.stat:hover{text-decoration:underline}
+.stat b{font-weight:600}.stat.danger b{color:var(--danger-fg)}.stat.warn b{color:var(--warn-fg)}.stat.accent b{color:var(--accent-fg)}
+.content{counter-reset:sec;padding:0}
+.content>p,.content>ul,.content>ol,.content>details>p,.content>details>ul{max-width:48em}
+html:lang(en) .content>p,html:lang(en) .content>ul,html:lang(en) .content>ol,html:lang(en) .content>details>p,html:lang(en) .content>details>ul{max-width:42em}
+h1,h2,h3,h4{line-height:1.3;color:var(--fg);font-weight:600}
+.content h2{counter-increment:sec;counter-reset:sub;font-size:22px;margin:2em 0 .6em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+.numbered .content h2::before{content:counter(sec) ".";margin-right:.45em;color:var(--muted);font-weight:400}
+.content h3{counter-increment:sub;font-size:17px;margin:1.6em 0 .5em}
+.numbered .content h3::before{content:counter(sec) "." counter(sub);margin-right:.45em;color:var(--muted);font-weight:400}
+.content h4{font-size:15px;margin:1.3em 0 .4em}
+.anchor{margin-left:.4em;opacity:0;font-weight:400;font-size:.8em;color:var(--muted)}
+h2:hover .anchor,h3:hover .anchor,.anchor:focus{opacity:1}
+p,ul,ol,pre,figure,.tbl,.callout,details{margin:0 0 1em}
+li{margin:.25em 0}
+p.sub{margin:1.4em 0 .4em}
+p.caption{margin-top:-.2em;color:var(--muted);font-size:14px}
+code{font:.9em/1.4 Consolas,"Cascadia Mono",monospace;color:var(--code-fg)}
+pre{position:relative;background:var(--soft);padding:12px 16px;border-radius:6px;overflow-x:auto;border:1px solid var(--line);line-height:1.5}
+pre code{color:inherit}
+pre[data-lang]::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:11px;line-height:1;color:var(--muted)}
+.tk-file{color:var(--tk-tag)}.tk-flag,.tk-num,.tk-const,.tk-lit{color:var(--tk-number)}.tk-fn{color:var(--tk-fn)}.tk-var{color:var(--tk-var)}.tk-str{color:var(--tk-string)}.tk-arg{color:var(--fg)}.tk-op,.tk-kw{color:var(--tk-keyword)}
+.hljs-comment,.hljs-quote{color:var(--tk-comment)}
+.hljs-keyword,.hljs-doctag,.hljs-template-tag,.hljs-meta,.hljs-meta .hljs-keyword{color:var(--tk-keyword)}
+.hljs-string,.hljs-regexp,.hljs-meta .hljs-string{color:var(--tk-string)}
+.hljs-number,.hljs-literal,.hljs-symbol,.hljs-bullet,.hljs-attr,.hljs-attribute,.hljs-property,.hljs-selector-id,.hljs-selector-class,.hljs-selector-attr{color:var(--tk-number)}
+.hljs-title,.hljs-title.function_,.hljs-built_in{color:var(--tk-fn)}
+.hljs-title.class_,.hljs-type,.hljs-variable,.hljs-template-variable{color:var(--tk-var)}
+.hljs-name,.hljs-tag,.hljs-selector-tag{color:var(--tk-tag)}
+.hljs-section{color:var(--tk-number);font-weight:600}.hljs-strong{font-weight:600}.hljs-emphasis{font-style:italic}
+.hljs-addition{color:var(--tk-tag);background:var(--success-bg)}.hljs-deletion{color:var(--tk-del);background:var(--danger-bg)}
+blockquote{margin:0 0 1em;padding:0 1em;color:var(--muted);border-left:3px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+strong{font-weight:600}
+strong.kw{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:.5em;text-underline-offset:-.3em;text-decoration-skip-ink:none}
+mark{padding:0 .2em;border-radius:3px;background:var(--mark);color:inherit}
+kbd{padding:.1em .45em;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;background:var(--soft);font:.85em Consolas,"Cascadia Mono",monospace}
+p.lead,ul.lead,ol.lead{border-left:3px solid var(--link);font-size:16px}
+p.lead{padding-left:14px}
+ul.lead,ol.lead{padding-left:2.2em}
+td.key{font-weight:600}
+.callout{padding:10px 14px;background:var(--soft);border-left:3px solid var(--neutral-fg);border-radius:0 6px 6px 0;color:var(--fg)}
+.content>.callout{max-width:60em}
+.callout>*:last-child{margin-bottom:0}
+.callout p{max-width:none}
+.callout-title{margin-bottom:4px;font-size:14px;font-weight:600;color:var(--neutral-fg)}
+.callout.note{border-left-color:var(--info-fg)}.callout.note .callout-title{color:var(--info-fg)}
+.callout.key,.callout.action{padding:12px 16px;border-left-width:4px;font-size:16px}
+.callout.key .callout-title,.callout.action .callout-title{font-size:15px}
+.callout.key{background:var(--info-bg);border-left-color:var(--link)}.callout.key .callout-title{color:var(--info-fg)}
+.callout.action{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.action .callout-title{color:var(--accent-fg)}
+.callout.tip,.callout.tldr{background:var(--success-bg);border-left-color:var(--success-fg)}.callout.tip .callout-title,.callout.tldr .callout-title{color:var(--success-fg)}
+.callout.important{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.important .callout-title{color:var(--accent-fg)}
+.callout.warning{background:var(--warn-bg);border-left-color:var(--warn-fg)}.callout.warning .callout-title{color:var(--warn-fg)}
+.callout.caution{background:var(--danger-bg);border-left-color:var(--danger-fg)}.callout.caution .callout-title{color:var(--danger-fg)}
+.callout.tldr ul{margin:.2em 0 .3em;padding-left:1.2em}
+details.basis{padding:2px 0 2px 12px;border-left:3px solid var(--line);color:var(--muted);font-size:14px}
+details.basis summary{cursor:pointer;font-weight:600}
+details.basis[open] summary{margin-bottom:4px}
+details.fold{margin:2em 0 1em;border-top:1px solid var(--line)}
+details.fold>summary{cursor:pointer;list-style:none}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary h2{display:flex;align-items:baseline;margin:0;padding:.6em 0;border:0;font-size:18px}
+details.fold>summary h2::after{content:"▸";margin-left:.5em;color:var(--muted);font-size:.75em}
+details.fold[open]>summary h2::after{content:"▾"}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55}
+.tbl th{padding:6px 12px;border:1px solid var(--line);background:var(--soft);font-weight:600;text-align:left;white-space:nowrap}
+.tbl td{padding:6px 12px;border:1px solid var(--line);vertical-align:top}
+.tbl code{font-size:.88em;overflow-wrap:break-word}
+.tbl td.fit,.tbl th.fit{white-space:nowrap}
+.cell-list{margin:0;padding-left:1.15em}
+.cell-list li{margin:.2em 0}
+td.id{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;padding:0 8px;border:1px solid var(--neutral-bd);border-radius:4px;background:var(--neutral-bg);color:var(--neutral-fg);font-size:12px;font-weight:600;line-height:1.7;white-space:nowrap}
+.tone-info{background:var(--info-bg);color:var(--info-fg);border-color:var(--info-bd)}
+.tone-success{background:var(--success-bg);color:var(--success-fg);border-color:var(--success-bd)}
+.tone-warn{background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-bd)}
+.tone-danger{background:var(--danger-bg);color:var(--danger-fg);border-color:var(--danger-bd)}
+.tone-accent{background:var(--accent-bg);color:var(--accent-fg);border-color:var(--accent-bd)}
+.tag.verdict{padding:1px 12px;font-size:14px}
+.status-note{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+.infer{border-bottom:1px dotted var(--warn-fg);cursor:help}
+ul.tasks{list-style:none;padding-left:.2em}
+li.task::before{content:"☐";margin-right:.55em;color:var(--muted)}
+li.task.done::before{content:"☑";color:var(--success-fg)}
+figure.mermaid-figure,pre.mermaid{margin:1.2em 0;padding:16px 8px;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#fff;color:#1f2937;text-align:center}
+figure.mermaid-figure svg{max-width:100%;height:auto}
+.fig{position:relative}
+.fig figure.mermaid-figure svg{width:min(100%,calc(var(--w)*.85));max-height:max(85vh,calc(var(--h)*.7));max-width:none!important;height:auto}
+.fig-toggle:checked~figure.mermaid-figure svg{width:var(--w);max-height:none}
+.fig .fig-zoom{display:block!important;position:absolute;top:calc(1.2em + 8px);right:10px;z-index:1;padding:1px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--muted);font-size:12px;line-height:1.6;cursor:pointer}
+.fig .fig-zoom::after{content:attr(data-off)}
+.fig-toggle:checked~.fig-zoom::after{content:attr(data-on)}
+.fig .fig-zoom:hover{color:var(--link);border-color:var(--link)}
+.fig-toggle:focus-visible~.fig-zoom{outline:2px solid var(--link);outline-offset:2px}
+.mermaid-error{text-align:left;color:#b42318;background:#fef3f2;border:1px solid #fecdca}
+footer{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+@media (max-width:1000px){.resizer{display:none}.layout{grid-template-columns:1fr;gap:16px;padding:20px 16px}nav.sidebar{position:static;width:auto!important;max-width:none;max-height:none;resize:none;padding-bottom:12px;border-bottom:1px solid var(--line)}}
+@media print{.progress,.resizer,.fig .fig-zoom{display:none!important}.fig figure.mermaid-figure svg{width:min(100%,var(--w))!important;max-height:none!important}body{font-size:11pt}.layout{display:block;padding:0}nav.sidebar,.skip,.anchor{display:none}.hero{border-bottom:2px solid #000}.tbl,figure,.callout,tr{break-inside:avoid}.tbl{overflow:visible}details.fold{border:0}a{color:inherit}}
+</style>
+</head>
+<body id="top" class="numbered">
+<a class="skip" href="#content">跳到正文</a>
+<div class="progress" aria-hidden="true"></div>
+<div class="layout">
+<nav class="sidebar" aria-label="目录"><div class="nav-title">目录</div><ol><li><a href="#overview">Overview</a></li><li><a href="#核心事实-key-facts已核对">核心事实 Key Facts（已核对）</a></li><li><a href="#架构分层主机侧hid-与设备侧三条路径">架构分层：主机侧、HID 与设备侧三条路径</a></li><li><a href="#用户态访问主机侧设备">用户态访问主机侧设备</a></li><li><a href="#hid-子系统">HID 子系统</a></li><li><a href="#usbip网络虚拟-usb">USB/IP（网络虚拟 USB）</a></li><li><a href="#电源管理">电源管理</a></li><li><a href="#quirks-与安全">Quirks 与安全</a></li><li><a href="#设备侧gadget-框架虚拟-usb-研究的核心">设备侧：Gadget 框架（虚拟 USB 研究的核心）</a><ol class="sub"><li><a href="#71-组成">7.1 组成</a></li><li><a href="#72-configfs推荐的组装方式">7.2 ConfigFS（推荐的组装方式）</a></li><li><a href="#73-functionfs--gadgetfs--raw-gadget-对比">7.3 FunctionFS / GadgetFS / Raw Gadget 对比</a></li><li><a href="#74-dummy_hcd无硬件的虚拟-usb-回环">7.4 dummy_hcd：无硬件的虚拟 USB 回环</a></li></ol></li><li><a href="#type-c--角色切换概要细节见-arm-篇">Type-C / 角色切换（概要，细节见 ARM 篇）</a></li><li><a href="#调试工具">调试工具</a></li><li><a href="#与-windows-的映射速查">与 Windows 的映射（速查）</a></li><li><a href="#参考来源">参考来源</a><ol class="sub"><li><a href="#来源组-1">来源组 1</a></li><li><a href="#来源组-2">来源组 2</a></li><li><a href="#来源组-3">来源组 3</a></li><li><a href="#来源组-4">来源组 4</a></li></ol></li><li><a href="#待确认项">待确认项</a></li></ol></nav>
+<main id="content">
+<header class="hero"><h1>架构文档：Linux USB 栈（主机、HID、Gadget 与虚拟 USB）</h1><div class="chips"><span class="chip"><b>类型</b>arch</span><span class="chip"><b>模式</b>Reverse</span><span class="chip"><b>代码基线</b>&lt;code&gt;docs.kernel.org（页面标注 Linux 7.4.0-rc4）；torvalds/linux master&lt;/code&gt;</span><span class="chip"><b>最后核对</b>2026-11-28 <span class="age">· 今天核对</span></span><span class="chip"><b>范围</b>&lt;code&gt;docs.kernel.org/driver-api/usb, docs.kernel.org/usb, docs.kernel.org/hid, drivers/usb&lt;/code&gt;</span><span class="chip">约 9 分钟读完</span></div><div class="statusbar"><a class="stat accent" href="#待确认项"><b>4</b> 待确认</a></div></header>
+<div class="content">
+
+
+<h2 id="overview">Overview<a class="anchor" href="#overview" aria-label="链接到本节">#</a></h2>
+<p class="lead">Linux 用一个内核 USB 栈同时覆盖主机侧（usbcore + HCD）、HID 子系统和设备侧（gadget 框架）：新设备默认 autosuspend 延迟 <strong class="kw">2 秒</strong>，USB/IP 用 TCP <strong class="kw">3240</strong>，<code class="tk-file">/dev/uhid</code>、ConfigFS、dummy_hcd 都可在无硬件时造出“真实”设备。读者是熟悉 Windows WinUSB/KMDF/hidclass、要做虚拟 USB 与驱动研究的工程师。来源只用 <a href="http://kernel.org">kernel.org</a> 文档与 torvalds/linux 源码，以及 libusb、systemd、BlueZ、Wireshark 官方站点。</p>
+<div class="callout tldr"><div class="callout-title">TL;DR</div><ul>
+<li>主机侧：URB 经 usbcore 交给 HCD；用户态走 usbfs/libusb 或 hidraw。</li>
+<li>虚拟 HID 用 uhid，虚拟设备用 ConfigFS + dummy_hcd，网络导出用 USB/IP。</li>
+<li>Raw Gadget 官方定位为调试与 fuzzing，生产用 FunctionFS。</li>
+<li>协议报文与 ConfigFS/FunctionFS/Raw Gadget 的逐条定义见 <a href="06-linux-virtual-usb.html">06-linux-virtual-usb.html</a>，本文只讲栈结构与取舍。</li>
+</ul></div>
+
+<p>蓝 = 用户空间应用，红 = 内核/系统级驱动，绿 = 用户态驱动或守护进程，橙 = 系统框架，灰 = 硬件与外部。</p>
+<p>标记 <strong class="kw">待核实</strong> 的内容未能从官方来源确认，不要当作事实引用。</p>
+<h2 id="核心事实-key-facts已核对">核心事实 Key Facts（已核对）<a class="anchor" href="#核心事实-key-facts已核对" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th class="fit">#</th>
+<th class="fit">事实</th>
+<th>值 / 说明</th>
+<th class="fit">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="id fit">1</td>
+<td class="fit">主机侧 I/O 的基本单位</td>
+<td>URB（USB Request Block），由 HCD 执行</td>
+<td class="fit">[L1]</td>
+</tr>
+<tr>
+<td class="id fit">2</td>
+<td class="fit">usbfs 设备节点</td>
+<td><code class="tk-file">/dev/bus/usb/BBB/DDD</code>（总线号/设备号），通过 <code>USBDEVFS_*</code> ioctl 访问，如 <code class="tk-const">USBDEVFS_CLAIMINTERFACE</code></td>
+<td class="fit">[L1]</td>
+</tr>
+<tr>
+<td class="id fit">3</td>
+<td class="fit">新设备默认 autosuspend 延迟</td>
+<td><code>usbcore.autosuspend=</code> 默认 <strong>2 秒</strong></td>
+<td class="fit">[L2][L16]</td>
+</tr>
+<tr>
+<td class="id fit">3.2</td>
+<td class="fit">新设备默认 autosuspend 延迟</td>
+<td>sysfs <code class="tk-file">power/autosuspend_delay_ms</code> 默认 2000</td>
+<td class="fit">[L2][L16]</td>
+</tr>
+<tr>
+<td class="id fit">3.3</td>
+<td class="fit">新设备默认 autosuspend 延迟</td>
+<td>负值表示不自动挂起</td>
+<td class="fit">[L2][L16]</td>
+</tr>
+<tr>
+<td class="id fit">4</td>
+<td class="fit">quirks 内核参数格式</td>
+<td><code>usbcore.quirks=VID:PID:Flags</code>，VID/PID 为 4 位十六进制，Flags 为字母（如 <code>b</code>=RESET_RESUME，<code>g</code>=DELAY_INIT），逗号分隔</td>
+<td class="fit">[L16]</td>
+</tr>
+<tr>
+<td class="id fit">5</td>
+<td class="fit">hidraw 节点与关键 ioctl</td>
+<td><code class="tk-file">/dev/hidrawN</code>；<code class="tk-const">HIDIOCGRDESCSIZE</code>/<code class="tk-const">HIDIOCGRDESC</code> 读报告描述符，<code class="tk-const">HIDIOCSFEATURE</code>/<code class="tk-const">HIDIOCGFEATURE</code> 收发 Feature 报告</td>
+<td class="fit">[L8]</td>
+</tr>
+<tr>
+<td class="id fit">6</td>
+<td class="fit">uhid（用户态 HID 传输驱动）</td>
+<td>字符设备 <code class="tk-file">/dev/uhid</code>；每个虚拟设备 open 一次，先写 <code class="tk-const">UHID_CREATE2</code>，之后 <code class="tk-const">UHID_INPUT2</code> 注入输入报告</td>
+<td class="fit">[L9]</td>
+</tr>
+<tr>
+<td class="id fit">7</td>
+<td class="fit">HID 核心支持的传输</td>
+<td>USB、I2C、Bluetooth L2CAP、用户态 I/O（uhid）等</td>
+<td class="fit">[L11]</td>
+</tr>
+<tr>
+<td class="id fit">8</td>
+<td class="fit">USB/IP 端口</td>
+<td>TCP <strong>3240</strong></td>
+<td class="fit">[L19]</td>
+</tr>
+<tr>
+<td class="id fit">9</td>
+<td class="fit">设备授权</td>
+<td><code class="tk-file">/sys/bus/usb/devices/DEVICE/authorized</code>（0/1），<code class="tk-file">usbX/authorized_default</code> 控制新设备默认是否授权</td>
+<td class="fit">[L13]</td>
+</tr>
+<tr>
+<td class="id fit">10</td>
+<td class="fit">ConfigFS gadget 绑定</td>
+<td>向 gadget 目录下 <code class="tk-const">UDC</code> 写入 <code class="tk-file">/sys/class/udc/*</code> 中的控制器名即启用；写空字符串解绑</td>
+<td class="fit">[L3]</td>
+</tr>
+<tr>
+<td class="id fit">11</td>
+<td class="fit">ConfigFS HID 函数</td>
+<td>模块 <code class="tk-file">usb_f_hid.ko</code>，函数目录名 <code>hid</code></td>
+<td class="fit">[L3]</td>
+</tr>
+<tr>
+<td class="id fit">12</td>
+<td class="fit">Raw Gadget</td>
+<td><code class="tk-file">/dev/raw-gadget</code>，ioctl 接口，<code class="tk-const">CONFIG_USB_RAW_GADGET</code>；官方声明<strong>仅用于调试，不应用于生产</strong>（生产用 GadgetFS）</td>
+<td class="fit">[L5]</td>
+</tr>
+<tr>
+<td class="id fit">13</td>
+<td class="fit">dummy_hcd</td>
+<td><code class="tk-const">CONFIG_USB_DUMMY_HCD</code>，在同一主机内把主机侧请求回环给 gadget 驱动；模块参数 <code>is_super_speed</code>、<code>is_high_speed</code>（默认 HS）、<code>num</code></td>
+<td class="fit">[L20][L21]</td>
+</tr>
+<tr>
+<td class="id fit">14</td>
+<td class="fit">usbmon 接口</td>
+<td>文本 API 与二进制 API；debugfs 路径 <code class="tk-file">/sys/kernel/debug/usb/usbmon/</code>，<code class="tk-num">0u</code> 抓取所有总线</td>
+<td class="fit">[L7]</td>
+</tr>
+<tr>
+<td class="id fit">15</td>
+<td class="fit">BLE HID（HoG）在 Linux 的实现位置</td>
+<td>用户态 BlueZ 的 HoG profile，经 <code class="tk-file">src/shared/uhid</code> 把设备注入内核 HID 子系统</td>
+<td class="fit">[L23]</td>
+</tr>
+<tr>
+<td class="id fit">16</td>
+<td class="fit">Type-C 软件栈</td>
+<td>typec class（注册每个 Type-C 端口）</td>
+<td class="fit">[L15][L24]</td>
+</tr>
+<tr>
+<td class="id fit">16.2</td>
+<td class="fit">Type-C 软件栈</td>
+<td>TCPM（<code class="tk-const">CONFIG_TYPEC_TCPM</code>，自动 select <code class="tk-const">USB_ROLE_SWITCH</code>）</td>
+<td class="fit">[L15][L24]</td>
+</tr>
+<tr>
+<td class="id fit">16.3</td>
+<td class="fit">Type-C 软件栈</td>
+<td>UCSI（<code class="tk-const">CONFIG_TYPEC_UCSI</code>）</td>
+<td class="fit">[L15][L24]</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="架构分层主机侧hid-与设备侧三条路径">架构分层：主机侧、HID 与设备侧三条路径<a class="anchor" href="#架构分层主机侧hid-与设备侧三条路径" aria-label="链接到本节">#</a></h2>
+<div class="fig" style="--w:926.00390625px;--h:527.357177734375px"><input class="fig-toggle" type="checkbox" id="adoc-fig-1" aria-label="查看原始大小" style="position:absolute;opacity:0;width:0;height:0"><figure class="mermaid-figure"><svg id="adoc-diagram-1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 926.004px; background-color: white;" viewBox="0 0 926.00390625 527.357177734375" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#adoc-diagram-1{font-size:14px;fill:#111827;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#adoc-diagram-1 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .error-icon{fill:#ffffff;}#adoc-diagram-1 .error-text{fill:#000000;stroke:#000000;}#adoc-diagram-1 .edge-thickness-normal{stroke-width:1px;}#adoc-diagram-1 .edge-thickness-thick{stroke-width:3.5px;}#adoc-diagram-1 .edge-pattern-solid{stroke-dasharray:0;}#adoc-diagram-1 .edge-thickness-invisible{stroke-width:0;fill:none;}#adoc-diagram-1 .edge-pattern-dashed{stroke-dasharray:3;}#adoc-diagram-1 .edge-pattern-dotted{stroke-dasharray:2;}#adoc-diagram-1 .marker{fill:#4b5563;stroke:#4b5563;}#adoc-diagram-1 .marker.cross{stroke:#4b5563;}#adoc-diagram-1 svg{font-size:14px;}#adoc-diagram-1 p{margin:0;}#adoc-diagram-1 .label{color:#111827;}#adoc-diagram-1 .cluster-label text{fill:#000000;}#adoc-diagram-1 .cluster-label span{color:#000000;}#adoc-diagram-1 .cluster-label span p{background-color:transparent;}#adoc-diagram-1 .label text,#adoc-diagram-1 span{fill:#111827;color:#111827;}#adoc-diagram-1 .node rect,#adoc-diagram-1 .node circle,#adoc-diagram-1 .node ellipse,#adoc-diagram-1 .node polygon,#adoc-diagram-1 .node path{fill:#f3f4f6;stroke:#6b7280;stroke-width:1px;}#adoc-diagram-1 .rough-node .label text,#adoc-diagram-1 .node .label text,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-anchor:middle;}#adoc-diagram-1 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#adoc-diagram-1 .rough-node .label,#adoc-diagram-1 .node .label,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-align:center;}#adoc-diagram-1 .node.clickable{cursor:pointer;}#adoc-diagram-1 .root .anchor path{fill:#4b5563!important;stroke-width:0;stroke:#4b5563;}#adoc-diagram-1 .arrowheadPath{fill:#0b0b0b;}#adoc-diagram-1 .edgePaths .path{stroke:#4b5563;stroke-width:1px;}#adoc-diagram-1 .flowchart-link{stroke:#4b5563;fill:none;}#adoc-diagram-1 .edgeLabel{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .edgeLabel p{background-color:#ffffff;}#adoc-diagram-1 .edgeLabel rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .labelBkg{background-color:rgba(255, 255, 255, 0.5);}#adoc-diagram-1 .cluster rect{fill:#ffffff;stroke:hsl(0, 0%, 90%);stroke-width:1px;}#adoc-diagram-1 .cluster text{fill:#000000;}#adoc-diagram-1 .cluster span{color:#000000;}#adoc-diagram-1 .node .collapsed-indicator{fill:hsl(0, 0%, 90%);stroke:none;opacity:0.6;}#adoc-diagram-1 .node .collapsed-separator{stroke:hsl(0, 0%, 90%);stroke-width:0.75px;}#adoc-diagram-1 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-size:12px;background:#ffffff;border:1px solid hsl(0, 0%, 90%);border-radius:2px;pointer-events:none;z-index:100;}#adoc-diagram-1 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#111827;}#adoc-diagram-1 rect.text{fill:none;stroke-width:0;}#adoc-diagram-1 .icon-shape,#adoc-diagram-1 .image-shape{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .icon-shape p,#adoc-diagram-1 .image-shape p{background-color:#ffffff;padding:2px;}#adoc-diagram-1 .icon-shape .label rect,#adoc-diagram-1 .image-shape .label rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#adoc-diagram-1 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#adoc-diagram-1 .node .neo-node{stroke:#6b7280;}#adoc-diagram-1 [data-look="neo"].node rect,#adoc-diagram-1 [data-look="neo"].cluster rect,#adoc-diagram-1 [data-look="neo"].node polygon{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].swimlane.cluster rect{filter:none;}#adoc-diagram-1 [data-look="neo"].node path{stroke:url(#adoc-diagram-1-gradient);stroke-width:1px;}#adoc-diagram-1 [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node .neo-line path{stroke:#6b7280;filter:none;}#adoc-diagram-1 [data-look="neo"].node circle{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node circle .state-start{fill:#000000;}#adoc-diagram-1 [data-look="neo"].icon-shape .icon{fill:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].icon-shape .icon-neo path{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#adoc-diagram-1 .renderer&gt;*{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer span{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer tspan{fill:rgb(30, 58, 138)!important;}#adoc-diagram-1 .driver&gt;*{fill:rgb(254, 226, 226)!important;stroke:rgb(220, 38, 38)!important;color:rgb(127, 29, 29)!important;}#adoc-diagram-1 .driver span{fill:rgb(254, 226, 226)!important;stroke:rgb(220, 38, 38)!important;color:rgb(127, 29, 29)!important;}#adoc-diagram-1 .driver tspan{fill:rgb(127, 29, 29)!important;}#adoc-diagram-1 .outside&gt;*{fill:rgb(243, 244, 246)!important;stroke:rgb(107, 114, 128)!important;color:rgb(55, 65, 81)!important;}#adoc-diagram-1 .outside span{fill:rgb(243, 244, 246)!important;stroke:rgb(107, 114, 128)!important;color:rgb(55, 65, 81)!important;}#adoc-diagram-1 .outside tspan{fill:rgb(55, 65, 81)!important;}</style><g><marker id="adoc-diagram-1_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"/></marker><g class="root"><g class="clusters"><g class="cluster" id="adoc-diagram-1-K" data-look="classic"><rect style="fill:#fee2e255 !important;stroke:#dc2626 !important;stroke-opacity:0.5 !important" x="17.4609375" y="180" width="900.54296875" height="223"/><g class="cluster-label" transform="translate(453.732421875, 180)"><foreignObject width="28" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel" style="color:#7f1d1d !important"><p>内核</p></span></div></foreignObject></g></g><g class="cluster" id="adoc-diagram-1-US" data-look="classic"><rect style="fill:#dbeafe55 !important;stroke:#2563eb !important;stroke-opacity:0.5 !important" x="8" y="8" width="891.91015625" height="101"/><g class="cluster-label" transform="translate(425.955078125, 8)"><foreignObject width="56" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel" style="color:#1e3a8a !important"><p>用户空间</p></span></div></foreignObject></g></g></g><g class="edgePaths"><path d="M536.336,84L536.336,88.167C536.336,92.333,536.336,100.667,536.336,110.75C536.336,120.833,536.336,132.667,536.336,144.5C536.336,156.333,536.336,168.167,536.336,177.583C536.336,187,536.336,194,536.336,197.5L536.336,201" id="adoc-diagram-1-L_LIB_CORE_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_LIB_CORE_0" data-points="W3sieCI6NTM2LjMzNTkzNzUsInkiOjg0fSx7IngiOjUzNi4zMzU5Mzc1LCJ5IjoxMDl9LHsieCI6NTM2LjMzNTkzNzUsInkiOjE0NC41fSx7IngiOjUzNi4zMzU5Mzc1LCJ5IjoxODB9LHsieCI6NTM2LjMzNTkzNzUsInkiOjIwNX1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M96,84L96,88.167C96,92.333,96,100.667,96,110.75C96,120.833,96,132.667,96,144.5C96,156.333,96,168.167,96,182.5C96,196.833,96,213.667,96,232.25C96,250.833,96,271.167,121.218,288.524C146.437,305.88,196.873,320.261,222.091,327.451L247.31,334.641" id="adoc-diagram-1-L_HA_HIDC_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_HA_HIDC_0" data-points="W3sieCI6OTYsInkiOjg0fSx7IngiOjk2LCJ5IjoxMDl9LHsieCI6OTYsInkiOjE0NC41fSx7IngiOjk2LCJ5IjoxODB9LHsieCI6OTYsInkiOjIzMC41fSx7IngiOjk2LCJ5IjoyOTEuNX0seyJ4IjoyNTEuMTU2MjUsInkiOjMzNS43MzgwODY1NDM3MjgzNH1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M309.945,84L309.945,88.167C309.945,92.333,309.945,100.667,309.945,110.75C309.945,120.833,309.945,132.667,309.945,144.5C309.945,156.333,309.945,168.167,309.945,182.5C309.945,196.833,309.945,213.667,309.945,232.25C309.945,250.833,309.945,271.167,309.945,286.583C309.945,302,309.945,312.5,309.945,317.75L309.945,323" id="adoc-diagram-1-L_VH_HIDC_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_VH_HIDC_0" data-points="W3sieCI6MzA5Ljk0NTMxMjUsInkiOjg0fSx7IngiOjMwOS45NDUzMTI1LCJ5IjoxMDl9LHsieCI6MzA5Ljk0NTMxMjUsInkiOjE0NC41fSx7IngiOjMwOS45NDUzMTI1LCJ5IjoxODB9LHsieCI6MzA5Ljk0NTMxMjUsInkiOjIzMC41fSx7IngiOjMwOS45NDUzMTI1LCJ5IjoyOTEuNX0seyJ4IjozMDkuOTQ1MzEyNSwieSI6MzI3fV0=" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M787.02,84L787.02,88.167C787.02,92.333,787.02,100.667,787.02,110.75C787.02,120.833,787.02,132.667,787.02,144.5C787.02,156.333,787.02,168.167,787.02,177.583C787.02,187,787.02,194,787.02,197.5L787.02,201" id="adoc-diagram-1-L_GD_COMP_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_GD_COMP_0" data-points="W3sieCI6Nzg3LjAxOTUzMTI1LCJ5Ijo4NH0seyJ4Ijo3ODcuMDE5NTMxMjUsInkiOjEwOX0seyJ4Ijo3ODcuMDE5NTMxMjUsInkiOjE0NC41fSx7IngiOjc4Ny4wMTk1MzEyNSwieSI6MTgwfSx7IngiOjc4Ny4wMTk1MzEyNSwieSI6MjA1fV0=" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M499.229,256L490.619,261.917C482.009,267.833,464.79,279.667,443.441,291.23C422.092,302.793,396.613,314.086,383.873,319.733L371.134,325.379" id="adoc-diagram-1-L_CORE_HIDC_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_CORE_HIDC_0" data-points="W3sieCI6NDk5LjIyODk5NTkwMTYzOTM0LCJ5IjoyNTZ9LHsieCI6NDQ3LjU3MDMxMjUsInkiOjI5MS41fSx7IngiOjM2Ny40NzcwNzQ3OTUwODIsInkiOjMyN31d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M551.357,256L554.843,261.917C558.328,267.833,565.299,279.667,568.784,290.833C572.27,302,572.27,312.5,572.27,317.75L572.27,323" id="adoc-diagram-1-L_CORE_HCD_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_CORE_HCD_0" data-points="W3sieCI6NTUxLjM1NzM1NzgzODExNDgsInkiOjI1Nn0seyJ4Ijo1NzIuMjY5NTMxMjUsInkiOjI5MS41fSx7IngiOjU3Mi4yNjk1MzEyNSwieSI6MzI3fV0=" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M572.27,378L572.27,382.167C572.27,386.333,572.27,394.667,572.27,403C572.27,411.333,572.27,419.667,572.27,427.333C572.27,435,572.27,442,572.27,445.5L572.27,449" id="adoc-diagram-1-L_HCD_HW1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_HCD_HW1_0" data-points="W3sieCI6NTcyLjI2OTUzMTI1LCJ5IjozNzh9LHsieCI6NTcyLjI2OTUzMTI1LCJ5Ijo0MDN9LHsieCI6NTcyLjI2OTUzMTI1LCJ5Ijo0Mjh9LHsieCI6NTcyLjI2OTUzMTI1LCJ5Ijo0NTN9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M787.02,256L787.02,261.917C787.02,267.833,787.02,279.667,787.02,290.833C787.02,302,787.02,312.5,787.02,317.75L787.02,323" id="adoc-diagram-1-L_COMP_UDC_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_COMP_UDC_0" data-points="W3sieCI6Nzg3LjAxOTUzMTI1LCJ5IjoyNTZ9LHsieCI6Nzg3LjAxOTUzMTI1LCJ5IjoyOTEuNX0seyJ4Ijo3ODcuMDE5NTMxMjUsInkiOjMyN31d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M787.02,378L787.02,382.167C787.02,386.333,787.02,394.667,787.02,403C787.02,411.333,787.02,419.667,787.02,427.333C787.02,435,787.02,442,787.02,445.5L787.02,449" id="adoc-diagram-1-L_UDC_HW2_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_UDC_HW2_0" data-points="W3sieCI6Nzg3LjAxOTUzMTI1LCJ5IjozNzh9LHsieCI6Nzg3LjAxOTUzMTI1LCJ5Ijo0MDN9LHsieCI6Nzg3LjAxOTUzMTI1LCJ5Ijo0Mjh9LHsieCI6Nzg3LjAxOTUzMTI1LCJ5Ijo0NTN9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(536.3359375, 144.5)"><g class="label" data-id="L_LIB_CORE_0" transform="translate(-47.921875, -10.5)"><foreignObject width="95.84375" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>①</b> /dev/bus/usb</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(96, 230.5)"><g class="label" data-id="L_HA_HIDC_0" transform="translate(-49.078125, -10.5)"><foreignObject width="98.15625" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>②</b> /dev/hidrawN</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(309.9453125, 230.5)"><g class="label" data-id="L_VH_HIDC_0" transform="translate(-36.640625, -10.5)"><foreignObject width="73.28125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>③</b> /dev/uhid</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(787.01953125, 144.5)"><g class="label" data-id="L_GD_COMP_0" transform="translate(-79.0390625, -10.5)"><foreignObject width="158.078125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>④</b> ConfigFS / FunctionFS</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(436.17573, 296.55046)"><g class="label" data-id="L_CORE_HIDC_0" transform="translate(-28.859375, -10.5)"><foreignObject width="57.71875" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>⑤</b> usbhid</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(572.26953125, 291.5)"><g class="label" data-id="L_CORE_HCD_0" transform="translate(-23.0078125, -10.5)"><foreignObject width="46.015625" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>⑥</b> URB</p></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_HCD_HW1_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(787.01953125, 291.5)"><g class="label" data-id="L_COMP_UDC_0" transform="translate(-42.484375, -10.5)"><foreignObject width="84.96875" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>⑦</b> gadget API</p></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_UDC_HW2_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default renderer" id="adoc-diagram-1-flowchart-LIB-0" data-look="classic" transform="translate(536.3359375, 58.5)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-70.4453125" y="-25.5" width="140.890625" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-40.4453125, -10.5)"><rect/><foreignObject width="80.890625" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>libusb / 应用</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-HA-1" data-look="classic" transform="translate(96, 58.5)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-58" y="-25.5" width="116" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-28, -10.5)"><rect/><foreignObject width="56" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>HID 应用</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-VH-2" data-look="classic" transform="translate(309.9453125, 58.5)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-115.9453125" y="-25.5" width="231.890625" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-85.9453125, -10.5)"><rect/><foreignObject width="171.890625" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>BlueZ HoG / 虚拟 HID 进程</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-GD-3" data-look="classic" transform="translate(787.01953125, 58.5)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-82.890625" y="-25.5" width="165.78125" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-52.890625, -10.5)"><rect/><foreignObject width="105.78125" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>gadget 守护进程</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-CORE-4" data-look="classic" transform="translate(536.3359375, 230.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-83.8828125" y="-25.5" width="167.765625" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-53.8828125, -10.5)"><rect/><foreignObject width="107.765625" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>usbcore + usbfs</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-HIDC-5" data-look="classic" transform="translate(309.9453125, 352.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-58.7890625" y="-25.5" width="117.578125" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-28.7890625, -10.5)"><rect/><foreignObject width="57.578125" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>HID core</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-COMP-6" data-look="classic" transform="translate(787.01953125, 230.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-100.984375" y="-25.5" width="201.96875" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-70.984375, -10.5)"><rect/><foreignObject width="141.96875" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>composite + 函数驱动</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-HCD-7" data-look="classic" transform="translate(572.26953125, 352.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-103.515625" y="-25.5" width="207.03125" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-73.515625, -10.5)"><rect/><foreignObject width="147.03125" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>HCD: xhci / ehci / ohci</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-UDC-8" data-look="classic" transform="translate(787.01953125, 352.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-61.1171875" y="-25.5" width="122.234375" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-31.1171875, -10.5)"><rect/><foreignObject width="62.234375" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>UDC 驱动</b></p></span></div></foreignObject></g></g><g class="node default outside" id="adoc-diagram-1-flowchart-HW1-9" data-look="classic" transform="translate(572.26953125, 486.17857360839844)"><path d="M0,10.119047619047619 a42.5,10.119047619047619 0,0,0 85,0 a42.5,10.119047619047619 0,0,0 -85,0 l0,46.11904761904762 a42.5,10.119047619047619 0,0,0 85,0 l0,-46.11904761904762" class="basic label-container outer-path" style="fill:#f3f4f6 !important;stroke:#6b7280 !important" transform="translate(-42.5, -33.17857142857143)"/><g class="label" style="color:#374151 !important" transform="translate(-35, -0.5)"><rect/><foreignObject width="70" height="21"><div style="color: rgb(55, 65, 81) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#374151 !important" class="nodeLabel"><p><b>主机控制器</b></p></span></div></foreignObject></g></g><g class="node default outside" id="adoc-diagram-1-flowchart-HW2-10" data-look="classic" transform="translate(787.01953125, 486.17857360839844)"><path d="M0,10.119047619047619 a42.5,10.119047619047619 0,0,0 85,0 a42.5,10.119047619047619 0,0,0 -85,0 l0,46.11904761904762 a42.5,10.119047619047619 0,0,0 85,0 l0,-46.11904761904762" class="basic label-container outer-path" style="fill:#f3f4f6 !important;stroke:#6b7280 !important" transform="translate(-42.5, -33.17857142857143)"/><g class="label" style="color:#374151 !important" transform="translate(-35, -0.5)"><rect/><foreignObject width="70" height="21"><div style="color: rgb(55, 65, 81) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#374151 !important" class="nodeLabel"><p><b>设备控制器</b></p></span></div></foreignObject></g></g></g></g></g><defs><filter id="adoc-diagram-1-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><defs><filter id="adoc-diagram-1-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><linearGradient id="adoc-diagram-1-gradient" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6b7280" stop-opacity="1"/><stop offset="100%" stop-color="hsl(100, 0%, 85.8823529412%)" stop-opacity="1"/></linearGradient></svg></figure><label class="fig-zoom" for="adoc-fig-1" data-off="查看原始大小" data-on="适应宽度" style="display:none"></label></div>
+<p class="caption">图中 ①–④ 是用户态入口，⑤–⑥ 是主机侧调用路径，⑦ 是设备侧；红色内核块都在同一内核镜像内。</p>
+<ul>
+<li>主机侧：usbcore 负责枚举、配置选择、hub 与电源管理；设备驱动（<code>struct usb_driver</code>）通过提交 URB 让 HCD 执行传输 [L1]。</li>
+<li>HCD：<code class="tk-file">drivers/usb/host/Kconfig</code> 中有 <code class="tk-const">USB_XHCI_HCD</code>、<code class="tk-const">USB_XHCI_PCI</code>、<code class="tk-const">USB_XHCI_PLATFORM</code>（SoC 平台 xHCI）、EHCI/OHCI 等选项 [L22]。xHCI 还有 <code class="tk-const">USB_XHCI_DBGCAP</code>（xHCI Debug Capability，DbC）用于调试口 [L22][L25]。</li>
+<li>设备侧（gadget）：UDC 驱动 ↔ gadget API ↔ gadget 驱动（多为 composite 框架上的函数驱动），可组成复合设备 [L14]。</li>
+</ul>
+<h2 id="用户态访问主机侧设备">用户态访问主机侧设备<a class="anchor" href="#用户态访问主机侧设备" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th class="fit">方式</th>
+<th>说明</th>
+<th class="fit">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="fit">usbfs</td>
+<td><code class="tk-file">/dev/bus/usb/BBB/DDD</code>，ioctl 族 <code>USBDEVFS_*</code>（claim 接口、控制/批量传输、异步 URB 等）</td>
+<td class="fit">[L1]</td>
+</tr>
+<tr>
+<td class="fit">libusb</td>
+<td>跨平台用户态库；在 Linux 上基于 usbfs</td>
+<td class="fit">[L26]（项目官方站）</td>
+</tr>
+<tr>
+<td class="fit">hidraw</td>
+<td>面向 HID 设备的原始报告读写，绕过输入子系统解析</td>
+<td class="fit">[L8]</td>
+</tr>
+<tr>
+<td class="fit">hiddev</td>
+<td>面向“非输入类” HID 用途（如 UPS、电源）的事件/用途接口</td>
+<td class="fit">[L10]</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>与 Windows 对照：usbfs ≈ WinUSB（用户态直接发 Control/Bulk/Interrupt）；hidraw ≈ <code>HidD_*</code>/<code>ReadFile</code> 走 hidclass 的原始报告路径。</p>
+</blockquote>
+<p><strong class="lead-in">权限</strong>：设备节点权限由 udev 规则决定（<code>SUBSYSTEM=="usb"</code>/<code class="tk-str">"hidraw"</code> + <code>ATTRS{idVendor}</code> 等匹配后设置 MODE/GROUP）[L27]。具体发行版默认规则 <strong class="kw">待核实</strong>（各发行版不同）。</p>
+<h2 id="hid-子系统">HID 子系统<a class="anchor" href="#hid-子系统" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>HID core 与传输驱动分离：传输驱动（USB、I2C、Bluetooth L2CAP、uhid）负责原始数据收发与设备管理，HID core 负责报告描述符解析和向上层（input、hidraw、hiddev）分发 [L11]。</li>
+<li><strong class="lead-in">uhid</strong>：用户态实现“HID 传输驱动”，内核看到的就是一个真正的 HID 设备；示例程序在 <code class="tk-file">samples/uhid/uhid-example.c</code> [L9]。这是 Linux 上做<strong class="kw">虚拟 HID</strong>（不经过 USB）最直接的官方方式，相当于 Windows 的 VHF。</li>
+<li><strong class="lead-in">HID-BPF</strong>：用 eBPF 程序在内核里修补/改写 HID 报告与描述符，替代编写小型 quirk 驱动 [L12]。</li>
+<li><strong class="lead-in">BLE HID (HoG)</strong>：内核 HID 传输里列的是 Bluetooth L2CAP（经典 BR/EDR HID）[L11]；BLE 的 HID over GATT 由 BlueZ 在用户态实现，并通过 uhid 注入内核 [L23]。</li>
+</ul>
+<h2 id="usbip网络虚拟-usb">USB/IP（网络虚拟 USB）<a class="anchor" href="#usbip网络虚拟-usb" aria-label="链接到本节">#</a></h2>
+<p>报文格式、命令码与 UNLINK 语义见 <a href="06-linux-virtual-usb.html">06-linux-virtual-usb.html</a>；那篇的“待确认项”称内核文档页未写端口号，本文的 3240 来自内核源码树的 <code class="tk-file">tools/usb/usbip/README</code>。</p>
+<ul>
+<li>服务器端导出（export）设备，客户端导入（import）；客户端打开 TCP 连接并发送 <code class="tk-const">OP_REQ_DEVLIST</code> 等报文 [L6]。</li>
+<li>当前使用 TCP 端口 3240 [L19]。</li>
+<li>内核驱动位于 <code class="tk-file">drivers/usb/usbip/</code>（<code>usbip-host</code> 服务端、<code>vhci-hcd</code> 客户端虚拟主机控制器）[L19]。<code>vhci-hcd</code> 即“虚拟主机控制器”，是 Linux 版的“UDE 主机侧”。</li>
+</ul>
+<h2 id="电源管理">电源管理<a class="anchor" href="#电源管理" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>运行时 PM：sysfs <code class="tk-file">power/control</code>（<code>on</code>/<code>auto</code>）、<code class="tk-file">power/autosuspend_delay_ms</code>（默认 2000，0 表示立即挂起）[L2]。</li>
+<li>全局默认：<code>usbcore.autosuspend=</code>（秒，默认 2，负值禁用）[L16]。</li>
+<li>驱动需支持 <code>supports_autosuspend</code>，并用 <code class="tk-fn">usb_autopm_get_interface()</code>/<code class="tk-fn">usb_autopm_put_interface()</code> 管理引用计数 [L2]。</li>
+<li>远程唤醒、reset-resume 等细节见 [L2]；<code class="tk-const">USB_QUIRK_RESET_RESUME</code>（quirk 字母 <code>b</code>）用于无法正确 resume 的设备 [L16]。</li>
+</ul>
+<h2 id="quirks-与安全">Quirks 与安全<a class="anchor" href="#quirks-与安全" aria-label="链接到本节">#</a></h2>
+<ul>
+<li><code>usbcore.quirks=</code> 可在运行时追加/翻转内建 quirk 表项 [L16]。</li>
+<li>授权机制：<code>authorized</code>/<code>authorized_default</code> 可实现“默认拒绝新设备，人工放行”（类似 USBGuard 的基础）[L13]。</li>
+</ul>
+<h2 id="设备侧gadget-框架虚拟-usb-研究的核心">设备侧：Gadget 框架（虚拟 USB 研究的核心）<a class="anchor" href="#设备侧gadget-框架虚拟-usb-研究的核心" aria-label="链接到本节">#</a></h2>
+<p>ConfigFS 属性、FunctionFS 挂载流程与 Raw Gadget ioctl 的逐条定义见 <a href="06-linux-virtual-usb.html">06-linux-virtual-usb.html</a>；本节只讲选型与组合。</p>
+<h3 id="71-组成">7.1 组成<a class="anchor" href="#71-组成" aria-label="链接到本节">#</a></h3>
+<ul>
+<li><strong class="lead-in">UDC 驱动</strong>：控制器硬件驱动（dwc3、dwc2、chipidea、cdns3、musb 等）[L14]。</li>
+<li><strong class="lead-in">Composite 框架 + 函数驱动</strong>：一份设备可组合多个函数（HID、NCM/ECM、ACM、MSC、UVC、UAC、FunctionFS…）[L14][L18]。</li>
+</ul>
+<h3 id="72-configfs推荐的组装方式">7.2 ConfigFS（推荐的组装方式）<a class="anchor" href="#72-configfs推荐的组装方式" aria-label="链接到本节">#</a></h3>
+<p>最小 HID gadget 流程（路径与属性名以官方文档为准）[L3]：</p>
+<pre data-lang="sh"><code class="hljs language-sh"><span class="tk-fn">modprobe</span> libcomposite
+<span class="tk-fn">cd</span> <span class="tk-file">/sys/kernel/config/usb_gadget</span> <span class="tk-op">&amp;&amp;</span> <span class="tk-fn">mkdir</span> g1 <span class="tk-op">&amp;&amp;</span> <span class="tk-fn">cd</span> g1
+<span class="tk-fn">echo</span> 0x1d6b <span class="tk-op">&gt;</span> idVendor<span class="tk-op">;</span> <span class="tk-fn">echo</span> 0x0104 <span class="tk-op">&gt;</span> idProduct   <span class="hljs-comment"># 示例 ID</span>
+<span class="tk-fn">mkdir</span> <span class="tk-flag">-p</span> <span class="tk-file">strings/0x409</span> <span class="tk-file">configs/c.1</span> <span class="tk-file">functions/hid.usb0</span>
+<span class="tk-fn">echo</span> <span class="tk-num">1</span> <span class="tk-op">&gt;</span> <span class="tk-file">functions/hid.usb0/protocol</span>      <span class="hljs-comment"># 1=键盘</span>
+<span class="tk-fn">echo</span> <span class="tk-num">1</span> <span class="tk-op">&gt;</span> <span class="tk-file">functions/hid.usb0/subclass</span>      <span class="hljs-comment"># 1=Boot</span>
+<span class="tk-fn">echo</span> <span class="tk-num">8</span> <span class="tk-op">&gt;</span> <span class="tk-file">functions/hid.usb0/report_length</span>
+<span class="tk-fn">cat</span> <span class="tk-file">my_report_desc.bin</span> <span class="tk-op">&gt;</span> <span class="tk-file">functions/hid.usb0/report_desc</span>
+<span class="tk-fn">ln</span> <span class="tk-flag">-s</span> <span class="tk-file">functions/hid.usb0</span> <span class="tk-file">configs/c.1/</span>
+<span class="tk-fn">echo</span> <span class="tk-op">&lt;</span>udc name<span class="tk-op">&gt;</span> <span class="tk-op">&gt;</span> UDC                      <span class="hljs-comment"># 名称取自 /sys/class/udc/</span>
+</code></pre>
+
+<p>gadget 侧随后通过 <code class="tk-file">/dev/hidgN</code> 写输入报告 [L18]。</p>
+<h3 id="73-functionfs--gadgetfs--raw-gadget-对比">7.3 FunctionFS / GadgetFS / Raw Gadget 对比<a class="anchor" href="#73-functionfs--gadgetfs--raw-gadget-对比" aria-label="链接到本节">#</a></h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>接口</th>
+<th>定位</th>
+<th>描述符/请求处理</th>
+<th>适用</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FunctionFS</td>
+<td>作为 composite 中的一个函数，用户态实现该函数（ep0 写描述符，epN 读写数据）</td>
+<td>用户态提供描述符；内核 composite 处理标准请求</td>
+<td>生产（Android 的 adb/MTP 均用它）</td>
+<td>[L4]</td>
+</tr>
+<tr>
+<td>GadgetFS</td>
+<td>用户态实现整个 gadget</td>
+<td>内核对描述符做合法性检查，部分请求内部应答，绑定第一个可用 UDC</td>
+<td>生产</td>
+<td>[L5]</td>
+</tr>
+<tr>
+<td>Raw Gadget</td>
+<td>最底层：每个 USB 请求都交给用户态，可返回任意（含畸形）数据，可选择绑定哪个 UDC，多实例</td>
+<td>不做检查</td>
+<td><strong>仅调试/模糊测试</strong></td>
+<td>[L5]</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="74-dummy_hcd无硬件的虚拟-usb-回环">7.4 dummy_hcd：无硬件的虚拟 USB 回环<a class="anchor" href="#74-dummy_hcd无硬件的虚拟-usb-回环" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>一个“假 HCD + 假 UDC”对：主机侧的传输请求回环到同机的 gadget 驱动，可在没有 OTG 硬件的 PC 上开发 gadget [L20]。</li>
+<li>支持 HS（默认）与 SuperSpeed（<code>is_super_speed=1</code>）；<code>num</code> 可建多个实例 [L21]。</li>
+<li>典型组合：<code>dummy_hcd</code> + ConfigFS HID → 本机即出现一个“真实”USB HID 设备，可用 usbmon 抓包、测试主机侧驱动；<code>dummy_hcd</code> + Raw Gadget → 主机 USB 栈模糊测试（官方文档说明 Raw Gadget 适合 fuzzing）[L5]。</li>
+</ul>
+<h2 id="type-c--角色切换概要细节见-arm-篇">Type-C / 角色切换（概要，细节见 ARM 篇）<a class="anchor" href="#type-c--角色切换概要细节见-arm-篇" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>typec class 为每个 Type-C 端口在 sysfs 中建模（端口、伙伴、线缆、Alt Mode）[L15]。</li>
+<li>TCPM：软件实现 Type-C/PD 状态机，配合 TCPCI 等端口控制器；Kconfig 自动选择 <code class="tk-const">USB_ROLE_SWITCH</code> [L24]。</li>
+<li>UCSI：由 EC/PD 控制器固件实现策略，OS 通过 UCSI 接口获取状态（PC 平台常见）[L24]。</li>
+<li>USB Role Switch：选择端口为 host 或 device 的抽象（<code class="tk-file">drivers/usb/roles/</code>）[L24]。</li>
+</ul>
+<h2 id="调试工具">调试工具<a class="anchor" href="#调试工具" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>usbmon</td>
+<td>内核 USB 抓包，文本/二进制 API，<code class="tk-file">/sys/kernel/debug/usb/usbmon/Nu</code></td>
+<td>[L7]</td>
+</tr>
+<tr>
+<td>Wireshark + usbmon</td>
+<td>图形化解析；部分发行版用 udev 规则把 <code class="tk-file">/dev/usbmonX</code> 交给 <code>usbmon</code> 组</td>
+<td>[L28]</td>
+</tr>
+<tr>
+<td>xHCI DbC</td>
+<td>通过 USB3 调试口做内核调试/控制台</td>
+<td>[L25]</td>
+</tr>
+<tr>
+<td><code>lsusb -v</code>、<code class="tk-file">/sys/bus/usb/devices/*</code></td>
+<td>描述符与属性查看</td>
+<td>usbutils 项目（<strong>待核实</strong>：未逐项核对其官方文档）</td>
+</tr>
+<tr>
+<td>ftrace/动态调试</td>
+<td><code>dyndbg</code> 打开 usbcore/xhci 日志</td>
+<td><strong>待核实</strong>（未在本轮官方文档中逐条核对）</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="与-windows-的映射速查">与 Windows 的映射（速查）<a class="anchor" href="#与-windows-的映射速查" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Windows</th>
+<th>Linux 对应</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Usbxhci.sys / UcxCx / Usbhub3.sys</td>
+<td>xhci-hcd / usbcore hub 驱动</td>
+<td>[L22][W1]</td>
+</tr>
+<tr>
+<td>WinUSB.sys + WinUsb_*</td>
+<td>usbfs + libusb</td>
+<td>[L1][W2]</td>
+</tr>
+<tr>
+<td>KMDF USB 客户端驱动</td>
+<td><code>struct usb_driver</code> 内核模块</td>
+<td>[L17]</td>
+</tr>
+<tr>
+<td>hidclass + hidusb</td>
+<td>HID core + usbhid</td>
+<td>[L11][W3]</td>
+</tr>
+<tr>
+<td>VHF（虚拟 HID 框架）</td>
+<td>uhid</td>
+<td>[L9][W4]</td>
+</tr>
+<tr>
+<td>UDE/UdeCx（模拟主机控制器+设备）</td>
+<td>dummy_hcd / vhci-hcd(usbip)</td>
+<td>[L20][L19][W5]</td>
+</tr>
+<tr>
+<td>UFX（USB 功能控制器）</td>
+<td>gadget/UDC 框架</td>
+<td>[L14][W6]</td>
+</tr>
+<tr>
+<td>Selective Suspend</td>
+<td>runtime PM autosuspend</td>
+<td>[L2][W7]</td>
+</tr>
+<tr>
+<td>USB ETW / USBPcap</td>
+<td>usbmon + Wireshark</td>
+<td>[L7][W8]</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="参考来源">参考来源<a class="anchor" href="#参考来源" aria-label="链接到本节">#</a></h2>
+<h3 id="来源组-1">来源组 1<a class="anchor" href="#来源组-1" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[L1] Linux USB API（usbcore、URB、usbfs）<a href="https://docs.kernel.org/driver-api/usb/usb.html">https://docs.kernel.org/driver-api/usb/usb.html</a></li>
+<li>[L2] USB 电源管理 <a href="https://docs.kernel.org/driver-api/usb/power-management.html">https://docs.kernel.org/driver-api/usb/power-management.html</a></li>
+<li>[L3] Linux USB gadget configured through configfs <a href="https://docs.kernel.org/usb/gadget_configfs.html">https://docs.kernel.org/usb/gadget_configfs.html</a></li>
+<li>[L4] How FunctionFS works <a href="https://docs.kernel.org/usb/functionfs.html">https://docs.kernel.org/usb/functionfs.html</a></li>
+<li>[L5] USB Raw Gadget <a href="https://docs.kernel.org/usb/raw-gadget.html">https://docs.kernel.org/usb/raw-gadget.html</a></li>
+<li>[L6] USB/IP protocol <a href="https://docs.kernel.org/usb/usbip_protocol.html">https://docs.kernel.org/usb/usbip_protocol.html</a></li>
+<li>[L7] usbmon <a href="https://docs.kernel.org/usb/usbmon.html">https://docs.kernel.org/usb/usbmon.html</a></li>
+<li>[L8] HIDRAW <a href="https://docs.kernel.org/hid/hidraw.html">https://docs.kernel.org/hid/hidraw.html</a></li>
+</ul>
+<h3 id="来源组-2">来源组 2<a class="anchor" href="#来源组-2" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[L9] UHID <a href="https://docs.kernel.org/hid/uhid.html">https://docs.kernel.org/hid/uhid.html</a></li>
+<li>[L10] HIDDEV <a href="https://docs.kernel.org/hid/hiddev.html">https://docs.kernel.org/hid/hiddev.html</a></li>
+<li>[L11] HID I/O Transport Drivers <a href="https://docs.kernel.org/hid/hid-transport.html">https://docs.kernel.org/hid/hid-transport.html</a></li>
+<li>[L12] HID-BPF <a href="https://docs.kernel.org/hid/hid-bpf.html">https://docs.kernel.org/hid/hid-bpf.html</a></li>
+<li>[L13] Authorizing (or not) your USB devices <a href="https://docs.kernel.org/usb/authorization.html">https://docs.kernel.org/usb/authorization.html</a></li>
+<li>[L14] USB Gadget API for Linux <a href="https://docs.kernel.org/driver-api/usb/gadget.html">https://docs.kernel.org/driver-api/usb/gadget.html</a></li>
+<li>[L15] USB Type-C connector class <a href="https://docs.kernel.org/driver-api/usb/typec.html">https://docs.kernel.org/driver-api/usb/typec.html</a></li>
+<li>[L16] kernel-parameters.txt（usbcore.autosuspend / usbcore.quirks）<a href="https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt">https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt</a></li>
+</ul>
+<h3 id="来源组-3">来源组 3<a class="anchor" href="#来源组-3" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[L17] Writing USB Device Drivers <a href="https://docs.kernel.org/driver-api/usb/writing_usb_driver.html">https://docs.kernel.org/driver-api/usb/writing_usb_driver.html</a></li>
+<li>[L18] Gadget testing（各 ConfigFS 函数用法，含 hid）<a href="https://docs.kernel.org/usb/gadget-testing.html">https://docs.kernel.org/usb/gadget-testing.html</a></li>
+<li>[L19] tools/usb/usbip/README（TCP 3240）<a href="https://github.com/torvalds/linux/blob/master/tools/usb/usbip/README">https://github.com/torvalds/linux/blob/master/tools/usb/usbip/README</a> ；驱动目录 <a href="https://github.com/torvalds/linux/tree/master/drivers/usb/usbip">https://github.com/torvalds/linux/tree/master/drivers/usb/usbip</a></li>
+<li>[L20] drivers/usb/gadget/udc/Kconfig（USB_DUMMY_HCD）<a href="https://github.com/torvalds/linux/blob/master/drivers/usb/gadget/udc/Kconfig">https://github.com/torvalds/linux/blob/master/drivers/usb/gadget/udc/Kconfig</a></li>
+<li>[L21] drivers/usb/gadget/udc/dummy_hcd.c（模块参数）<a href="https://github.com/torvalds/linux/blob/master/drivers/usb/gadget/udc/dummy_hcd.c">https://github.com/torvalds/linux/blob/master/drivers/usb/gadget/udc/dummy_hcd.c</a></li>
+<li>[L22] drivers/usb/host/Kconfig <a href="https://github.com/torvalds/linux/blob/master/drivers/usb/host/Kconfig">https://github.com/torvalds/linux/blob/master/drivers/usb/host/Kconfig</a></li>
+<li>[L23] BlueZ profiles/input/hog.c（包含 src/shared/uhid.h）<a href="https://github.com/bluez/bluez/blob/master/profiles/input/hog.c">https://github.com/bluez/bluez/blob/master/profiles/input/hog.c</a></li>
+<li>[L24] drivers/usb/typec/tcpm/Kconfig、typec/ucsi/Kconfig、drivers/usb/roles/Kconfig <a href="https://github.com/torvalds/linux/tree/master/drivers/usb/typec">https://github.com/torvalds/linux/tree/master/drivers/usb/typec</a></li>
+</ul>
+<h3 id="来源组-4">来源组 4<a class="anchor" href="#来源组-4" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[L25] USB3 debug port（xHCI DbC）<a href="https://docs.kernel.org/driver-api/usb/usb3-debug-port.html">https://docs.kernel.org/driver-api/usb/usb3-debug-port.html</a></li>
+<li>[L26] libusb 官方站 <a href="https://libusb.info/">https://libusb.info/</a></li>
+<li>[L27] systemd udev 手册 <a href="https://www.freedesktop.org/software/systemd/man/latest/udev.html">https://www.freedesktop.org/software/systemd/man/latest/udev.html</a></li>
+<li>[L28] Wireshark Wiki: CaptureSetup/USB <a href="https://wiki.wireshark.org/CaptureSetup/USB">https://wiki.wireshark.org/CaptureSetup/USB</a></li>
+<li>[W1]–[W8] 见 <code class="tk-file">12-cross-platform-comparison.md</code> 的 Windows 参考来源。</li>
+</ul>
+<h2 id="待确认项">待确认项<a class="anchor" href="#待确认项" aria-label="链接到本节">#</a></h2>
+<ul class="tasks">
+<li class="task">…标记 <strong class="kw">待核实</strong> 的内容未能从官方来源确认，不要当作事实引用。…</li>
+<li class="task">…"<code class="tk-file">/</code>"hidraw"<code>+</code>ATTRS{idVendor}` 等匹配后设置 MODE/GROUP）[L27]。具体发行版默认规则 <strong class="kw">待核实</strong>（各发行版不同）。…</li>
+<li class="task">…<code>lsusb -v</code>、<code class="tk-file">/sys/bus/usb/devices/*</code> | 描述符与属性查看 | usbutils 项目（<strong class="lead-in">待核实</strong>：未逐项核对其官方文档）…</li>
+<li class="task">…ftrace/动态调试 | <code>dyndbg</code> 打开 usbcore/xhci 日志 | <strong class="kw">待核实</strong>（未在本轮官方文档中逐条核对）…</li>
+</ul>
+
+<footer>导出自 07-linux-usb-stack.md · 2026-11-28 15:15 · tech-doc export_html (static, Mermaid 11, reader theme)</footer>
+</div>
+</main>
+</div>
+<script>(function () {
+  var nav = document.querySelector("nav.sidebar"), lay = document.querySelector(".layout");
+  if (!nav || !lay || !window.PointerEvent) return;
+  var root = document.documentElement, KEY = "tech-doc:contents-width", MIN = 150, cur = 0;
+  var bar = document.createElement("div");
+  bar.className = "resizer"; bar.tabIndex = 0;
+  bar.setAttribute("role", "separator"); bar.setAttribute("aria-orientation", "vertical");
+  bar.setAttribute("aria-label", nav.getAttribute("aria-label") || "Contents");
+  lay.appendChild(bar); root.classList.add("js");
+  function place() { bar.style.left = nav.offsetLeft + nav.offsetWidth + (parseFloat(getComputedStyle(lay).columnGap) || 0) / 2 - bar.offsetWidth / 2 + "px"; }
+  function set(w) {
+    cur = Math.round(Math.max(MIN, Math.min(Math.min(560, window.innerWidth * 0.45), w)));
+    nav.style.width = cur + "px"; place();
+  }
+  function save() { try { localStorage.setItem(KEY, cur); } catch (e) {} }
+  try { var s = +localStorage.getItem(KEY); if (s) set(s); } catch (e) {}
+  place();
+  function reset() { cur = 0; nav.style.width = ""; place(); try { localStorage.removeItem(KEY); } catch (e) {} }
+  var last = 0;
+  bar.addEventListener("pointerdown", function (e) {
+    if (e.button) return;
+    var x0 = e.clientX, w0 = nav.offsetWidth, moved = false;
+    bar.setPointerCapture(e.pointerId); root.classList.add("dragging"); e.preventDefault();
+    function move(ev) { if (Math.abs(ev.clientX - x0) > 3) moved = true; set(w0 + ev.clientX - x0); }
+    function stop() {
+      bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", stop); bar.removeEventListener("pointercancel", stop);
+      root.classList.remove("dragging");
+      if (moved) { last = 0; save(); return; }
+      var t = Date.now();
+      if (t - last < 500) { last = 0; reset(); } else { last = t; }
+    }
+    bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", stop); bar.addEventListener("pointercancel", stop);
+  });
+  bar.addEventListener("keydown", function (e) {
+    var d = e.key === "ArrowLeft" ? -16 : e.key === "ArrowRight" ? 16 : 0;
+    if (d) { e.preventDefault(); set(nav.offsetWidth + d); save(); }
+  });
+  window.addEventListener("resize", function () { if (cur) set(cur); place(); });
+  window.addEventListener("load", place);
+  if (window.ResizeObserver) new ResizeObserver(place).observe(nav);
+})();</script>
+
+</body>
+</html>

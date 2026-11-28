@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>架构文档：macOS USB 栈（IOKit、DriverKit 系统扩展与 HID 路径）</title>
+<style>
+:root{color-scheme:light;--bg:#fff;--fg:#1f2328;--muted:#59636e;--line:#d8dee4;--soft:#f6f8fa;--link:#0969da;--code-fg:#0a6a7a;--mark:#ffec99;
+--tk-comment:#59636e;--tk-keyword:#cf222e;--tk-string:#0a3069;--tk-number:#0550ae;--tk-fn:#6639ba;--tk-var:#953800;--tk-tag:#116329;--tk-del:#82071e;
+--info-bg:#ddf4ff;--info-fg:#0550ae;--info-bd:#b6e3ff;--success-bg:#dafbe1;--success-fg:#116329;--success-bd:#aceebb;
+--warn-bg:#fff8c5;--warn-fg:#7d4e00;--warn-bd:#eac54f;--danger-bg:#ffebe9;--danger-fg:#a40e26;--danger-bd:#ffcecb;
+--neutral-bg:#eaeef2;--neutral-fg:#424a53;--neutral-bd:#d0d7de;--accent-bg:#fbefff;--accent-fg:#6639ba;--accent-bd:#e2c5ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+.content p a,.content li a,.content td a,.callout a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.content p a:hover,.content li a:hover,.content td a:hover,.callout a:hover{text-decoration-thickness:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--bg);padding:6px 12px;z-index:10}.skip:focus{left:8px}
+.progress{display:none}
+@supports (animation-timeline:scroll()){.progress{display:block;position:sticky;top:0;z-index:5;height:3px;margin-bottom:-3px;background:var(--link);transform:scaleX(0);transform-origin:0 50%;animation:adoc-progress linear both;animation-timeline:scroll(root block)}
+@keyframes adoc-progress{to{transform:scaleX(1)}}}
+.layout{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:48px;padding:32px 32px 72px;align-items:start}
+nav.sidebar{position:sticky;top:24px;width:210px;min-width:150px;max-width:min(560px,45vw);max-height:calc(100vh - 48px);overflow:auto;resize:horizontal;font-size:13px;padding-right:8px}
+.js nav.sidebar{resize:none}
+.resizer{position:absolute;top:0;bottom:0;width:12px;cursor:col-resize;touch-action:none;user-select:none;z-index:3}
+.resizer::after{content:"";position:absolute;top:24px;bottom:24px;left:5px;width:2px;border-radius:1px;background:transparent}
+.resizer:hover::after,.resizer:focus-visible::after,.dragging .resizer::after{background:var(--link)}
+.resizer:focus-visible{outline:none}
+.dragging,.dragging *{cursor:col-resize!important;user-select:none!important}
+nav.sidebar .nav-title{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px}
+nav.sidebar ol{list-style:none;margin:0;padding:0;counter-reset:n}
+nav.sidebar li{counter-increment:n}
+nav.sidebar a{display:block;padding:3px 0;color:var(--muted);line-height:1.45}
+.numbered nav.sidebar a::before{content:counter(n) ".";display:inline-block;min-width:1.7em}
+nav.sidebar a:hover{color:var(--link);text-decoration:none}
+nav.sidebar ol.sub{margin:0 0 4px 1.2em;counter-reset:m}
+nav.sidebar ol.sub li{counter-increment:m}
+nav.sidebar ol.sub a{font-size:12.5px;padding:2px 0}
+.numbered nav.sidebar ol.sub a::before{content:counter(n) "." counter(m);min-width:2.5em}
+main{min-width:0}
+.hero{padding:0 0 14px;border-bottom:1px solid var(--line)}
+.hero h1{margin:0 0 8px;font-size:28px;line-height:1.3;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.chip:not(:last-child)::after{content:"·";margin:0 .6em}
+.chip b{font-weight:600;margin-right:.4em}
+.chip .age.stale{font-weight:600;color:var(--warn-fg)}
+.hero code{font-size:.92em}
+.statusbar{margin-top:8px;font-size:13px}
+.stat{margin-right:1.3em;color:var(--fg);white-space:nowrap}a.stat:hover{text-decoration:underline}
+.stat b{font-weight:600}.stat.danger b{color:var(--danger-fg)}.stat.warn b{color:var(--warn-fg)}.stat.accent b{color:var(--accent-fg)}
+.content{counter-reset:sec;padding:0}
+.content>p,.content>ul,.content>ol,.content>details>p,.content>details>ul{max-width:48em}
+html:lang(en) .content>p,html:lang(en) .content>ul,html:lang(en) .content>ol,html:lang(en) .content>details>p,html:lang(en) .content>details>ul{max-width:42em}
+h1,h2,h3,h4{line-height:1.3;color:var(--fg);font-weight:600}
+.content h2{counter-increment:sec;counter-reset:sub;font-size:22px;margin:2em 0 .6em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+.numbered .content h2::before{content:counter(sec) ".";margin-right:.45em;color:var(--muted);font-weight:400}
+.content h3{counter-increment:sub;font-size:17px;margin:1.6em 0 .5em}
+.numbered .content h3::before{content:counter(sec) "." counter(sub);margin-right:.45em;color:var(--muted);font-weight:400}
+.content h4{font-size:15px;margin:1.3em 0 .4em}
+.anchor{margin-left:.4em;opacity:0;font-weight:400;font-size:.8em;color:var(--muted)}
+h2:hover .anchor,h3:hover .anchor,.anchor:focus{opacity:1}
+p,ul,ol,pre,figure,.tbl,.callout,details{margin:0 0 1em}
+li{margin:.25em 0}
+p.sub{margin:1.4em 0 .4em}
+p.caption{margin-top:-.2em;color:var(--muted);font-size:14px}
+code{font:.9em/1.4 Consolas,"Cascadia Mono",monospace;color:var(--code-fg)}
+pre{position:relative;background:var(--soft);padding:12px 16px;border-radius:6px;overflow-x:auto;border:1px solid var(--line);line-height:1.5}
+pre code{color:inherit}
+pre[data-lang]::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:11px;line-height:1;color:var(--muted)}
+.tk-file{color:var(--tk-tag)}.tk-flag,.tk-num,.tk-const,.tk-lit{color:var(--tk-number)}.tk-fn{color:var(--tk-fn)}.tk-var{color:var(--tk-var)}.tk-str{color:var(--tk-string)}.tk-arg{color:var(--fg)}.tk-op,.tk-kw{color:var(--tk-keyword)}
+.hljs-comment,.hljs-quote{color:var(--tk-comment)}
+.hljs-keyword,.hljs-doctag,.hljs-template-tag,.hljs-meta,.hljs-meta .hljs-keyword{color:var(--tk-keyword)}
+.hljs-string,.hljs-regexp,.hljs-meta .hljs-string{color:var(--tk-string)}
+.hljs-number,.hljs-literal,.hljs-symbol,.hljs-bullet,.hljs-attr,.hljs-attribute,.hljs-property,.hljs-selector-id,.hljs-selector-class,.hljs-selector-attr{color:var(--tk-number)}
+.hljs-title,.hljs-title.function_,.hljs-built_in{color:var(--tk-fn)}
+.hljs-title.class_,.hljs-type,.hljs-variable,.hljs-template-variable{color:var(--tk-var)}
+.hljs-name,.hljs-tag,.hljs-selector-tag{color:var(--tk-tag)}
+.hljs-section{color:var(--tk-number);font-weight:600}.hljs-strong{font-weight:600}.hljs-emphasis{font-style:italic}
+.hljs-addition{color:var(--tk-tag);background:var(--success-bg)}.hljs-deletion{color:var(--tk-del);background:var(--danger-bg)}
+blockquote{margin:0 0 1em;padding:0 1em;color:var(--muted);border-left:3px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+strong{font-weight:600}
+strong.kw{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:.5em;text-underline-offset:-.3em;text-decoration-skip-ink:none}
+mark{padding:0 .2em;border-radius:3px;background:var(--mark);color:inherit}
+kbd{padding:.1em .45em;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;background:var(--soft);font:.85em Consolas,"Cascadia Mono",monospace}
+p.lead,ul.lead,ol.lead{border-left:3px solid var(--link);font-size:16px}
+p.lead{padding-left:14px}
+ul.lead,ol.lead{padding-left:2.2em}
+td.key{font-weight:600}
+.callout{padding:10px 14px;background:var(--soft);border-left:3px solid var(--neutral-fg);border-radius:0 6px 6px 0;color:var(--fg)}
+.content>.callout{max-width:60em}
+.callout>*:last-child{margin-bottom:0}
+.callout p{max-width:none}
+.callout-title{margin-bottom:4px;font-size:14px;font-weight:600;color:var(--neutral-fg)}
+.callout.note{border-left-color:var(--info-fg)}.callout.note .callout-title{color:var(--info-fg)}
+.callout.key,.callout.action{padding:12px 16px;border-left-width:4px;font-size:16px}
+.callout.key .callout-title,.callout.action .callout-title{font-size:15px}
+.callout.key{background:var(--info-bg);border-left-color:var(--link)}.callout.key .callout-title{color:var(--info-fg)}
+.callout.action{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.action .callout-title{color:var(--accent-fg)}
+.callout.tip,.callout.tldr{background:var(--success-bg);border-left-color:var(--success-fg)}.callout.tip .callout-title,.callout.tldr .callout-title{color:var(--success-fg)}
+.callout.important{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.important .callout-title{color:var(--accent-fg)}
+.callout.warning{background:var(--warn-bg);border-left-color:var(--warn-fg)}.callout.warning .callout-title{color:var(--warn-fg)}
+.callout.caution{background:var(--danger-bg);border-left-color:var(--danger-fg)}.callout.caution .callout-title{color:var(--danger-fg)}
+.callout.tldr ul{margin:.2em 0 .3em;padding-left:1.2em}
+details.basis{padding:2px 0 2px 12px;border-left:3px solid var(--line);color:var(--muted);font-size:14px}
+details.basis summary{cursor:pointer;font-weight:600}
+details.basis[open] summary{margin-bottom:4px}
+details.fold{margin:2em 0 1em;border-top:1px solid var(--line)}
+details.fold>summary{cursor:pointer;list-style:none}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary h2{display:flex;align-items:baseline;margin:0;padding:.6em 0;border:0;font-size:18px}
+details.fold>summary h2::after{content:"▸";margin-left:.5em;color:var(--muted);font-size:.75em}
+details.fold[open]>summary h2::after{content:"▾"}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55}
+.tbl th{padding:6px 12px;border:1px solid var(--line);background:var(--soft);font-weight:600;text-align:left;white-space:nowrap}
+.tbl td{padding:6px 12px;border:1px solid var(--line);vertical-align:top}
+.tbl code{font-size:.88em;overflow-wrap:break-word}
+.tbl td.fit,.tbl th.fit{white-space:nowrap}
+.cell-list{margin:0;padding-left:1.15em}
+.cell-list li{margin:.2em 0}
+td.id{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;padding:0 8px;border:1px solid var(--neutral-bd);border-radius:4px;background:var(--neutral-bg);color:var(--neutral-fg);font-size:12px;font-weight:600;line-height:1.7;white-space:nowrap}
+.tone-info{background:var(--info-bg);color:var(--info-fg);border-color:var(--info-bd)}
+.tone-success{background:var(--success-bg);color:var(--success-fg);border-color:var(--success-bd)}
+.tone-warn{background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-bd)}
+.tone-danger{background:var(--danger-bg);color:var(--danger-fg);border-color:var(--danger-bd)}
+.tone-accent{background:var(--accent-bg);color:var(--accent-fg);border-color:var(--accent-bd)}
+.tag.verdict{padding:1px 12px;font-size:14px}
+.status-note{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+.infer{border-bottom:1px dotted var(--warn-fg);cursor:help}
+ul.tasks{list-style:none;padding-left:.2em}
+li.task::before{content:"☐";margin-right:.55em;color:var(--muted)}
+li.task.done::before{content:"☑";color:var(--success-fg)}
+figure.mermaid-figure,pre.mermaid{margin:1.2em 0;padding:16px 8px;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#fff;color:#1f2937;text-align:center}
+figure.mermaid-figure svg{max-width:100%;height:auto}
+.fig{position:relative}
+.fig figure.mermaid-figure svg{width:min(100%,calc(var(--w)*.85));max-height:max(85vh,calc(var(--h)*.7));max-width:none!important;height:auto}
+.fig-toggle:checked~figure.mermaid-figure svg{width:var(--w);max-height:none}
+.fig .fig-zoom{display:block!important;position:absolute;top:calc(1.2em + 8px);right:10px;z-index:1;padding:1px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--muted);font-size:12px;line-height:1.6;cursor:pointer}
+.fig .fig-zoom::after{content:attr(data-off)}
+.fig-toggle:checked~.fig-zoom::after{content:attr(data-on)}
+.fig .fig-zoom:hover{color:var(--link);border-color:var(--link)}
+.fig-toggle:focus-visible~.fig-zoom{outline:2px solid var(--link);outline-offset:2px}
+.mermaid-error{text-align:left;color:#b42318;background:#fef3f2;border:1px solid #fecdca}
+footer{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+@media (max-width:1000px){.resizer{display:none}.layout{grid-template-columns:1fr;gap:16px;padding:20px 16px}nav.sidebar{position:static;width:auto!important;max-width:none;max-height:none;resize:none;padding-bottom:12px;border-bottom:1px solid var(--line)}}
+@media print{.progress,.resizer,.fig .fig-zoom{display:none!important}.fig figure.mermaid-figure svg{width:min(100%,var(--w))!important;max-height:none!important}body{font-size:11pt}.layout{display:block;padding:0}nav.sidebar,.skip,.anchor{display:none}.hero{border-bottom:2px solid #000}.tbl,figure,.callout,tr{break-inside:avoid}.tbl{overflow:visible}details.fold{border:0}a{color:inherit}}
+</style>
+</head>
+<body id="top" class="numbered">
+<a class="skip" href="#content">跳到正文</a>
+<div class="progress" aria-hidden="true"></div>
+<div class="layout">
+<nav class="sidebar" aria-label="目录"><div class="nav-title">目录</div><ol><li><a href="#overview">Overview</a></li><li><a href="#核心事实-key-facts已核对">核心事实 Key Facts（已核对）</a></li><li><a href="#架构分层appdext-与内核三层">架构分层：App、dext 与内核三层</a></li><li><a href="#用户态访问不写驱动">用户态访问（不写驱动）</a></li><li><a href="#驱动开发driverkit-系统扩展dext">驱动开发：DriverKit 系统扩展（dext）</a><ol class="sub"><li><a href="#hiddriverkit-要点">HIDDriverKit 要点</a></li></ol></li><li><a href="#hid-路径对比macos">HID 路径对比（macOS）</a></li><li><a href="#虚拟-usb--设备模式">虚拟 USB / 设备模式</a></li><li><a href="#电源管理">电源管理</a></li><li><a href="#安全与权限apple-silicon-特有项">安全与权限（Apple silicon 特有项）</a></li><li><a href="#调试工具">调试工具</a></li><li><a href="#与-windows-的映射">与 Windows 的映射</a></li><li><a href="#参考来源">参考来源</a><ol class="sub"><li><a href="#来源组-1">来源组 1</a></li><li><a href="#来源组-2">来源组 2</a></li><li><a href="#来源组-3">来源组 3</a></li></ol></li><li><a href="#待确认项">待确认项</a><ol class="sub"><li><a href="#待确认组-1">待确认组 1</a></li><li><a href="#待确认组-2">待确认组 2</a></li></ol></li></ol></nav>
+<main id="content">
+<header class="hero"><h1>架构文档：macOS USB 栈（IOKit、DriverKit 系统扩展与 HID 路径）</h1><div class="chips"><span class="chip"><b>类型</b>arch</span><span class="chip"><b>模式</b>Reverse</span><span class="chip"><b>代码基线</b>&lt;code&gt;developer.apple.com 文档 JSON 与 support.apple.com（2026-11-28 抓取）&lt;/code&gt;</span><span class="chip"><b>最后核对</b>2026-11-28 <span class="age">· 今天核对</span></span><span class="chip"><b>范围</b>&lt;code&gt;IOUSBHost, DriverKit, USBDriverKit, HIDDriverKit, SystemExtensions, CoreHID, IOHIDManager&lt;/code&gt;</span><span class="chip">约 9 分钟读完</span></div><div class="statusbar"><a class="stat accent" href="#待确认项"><b>11</b> 待确认</a></div></header>
+<div class="content">
+
+
+<h2 id="overview">Overview<a class="anchor" href="#overview" aria-label="链接到本节">#</a></h2>
+<p class="lead">macOS 11（Big Sur）起不再支持 <strong class="kw">IOUSBFamily 与 IOHIDFamily 的全部 KPI</strong>，第三方 USB/HID 驱动改为用户态 DriverKit 扩展（dext），分发要走 entitlement 申请、Developer ID 签名与公证。读者是 Windows 驱动背景、想做 macOS 虚拟 HID 或自定义 USB 驱动的工程师。来源只用 <a href="http://developer.apple.com">developer.apple.com</a> 与 <a href="http://support.apple.com">support.apple.com</a>，Apple 未公开的内核实现标 <strong class="kw">待核实</strong>。</p>
+<div class="callout tldr"><div class="callout-title">TL;DR</div><ul>
+<li>免驱动访问：IOUSBHost 框架（macOS 10.15+）与 IOHIDManager；CoreHID 需 macOS 15+。</li>
+<li>写驱动：USBDriverKit / HIDDriverKit，需向 Apple 申请 DriverKit entitlement。</li>
+<li>虚拟 HID：CoreHID <code>HIDVirtualDevice</code> 或 HIDDriverKit，都要对应 entitlement。</li>
+<li>没有面向第三方的 USB 设备（gadget）模式 API（否定性结论，<strong>待核实</strong>）。</li>
+</ul></div>
+
+<p>蓝 = 用户空间应用，红 = 内核/系统级驱动，绿 = 用户态驱动或守护进程，橙 = 系统框架，灰 = 硬件与外部。</p>
+<h2 id="核心事实-key-facts已核对">核心事实 Key Facts（已核对）<a class="anchor" href="#核心事实-key-facts已核对" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th class="fit">#</th>
+<th class="fit">事实</th>
+<th>值 / 说明</th>
+<th class="fit">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="id fit">1</td>
+<td class="fit">IOUSBHost 框架</td>
+<td>在<strong>用户空间</strong>为 USB 设备写 host-mode 驱动（访问自定义/非类兼容设备）</td>
+<td class="fit">[M1]</td>
+</tr>
+<tr>
+<td class="id fit">1.2</td>
+<td class="fit">IOUSBHost 框架</td>
+<td>macOS 10.15+，Mac Catalyst 14+</td>
+<td class="fit">[M1]</td>
+</tr>
+<tr>
+<td class="id fit">1.3</td>
+<td class="fit">IOUSBHost 框架</td>
+<td>核心类 IOUSBHostDevice、IOUSBHostInterface、IOUSBHostPipe、IOUSBHostStream</td>
+<td class="fit">[M1]</td>
+</tr>
+<tr>
+<td class="id fit">2</td>
+<td class="fit">DriverKit</td>
+<td>驱动运行在用户空间，以扩展形式随 App 分发</td>
+<td class="fit">[M2]</td>
+</tr>
+<tr>
+<td class="id fit">2.2</td>
+<td class="fit">DriverKit</td>
+<td>macOS 10.15+，iOS/iPadOS 16+ 有 DriverKit 框架</td>
+<td class="fit">[M2]</td>
+</tr>
+<tr>
+<td class="id fit">2.3</td>
+<td class="fit">DriverKit</td>
+<td>macOS 用 SystemExtensions 框架安装/升级，iPadOS 由系统随宿主 App 自动发现与升级</td>
+<td class="fit">[M2]</td>
+</tr>
+<tr>
+<td class="id fit">3</td>
+<td class="fit">DriverKit 支持的传输</td>
+<td>USB、PCI、HID、网络、串口</td>
+<td class="fit">[M7]</td>
+</tr>
+<tr>
+<td class="id fit">4</td>
+<td class="fit">USBDriverKit</td>
+<td>为自定义或非类兼容 USB 设备开发驱动</td>
+<td class="fit">[M3]</td>
+</tr>
+<tr>
+<td class="id fit">4.2</td>
+<td class="fit">USBDriverKit</td>
+<td>可用于 Intel 与 Apple silicon 的 macOS，以及 <strong>M 系列芯片的 iPadOS</strong></td>
+<td class="fit">[M3]</td>
+</tr>
+<tr>
+<td class="id fit">4.3</td>
+<td class="fit">USBDriverKit</td>
+<td>提供 IOUSBHostDevice / IOUSBHostInterface / IOUSBHostPipe 等 provider</td>
+<td class="fit">[M3]</td>
+</tr>
+<tr>
+<td class="id fit">5</td>
+<td class="fit">HIDDriverKit</td>
+<td>键盘、指点设备、数字化仪等 HID 驱动；<strong>仅 macOS</strong>（10.15+）</td>
+<td class="fit">[M4]</td>
+</tr>
+<tr>
+<td class="id fit">6</td>
+<td class="fit">内核扩展淘汰</td>
+<td>自 macOS Big Sur 起默认不再加载使用已弃用 KPI 的 kext</td>
+<td class="fit">[M8]</td>
+</tr>
+<tr>
+<td class="id fit">6.2</td>
+<td class="fit">内核扩展淘汰</td>
+<td><strong>IOUSBFamily 全部 KPI 在 Big Sur 不再支持</strong>（应迁到 IOUSBHostFamily 或 USBDriverKit）</td>
+<td class="fit">[M8]</td>
+</tr>
+<tr>
+<td class="id fit">6.3</td>
+<td class="fit">内核扩展淘汰</td>
+<td><strong>IOHIDFamily 全部 KPI 在 Big Sur 不再支持</strong>（应改用 HIDDriverKit）</td>
+<td class="fit">[M8]</td>
+</tr>
+<tr>
+<td class="id fit">7</td>
+<td class="fit">关键 entitlement</td>
+<td><code>com.apple.developer.driverkit</code>（允许作为用户态驱动运行）</td>
+<td class="fit">[M7][M9]</td>
+</tr>
+<tr>
+<td class="id fit">7.2</td>
+<td class="fit">关键 entitlement</td>
+<td><code class="tk-file">com.apple.developer.driverkit.transport.usb</code>（字典数组，键名为设备描述符字段名，用于声明匹配的 USB 设备）</td>
+<td class="fit">[M7][M9]</td>
+</tr>
+<tr>
+<td class="id fit">7.3</td>
+<td class="fit">关键 entitlement</td>
+<td><code class="tk-file">com.apple.developer.driverkit.transport.hid</code></td>
+<td class="fit">[M7][M9]</td>
+</tr>
+<tr>
+<td class="id fit">7.4</td>
+<td class="fit">关键 entitlement</td>
+<td><code class="tk-file">com.apple.developer.driverkit.family.hid.device</code></td>
+<td class="fit">[M7][M9]</td>
+</tr>
+<tr>
+<td class="id fit">7.5</td>
+<td class="fit">关键 entitlement</td>
+<td><code>com.apple.developer.driverkit.family.hid.eventservice</code></td>
+<td class="fit">[M7][M9]</td>
+</tr>
+<tr>
+<td class="id fit">7.6</td>
+<td class="fit">关键 entitlement</td>
+<td><code>com.apple.developer.driverkit.userclient-access</code></td>
+<td class="fit">[M7][M9]</td>
+</tr>
+<tr>
+<td class="id fit">7.7</td>
+<td class="fit">关键 entitlement</td>
+<td><code>com.apple.developer.driverkit.allow-any-userclient-access</code></td>
+<td class="fit">[M7][M9]</td>
+</tr>
+<tr>
+<td class="id fit">7.8</td>
+<td class="fit">关键 entitlement</td>
+<td>安装方 App 需 <code>com.apple.developer.system-extension.install</code></td>
+<td class="fit">[M7][M9]</td>
+</tr>
+<tr>
+<td class="id fit">8</td>
+<td class="fit">虚拟 HID entitlement</td>
+<td><code class="tk-file">com.apple.developer.hid.virtual.device</code>（驱动创建虚拟 HID 设备）；<code class="tk-file">com.apple.developer.driverkit.family.hid.virtual.device</code>（App 创建并管理虚拟 HID 设备）</td>
+<td class="fit">[M9]</td>
+</tr>
+<tr>
+<td class="id fit">9</td>
+<td class="fit">Entitlement 申请</td>
+<td>需向 Apple 申请 DriverKit entitlement，并提供硬件 vendor ID、设备与安装 App 描述</td>
+<td class="fit">[M7]</td>
+</tr>
+<tr>
+<td class="id fit">9.2</td>
+<td class="fit">Entitlement 申请</td>
+<td>同一产品的 entitlement 须属于同一组</td>
+<td class="fit">[M7]</td>
+</tr>
+<tr>
+<td class="id fit">9.3</td>
+<td class="fit">Entitlement 申请</td>
+<td>获批前可关闭安全检查在本机开发</td>
+<td class="fit">[M7]</td>
+</tr>
+<tr>
+<td class="id fit">10</td>
+<td class="fit">开发模式</td>
+<td><code>systemextensionsctl developer on</code> 让系统不检查扩展位置；示例工程的自动签名流程要求临时关闭 SIP</td>
+<td class="fit">[M10][M11]</td>
+</tr>
+<tr>
+<td class="id fit">11</td>
+<td class="fit">公证</td>
+<td>Developer ID 签名软件可提交 Apple notary service 自动扫描，生成 ticket 供 Gatekeeper 校验；kext 等非 App bundle 也可公证</td>
+<td class="fit">[M12]</td>
+</tr>
+<tr>
+<td class="id fit">12</td>
+<td class="fit">IOHIDManager</td>
+<td>IOKit 的 HID 管理对象：设备发现/移除回调、输入报告回调、输入值回调、匹配条件、run loop 调度</td>
+<td class="fit">[M5]</td>
+</tr>
+<tr>
+<td class="id fit">13</td>
+<td class="fit">CoreHID</td>
+<td><strong>macOS 15+</strong>；可发现 HID 设备、收输入、发请求（如点灯），并可用 <code>HIDVirtualDevice</code> 模拟 HID 设备（如虚拟手柄）</td>
+<td class="fit">[M6]</td>
+</tr>
+<tr>
+<td class="id fit">14</td>
+<td class="fit">Apple silicon 笔记本配件授权</td>
+<td>新/未知的 USB、Thunderbolt 配件或 SD 卡需用户允许</td>
+<td class="fit">[M13]</td>
+</tr>
+<tr>
+<td class="id fit">14.2</td>
+<td class="fit">Apple silicon 笔记本配件授权</td>
+<td>默认“新配件询问”</td>
+<td class="fit">[M13]</td>
+</tr>
+<tr>
+<td class="id fit">14.3</td>
+<td class="fit">Apple silicon 笔记本配件授权</td>
+<td>锁定 3 天以上可能需解锁后才能用已允许的配件</td>
+<td class="fit">[M13]</td>
+</tr>
+<tr>
+<td class="id fit">14.4</td>
+<td class="fit">Apple silicon 笔记本配件授权</td>
+<td>拒绝后仍可充电</td>
+<td class="fit">[M13]</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="架构分层appdext-与内核三层">架构分层：App、dext 与内核三层<a class="anchor" href="#架构分层appdext-与内核三层" aria-label="链接到本节">#</a></h2>
+<div class="fig large" style="--w:1212.328125px;--h:521.338134765625px"><input class="fig-toggle" type="checkbox" id="adoc-fig-1" aria-label="查看原始大小" style="position:absolute;opacity:0;width:0;height:0"><figure class="mermaid-figure large"><svg id="adoc-diagram-1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 1212.33px; background-color: white;" viewBox="0 0 1212.328125 521.338134765625" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#adoc-diagram-1{font-size:14px;fill:#111827;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#adoc-diagram-1 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .error-icon{fill:#ffffff;}#adoc-diagram-1 .error-text{fill:#000000;stroke:#000000;}#adoc-diagram-1 .edge-thickness-normal{stroke-width:1px;}#adoc-diagram-1 .edge-thickness-thick{stroke-width:3.5px;}#adoc-diagram-1 .edge-pattern-solid{stroke-dasharray:0;}#adoc-diagram-1 .edge-thickness-invisible{stroke-width:0;fill:none;}#adoc-diagram-1 .edge-pattern-dashed{stroke-dasharray:3;}#adoc-diagram-1 .edge-pattern-dotted{stroke-dasharray:2;}#adoc-diagram-1 .marker{fill:#4b5563;stroke:#4b5563;}#adoc-diagram-1 .marker.cross{stroke:#4b5563;}#adoc-diagram-1 svg{font-size:14px;}#adoc-diagram-1 p{margin:0;}#adoc-diagram-1 .label{color:#111827;}#adoc-diagram-1 .cluster-label text{fill:#000000;}#adoc-diagram-1 .cluster-label span{color:#000000;}#adoc-diagram-1 .cluster-label span p{background-color:transparent;}#adoc-diagram-1 .label text,#adoc-diagram-1 span{fill:#111827;color:#111827;}#adoc-diagram-1 .node rect,#adoc-diagram-1 .node circle,#adoc-diagram-1 .node ellipse,#adoc-diagram-1 .node polygon,#adoc-diagram-1 .node path{fill:#f3f4f6;stroke:#6b7280;stroke-width:1px;}#adoc-diagram-1 .rough-node .label text,#adoc-diagram-1 .node .label text,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-anchor:middle;}#adoc-diagram-1 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#adoc-diagram-1 .rough-node .label,#adoc-diagram-1 .node .label,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-align:center;}#adoc-diagram-1 .node.clickable{cursor:pointer;}#adoc-diagram-1 .root .anchor path{fill:#4b5563!important;stroke-width:0;stroke:#4b5563;}#adoc-diagram-1 .arrowheadPath{fill:#0b0b0b;}#adoc-diagram-1 .edgePaths .path{stroke:#4b5563;stroke-width:1px;}#adoc-diagram-1 .flowchart-link{stroke:#4b5563;fill:none;}#adoc-diagram-1 .edgeLabel{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .edgeLabel p{background-color:#ffffff;}#adoc-diagram-1 .edgeLabel rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .labelBkg{background-color:rgba(255, 255, 255, 0.5);}#adoc-diagram-1 .cluster rect{fill:#ffffff;stroke:hsl(0, 0%, 90%);stroke-width:1px;}#adoc-diagram-1 .cluster text{fill:#000000;}#adoc-diagram-1 .cluster span{color:#000000;}#adoc-diagram-1 .node .collapsed-indicator{fill:hsl(0, 0%, 90%);stroke:none;opacity:0.6;}#adoc-diagram-1 .node .collapsed-separator{stroke:hsl(0, 0%, 90%);stroke-width:0.75px;}#adoc-diagram-1 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-size:12px;background:#ffffff;border:1px solid hsl(0, 0%, 90%);border-radius:2px;pointer-events:none;z-index:100;}#adoc-diagram-1 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#111827;}#adoc-diagram-1 rect.text{fill:none;stroke-width:0;}#adoc-diagram-1 .icon-shape,#adoc-diagram-1 .image-shape{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .icon-shape p,#adoc-diagram-1 .image-shape p{background-color:#ffffff;padding:2px;}#adoc-diagram-1 .icon-shape .label rect,#adoc-diagram-1 .image-shape .label rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#adoc-diagram-1 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#adoc-diagram-1 .node .neo-node{stroke:#6b7280;}#adoc-diagram-1 [data-look="neo"].node rect,#adoc-diagram-1 [data-look="neo"].cluster rect,#adoc-diagram-1 [data-look="neo"].node polygon{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].swimlane.cluster rect{filter:none;}#adoc-diagram-1 [data-look="neo"].node path{stroke:url(#adoc-diagram-1-gradient);stroke-width:1px;}#adoc-diagram-1 [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node .neo-line path{stroke:#6b7280;filter:none;}#adoc-diagram-1 [data-look="neo"].node circle{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node circle .state-start{fill:#000000;}#adoc-diagram-1 [data-look="neo"].icon-shape .icon{fill:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].icon-shape .icon-neo path{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#adoc-diagram-1 .renderer&gt;*{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer span{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer tspan{fill:rgb(30, 58, 138)!important;}#adoc-diagram-1 .service&gt;*{fill:rgb(220, 252, 231)!important;stroke:rgb(22, 163, 74)!important;color:rgb(20, 83, 45)!important;}#adoc-diagram-1 .service span{fill:rgb(220, 252, 231)!important;stroke:rgb(22, 163, 74)!important;color:rgb(20, 83, 45)!important;}#adoc-diagram-1 .service tspan{fill:rgb(20, 83, 45)!important;}#adoc-diagram-1 .driver&gt;*{fill:rgb(254, 226, 226)!important;stroke:rgb(220, 38, 38)!important;color:rgb(127, 29, 29)!important;}#adoc-diagram-1 .driver span{fill:rgb(254, 226, 226)!important;stroke:rgb(220, 38, 38)!important;color:rgb(127, 29, 29)!important;}#adoc-diagram-1 .driver tspan{fill:rgb(127, 29, 29)!important;}#adoc-diagram-1 .outside&gt;*{fill:rgb(243, 244, 246)!important;stroke:rgb(107, 114, 128)!important;color:rgb(55, 65, 81)!important;}#adoc-diagram-1 .outside span{fill:rgb(243, 244, 246)!important;stroke:rgb(107, 114, 128)!important;color:rgb(55, 65, 81)!important;}#adoc-diagram-1 .outside tspan{fill:rgb(55, 65, 81)!important;}</style><g><marker id="adoc-diagram-1_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"/></marker><g class="root"><g class="clusters"><g class="cluster" id="adoc-diagram-1-XNU" data-look="classic"><rect style="fill:#fee2e255 !important;stroke:#dc2626 !important;stroke-opacity:0.5 !important" x="76.109375" y="180" width="880.265625" height="202"/><g class="cluster-label" transform="translate(485.515625, 180)"><foreignObject width="61.453125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel" style="color:#7f1d1d !important"><p>XNU 内核</p></span></div></foreignObject></g></g><g class="cluster" id="adoc-diagram-1-APP" data-look="classic"><rect style="" x="8" y="8" width="1196.328125" height="101"/><g class="cluster-label" transform="translate(505.8046875, 8)"><foreignObject width="200.71875" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel"><p>用户空间：App 与 DriverKit dext</p></span></div></foreignObject></g></g></g><g class="edgePaths"><path d="M633.938,84L633.938,88.167C633.938,92.333,633.938,100.667,633.938,110.75C633.938,120.833,633.938,132.667,633.938,144.5C633.938,156.333,633.938,168.167,643.735,178.002C653.532,187.838,673.126,195.676,682.923,199.595L692.72,203.514" id="adoc-diagram-1-L_A1_K1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_A1_K1_0" data-points="W3sieCI6NjMzLjkzNzUsInkiOjg0fSx7IngiOjYzMy45Mzc1LCJ5IjoxMDl9LHsieCI6NjMzLjkzNzUsInkiOjE0NC41fSx7IngiOjYzMy45Mzc1LCJ5IjoxODB9LHsieCI6Njk2LjQzMzYzMjQyNTc0MjUsInkiOjIwNX1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M147.109,84L147.109,88.167C147.109,92.333,147.109,100.667,147.109,110.75C147.109,120.833,147.109,132.667,147.109,144.5C147.109,156.333,147.109,168.167,156.276,177.989C165.443,187.811,183.777,195.621,192.943,199.527L202.11,203.432" id="adoc-diagram-1-L_A2_K3_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_A2_K3_0" data-points="W3sieCI6MTQ3LjEwOTM3NSwieSI6ODR9LHsieCI6MTQ3LjEwOTM3NSwieSI6MTA5fSx7IngiOjE0Ny4xMDkzNzUsInkiOjE0NC41fSx7IngiOjE0Ny4xMDkzNzUsInkiOjE4MH0seyJ4IjoyMDUuNzkwMTQ1NDIwNzkyMDcsInkiOjIwNX1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M886.422,84L886.422,88.167C886.422,92.333,886.422,100.667,886.422,110.75C886.422,120.833,886.422,132.667,886.422,144.5C886.422,156.333,886.422,168.167,876.625,178.002C866.828,187.838,847.234,195.676,837.437,199.595L827.64,203.514" id="adoc-diagram-1-L_D1_K1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_D1_K1_0" data-points="W3sieCI6ODg2LjQyMTg3NSwieSI6ODR9LHsieCI6ODg2LjQyMTg3NSwieSI6MTA5fSx7IngiOjg4Ni40MjE4NzUsInkiOjE0NC41fSx7IngiOjg4Ni40MjE4NzUsInkiOjE4MH0seyJ4Ijo4MjMuOTI1NzQyNTc0MjU3NSwieSI6MjA1fV0=" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M384.18,84L384.18,88.167C384.18,92.333,384.18,100.667,384.18,110.75C384.18,120.833,384.18,132.667,384.18,144.5C384.18,156.333,384.18,168.167,375.013,177.989C365.846,187.811,347.512,195.621,338.346,199.527L329.179,203.432" id="adoc-diagram-1-L_D2_K3_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_D2_K3_0" data-points="W3sieCI6Mzg0LjE3OTY4NzUsInkiOjg0fSx7IngiOjM4NC4xNzk2ODc1LCJ5IjoxMDl9LHsieCI6Mzg0LjE3OTY4NzUsInkiOjE0NC41fSx7IngiOjM4NC4xNzk2ODc1LCJ5IjoxODB9LHsieCI6MzI1LjQ5ODkxNzA3OTIwNzksInkiOjIwNX1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M760.18,256L760.18,260.167C760.18,264.333,760.18,272.667,760.18,280.333C760.18,288,760.18,295,760.18,298.5L760.18,302" id="adoc-diagram-1-L_K1_K2_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_K1_K2_0" data-points="W3sieCI6NzYwLjE3OTY4NzUsInkiOjI1Nn0seyJ4Ijo3NjAuMTc5Njg3NSwieSI6MjgxfSx7IngiOjc2MC4xNzk2ODc1LCJ5IjozMDZ9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M760.18,357L760.18,361.167C760.18,365.333,760.18,373.667,760.18,382C760.18,390.333,760.18,398.667,760.18,406.333C760.18,414,760.18,421,760.18,424.5L760.18,428" id="adoc-diagram-1-L_K2_HW_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_K2_HW_0" data-points="W3sieCI6NzYwLjE3OTY4NzUsInkiOjM1N30seyJ4Ijo3NjAuMTc5Njg3NSwieSI6MzgyfSx7IngiOjc2MC4xNzk2ODc1LCJ5Ijo0MDd9LHsieCI6NzYwLjE3OTY4NzUsInkiOjQzMn1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(633.9375, 144.5)"><g class="label" data-id="L_A1_K1_0" transform="translate(-60.734375, -10.5)"><foreignObject width="121.46875" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>①</b> IOKit 用户态接口</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(147.109375, 144.5)"><g class="label" data-id="L_A2_K3_0" transform="translate(-43.2265625, -10.5)"><foreignObject width="86.453125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>②</b> HID 客户端</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(886.421875, 144.5)"><g class="label" data-id="L_D1_K1_0" transform="translate(-33.515625, -10.5)"><foreignObject width="67.03125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>③</b> provider</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(384.1796875, 144.5)"><g class="label" data-id="L_D2_K3_0" transform="translate(-36.2265625, -10.5)"><foreignObject width="72.453125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>④</b> 事件分发</p></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_K1_K2_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_K2_HW_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default renderer" id="adoc-diagram-1-flowchart-A1-0" data-look="classic" transform="translate(633.9375, 58.5)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-121.796875" y="-25.5" width="243.59375" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-91.796875, -10.5)"><rect/><foreignObject width="183.59375" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>IOHIDManager / IOUSBHost</b></p></span></div></foreignObject></g></g><g class="node default service" id="adoc-diagram-1-flowchart-D1-1" data-look="classic" transform="translate(886.421875, 58.5)"><rect class="basic label-container" style="fill:#dcfce7 !important;stroke:#16a34a !important" x="-90.6875" y="-25.5" width="181.375" height="51"/><g class="label" style="color:#14532d !important" transform="translate(-60.6875, -10.5)"><rect/><foreignObject width="121.375" height="21"><div style="color: rgb(20, 83, 45) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#14532d !important" class="nodeLabel"><p><b>USBDriverKit dext</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-A2-2" data-look="classic" transform="translate(147.109375, 58.5)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-109.109375" y="-25.5" width="218.21875" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-79.109375, -10.5)"><rect/><foreignObject width="158.21875" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>CoreHID（macOS 15+）</b></p></span></div></foreignObject></g></g><g class="node default service" id="adoc-diagram-1-flowchart-D2-3" data-look="classic" transform="translate(384.1796875, 58.5)"><rect class="basic label-container" style="fill:#dcfce7 !important;stroke:#16a34a !important" x="-87.9609375" y="-25.5" width="175.921875" height="51"/><g class="label" style="color:#14532d !important" transform="translate(-57.9609375, -10.5)"><rect/><foreignObject width="115.921875" height="21"><div style="color: rgb(20, 83, 45) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#14532d !important" class="nodeLabel"><p><b>HIDDriverKit dext</b></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-A3-4" data-look="classic" transform="translate(1095.71875, 58.5)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-78.609375" y="-25.5" width="157.21875" height="51"/><g class="label" style="color:#1e3a8a !important" transform="translate(-48.609375, -10.5)"><rect/><foreignObject width="97.21875" height="21"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>CoreBluetooth</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-K3-5" data-look="classic" transform="translate(265.64453125, 230.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-72" y="-25.5" width="144" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-42, -10.5)"><rect/><foreignObject width="84" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>HID 事件系统</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-K1-6" data-look="classic" transform="translate(760.1796875, 230.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-87.9609375" y="-25.5" width="175.921875" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-57.9609375, -10.5)"><rect/><foreignObject width="115.921875" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>IOKit / IORegistry</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-K2-7" data-look="classic" transform="translate(760.1796875, 331.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-89.90625" y="-25.5" width="179.8125" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-59.90625, -10.5)"><rect/><foreignObject width="119.8125" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>IOUSBHostFamily</b></p></span></div></foreignObject></g></g><g class="node default outside" id="adoc-diagram-1-flowchart-HW-8" data-look="classic" transform="translate(760.1796875, 472.66907501220703)"><path d="M0,15.112715048447695 a95.53125,15.112715048447695 0,0,0 191.0625,0 a95.53125,15.112715048447695 0,0,0 -191.0625,0 l0,51.1127150484477 a95.53125,15.112715048447695 0,0,0 191.0625,0 l0,-51.1127150484477" class="basic label-container outer-path" style="fill:#f3f4f6 !important;stroke:#6b7280 !important" transform="translate(-95.53125, -40.669072572671546)"/><g class="label" style="color:#374151 !important" transform="translate(-88.03125, -0.5)"><rect/><foreignObject width="176.0625" height="21"><div style="color: rgb(55, 65, 81) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#374151 !important" class="nodeLabel"><p><b>xHCI / Apple silicon 控制器</b></p></span></div></foreignObject></g></g></g></g></g><defs><filter id="adoc-diagram-1-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><defs><filter id="adoc-diagram-1-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><linearGradient id="adoc-diagram-1-gradient" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6b7280" stop-opacity="1"/><stop offset="100%" stop-color="hsl(100, 0%, 85.8823529412%)" stop-opacity="1"/></linearGradient></svg></figure><label class="fig-zoom" for="adoc-fig-1" data-off="查看原始大小" data-on="适应宽度" style="display:none"></label></div>
+<p class="caption">① 与 ② 是不写驱动的路径，③ 与 ④ 是 dext 路径；dext 虽在用户态，仍通过 IOKit 服务平面与内核对话。</p>
+<ul>
+<li>IOKit 以“驱动匹配 + IORegistry 树”为核心；USB 设备与接口作为服务出现在 service plane，IOUSBHost 框架为设备与接口类定义了 service plane 属性 [M1][M14]。</li>
+<li>DriverKit 驱动以 IOService 子类实现，provider 是 USBDriverKit 提供的设备/接口对象 [M3]。</li>
+</ul>
+<h2 id="用户态访问不写驱动">用户态访问（不写驱动）<a class="anchor" href="#用户态访问不写驱动" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>路径</th>
+<th>用途</th>
+<th>平台</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IOUSBHost 框架（ObjC/Swift）</td>
+<td>用户态 claim 设备/接口、取描述符、发控制/批量/中断/等时请求，管理 stream</td>
+<td>macOS 10.15+</td>
+<td>[M1]</td>
+</tr>
+<tr>
+<td>IOHIDManager / IOHIDDevice（IOKit C API）</td>
+<td>枚举 HID 设备、收输入报告/值、发 Output/Feature 报告</td>
+<td>macOS</td>
+<td>[M5]</td>
+</tr>
+<tr>
+<td>CoreHID（Swift）</td>
+<td>新一代 HID 客户端 API + 虚拟 HID 设备</td>
+<td>macOS 15+</td>
+<td>[M6]</td>
+</tr>
+<tr>
+<td>libusb</td>
+<td>跨平台库（在 macOS 上基于 IOKit）</td>
+<td>—</td>
+<td>项目官方站 <a href="https://libusb.info/">https://libusb.info/</a> ；实现细节<strong>待核实</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>读取键盘类 HID 输入通常还受隐私权限（“输入监控”）约束，API <code>IOHIDRequestAccess</code> 等细节本轮未能抓取官方页面，<strong class="kw">待核实</strong>。</p>
+</blockquote>
+<h2 id="驱动开发driverkit-系统扩展dext">驱动开发：DriverKit 系统扩展（dext）<a class="anchor" href="#驱动开发driverkit-系统扩展dext" aria-label="链接到本节">#</a></h2>
+<ol>
+<li><strong class="lead-in">项目结构</strong>：dext 放在 App bundle 的指定目录，由 App 用 SystemExtensions 框架激活；App 需 <code>com.apple.developer.system-extension.install</code> [M7][M9][M15]。</li>
+<li><strong class="lead-in">匹配</strong>：driver 的 entitlement <code class="tk-file">com.apple.developer.driverkit.transport.usb</code> 列出它支持的设备（键为设备描述符字段名，如厂商 ID/产品 ID）[M9]；Info.plist 中 IOKitPersonalities 的具体写法以 Xcode 模板为准（<strong class="lead-in">待核实</strong>：本轮未逐键核对）。</li>
+<li><strong class="lead-in">USB I/O</strong>：在 IOUSBHostInterface 上打开 pipe（IOUSBHostPipe）进行传输 [M3]。</li>
+<li><strong class="lead-in">与 App 通信</strong>：通过 user client（IOUserClient 子类），需 <code>userclient-access</code> 或 <code>allow-any-userclient-access</code> entitlement；官方示例演示了带输入校验的标量/结构体调用和异步回调 [M9][M16]。</li>
+<li><strong class="lead-in">开发调试</strong>：<code>systemextensionsctl developer on</code>；必要时临时关闭 SIP（仅开发机）[M10][M11]。</li>
+<li><strong class="lead-in">发布</strong>：Developer ID 签名 + 公证（Gatekeeper 校验 ticket）[M12]；用户首次安装需在“隐私与安全性”中允许 [M16]。</li>
+</ol>
+<h3 id="hiddriverkit-要点">HIDDriverKit 要点<a class="anchor" href="#hiddriverkit-要点" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>类：IOUserHIDDevice（HID 设备 provider 基类相关）、IOUserHIDEventService / IOUserHIDEventDriver（向系统分发键盘、数字化仪、滚动、指针事件）、IOUserUSBHostHIDDevice（支持 HID 交互的 USB 设备 provider）等 [M4]。</li>
+<li>用于：修正非标准报告描述符、把厂商报告转成系统事件、实现虚拟 HID（配合虚拟 HID entitlement）[M4][M9]。</li>
+</ul>
+<h2 id="hid-路径对比macos">HID 路径对比（macOS）<a class="anchor" href="#hid-路径对比macos" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th class="fit">场景</th>
+<th>推荐 API</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="fit">App 读写自家 HID 设备（如鼠标配置工具）</td>
+<td>IOHIDManager / IOHIDDevice，或 CoreHID（macOS 15+）</td>
+<td>无需驱动；Feature/Output 报告读写 [M5][M6]</td>
+</tr>
+<tr>
+<td class="fit">改变系统对设备的解释</td>
+<td>HIDDriverKit dext</td>
+<td>需 entitlement 与用户批准 [M4][M7]</td>
+</tr>
+<tr>
+<td class="fit">虚拟键鼠/手柄（测试、远控）</td>
+<td>CoreHID <code>HIDVirtualDevice</code>（macOS 15+）或 HIDDriverKit 虚拟设备</td>
+<td>均需虚拟 HID entitlement [M6][M9]</td>
+</tr>
+<tr>
+<td class="fit">BLE HID 外设</td>
+<td>系统蓝牙栈作为 HoG 主机，设备出现在 HID 系统中（<strong>待核实</strong>：Apple 未在本轮抓取页面中描述 HoG 内部实现）；自定义 GATT 服务用 CoreBluetooth（macOS 10.10+）</td>
+<td>[M17]</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="虚拟-usb--设备模式">虚拟 USB / 设备模式<a class="anchor" href="#虚拟-usb--设备模式" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>macOS <strong class="lead-in">没有面向第三方的 USB 设备（gadget）模式 API</strong>：本轮在 IOUSBHost/USBDriverKit 文档中只看到 host-mode 能力 [M1][M3]（“完全没有”属于否定性结论，<strong class="kw">待核实</strong>）。</li>
+<li>IOUSBHost 框架中存在 <code>IOUSBHostControllerInterface</code> 类（macOS 10.15+ 标注），从命名看与用户态主机控制器接口相关，但官方页面无说明文字，用途 <strong class="kw">待核实</strong> [M18]。</li>
+<li>虚拟 HID 是官方支持的方向：CoreHID HIDVirtualDevice / HIDDriverKit [M6][M4]。</li>
+</ul>
+<h2 id="电源管理">电源管理<a class="anchor" href="#电源管理" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>USB 设备电源/挂起策略由系统管理，DriverKit 驱动通过 IOService 电源接口参与；本轮未抓取具体 API 文档，<strong class="kw">待核实</strong>。</li>
+</ul>
+<h2 id="安全与权限apple-silicon-特有项">安全与权限（Apple silicon 特有项）<a class="anchor" href="#安全与权限apple-silicon-特有项" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>便携 Mac（Apple silicon）配件授权：可在“系统设置 › 隐私与安全性 › 配件”选择“始终询问 / 新配件询问（默认）/ 解锁时自动允许 / 始终允许”；受监管设备可由管理员用 Apple Configurator 控制 [M13]。</li>
+<li>Apple 平台安全指南：iPad、iPhone 与 Apple silicon 便携 Mac 上，若近期无数据连接，需 Face ID/Touch ID/密码才能激活 Thunderbolt、USB 等数据连接 [M19]。</li>
+<li>锁定模式（Lockdown Mode）下，Apple silicon 笔记本连接配件须解锁且显式批准 [M20]。</li>
+</ul>
+<h2 id="调试工具">调试工具<a class="anchor" href="#调试工具" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IORegistryExplorer / <code>ioreg</code></td>
+<td>查看 IORegistry 中的 USB 设备、接口、属性与匹配到的驱动</td>
+<td>IORegistryExplorer 随 Apple “Additional Tools for Xcode” 分发（<strong>待核实</strong>：下载页需登录，本轮未核对）</td>
+</tr>
+<tr>
+<td><code>systemextensionsctl list</code> / <code>developer on</code></td>
+<td>查看/调试系统扩展</td>
+<td>[M10]</td>
+</tr>
+<tr>
+<td>系统信息 › USB（<code>system_profiler SPUSBDataType</code>）</td>
+<td>设备树与速率</td>
+<td><strong>待核实</strong></td>
+</tr>
+<tr>
+<td>Wireshark（XHC20 接口）</td>
+<td><ul class="cell-list"><li>macOS High Sierra + Wireshark 2.4/libpcap 1.9 起可抓 USB</li><li>需 <code>sudo ifconfig XHC20 up</code></li><li>Catalina 及以后据称需关闭 SIP</li></ul></td>
+<td>[M21]（Wireshark 官方 Wiki，原文措辞为“apparently”，视为 <strong>待核实</strong>）</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="与-windows-的映射">与 Windows 的映射<a class="anchor" href="#与-windows-的映射" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Windows</th>
+<th>macOS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WinUSB（用户态访问）</td>
+<td>IOUSBHost 框架 [M1]</td>
+</tr>
+<tr>
+<td>KMDF USB 客户端驱动</td>
+<td>USBDriverKit dext（用户态！）[M3]</td>
+</tr>
+<tr>
+<td>UMDF 2</td>
+<td>DriverKit 整体理念更接近 UMDF（驱动跑在用户态）[M2]</td>
+</tr>
+<tr>
+<td>hidclass + HID minidriver / 过滤驱动</td>
+<td>HIDDriverKit [M4]</td>
+</tr>
+<tr>
+<td>VHF</td>
+<td>CoreHID HIDVirtualDevice / HIDDriverKit 虚拟设备 [M6][M9]</td>
+</tr>
+<tr>
+<td>Driver signing（EV 证书 + 硬件开发者中心签名）</td>
+<td>DriverKit entitlement 审批 + Developer ID + 公证 [M7][M12]</td>
+</tr>
+<tr>
+<td>UsbView / USB ETW</td>
+<td>IORegistryExplorer / Wireshark XHC20</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="参考来源">参考来源<a class="anchor" href="#参考来源" aria-label="链接到本节">#</a></h2>
+<h3 id="来源组-1">来源组 1<a class="anchor" href="#来源组-1" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[M1] IOUSBHost <a href="https://developer.apple.com/documentation/iousbhost">https://developer.apple.com/documentation/iousbhost</a></li>
+<li>[M2] DriverKit <a href="https://developer.apple.com/documentation/driverkit">https://developer.apple.com/documentation/driverkit</a></li>
+<li>[M3] USBDriverKit <a href="https://developer.apple.com/documentation/usbdriverkit">https://developer.apple.com/documentation/usbdriverkit</a></li>
+<li>[M4] HIDDriverKit <a href="https://developer.apple.com/documentation/hiddriverkit">https://developer.apple.com/documentation/hiddriverkit</a></li>
+<li>[M5] IOHIDManager.h <a href="https://developer.apple.com/documentation/iokit/iohidmanager_h">https://developer.apple.com/documentation/iokit/iohidmanager_h</a></li>
+<li>[M6] CoreHID <a href="https://developer.apple.com/documentation/corehid">https://developer.apple.com/documentation/corehid</a> ；HIDVirtualDevice <a href="https://developer.apple.com/documentation/corehid/hidvirtualdevice">https://developer.apple.com/documentation/corehid/hidvirtualdevice</a></li>
+<li>[M7] Requesting entitlements for DriverKit development <a href="https://developer.apple.com/documentation/driverkit/requesting-entitlements-for-driverkit-development">https://developer.apple.com/documentation/driverkit/requesting-entitlements-for-driverkit-development</a></li>
+<li>[M8] Deprecated Kernel Extensions and System Extension Alternatives <a href="https://developer.apple.com/support/kernel-extensions/">https://developer.apple.com/support/kernel-extensions/</a></li>
+</ul>
+<h3 id="来源组-2">来源组 2<a class="anchor" href="#来源组-2" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[M9] Entitlements（各 DriverKit/HID/System Extension 键）<a href="https://developer.apple.com/documentation/bundleresources/entitlements">https://developer.apple.com/documentation/bundleresources/entitlements</a> ，例如 <a href="https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.driverkit.transport.usb">https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.driverkit.transport.usb</a></li>
+<li>[M10] Debugging and testing system extensions <a href="https://developer.apple.com/documentation/driverkit/debugging-and-testing-system-extensions">https://developer.apple.com/documentation/driverkit/debugging-and-testing-system-extensions</a></li>
+<li>[M11] Communicating between a DriverKit extension and a client app（SIP、dext 开发模式说明）<a href="https://developer.apple.com/documentation/driverkit/communicating-between-a-driverkit-extension-and-a-client-app">https://developer.apple.com/documentation/driverkit/communicating-between-a-driverkit-extension-and-a-client-app</a></li>
+<li>[M12] Notarizing macOS software before distribution <a href="https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution">https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution</a></li>
+<li>[M13] Allow USB and other accessories to connect to your Mac <a href="https://support.apple.com/en-us/102282">https://support.apple.com/en-us/102282</a></li>
+<li>[M14] IOKit <a href="https://developer.apple.com/documentation/iokit">https://developer.apple.com/documentation/iokit</a></li>
+<li>[M15] SystemExtensions <a href="https://developer.apple.com/documentation/systemextensions">https://developer.apple.com/documentation/systemextensions</a></li>
+<li>[M16] 同 [M11]（安装确认与 user client 示例）</li>
+</ul>
+<h3 id="来源组-3">来源组 3<a class="anchor" href="#来源组-3" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[M17] CoreBluetooth <a href="https://developer.apple.com/documentation/corebluetooth">https://developer.apple.com/documentation/corebluetooth</a></li>
+<li>[M18] IOUSBHostControllerInterface <a href="https://developer.apple.com/documentation/iousbhost/iousbhostcontrollerinterface">https://developer.apple.com/documentation/iousbhost/iousbhostcontrollerinterface</a></li>
+<li>[M19] Apple Platform Security: Activating data connections securely <a href="https://support.apple.com/guide/security/activating-data-connections-securely-sec5044aad1b/web">https://support.apple.com/guide/security/activating-data-connections-securely-sec5044aad1b/web</a></li>
+<li>[M20] About Lockdown Mode <a href="https://support.apple.com/en-us/105120">https://support.apple.com/en-us/105120</a></li>
+<li>[M21] Wireshark Wiki CaptureSetup/USB <a href="https://wiki.wireshark.org/CaptureSetup/USB">https://wiki.wireshark.org/CaptureSetup/USB</a></li>
+</ul>
+<h2 id="待确认项">待确认项<a class="anchor" href="#待确认项" aria-label="链接到本节">#</a></h2>
+<h3 id="待确认组-1">待确认组 1<a class="anchor" href="#待确认组-1" aria-label="链接到本节">#</a></h3>
+<ul class="tasks">
+<li class="task">…驱动的工程师。来源只用 <a href="http://developer.apple.com">developer.apple.com</a> 与 <a href="http://support.apple.com">support.apple.com</a>，Apple 未公开的内核实现标 <strong class="kw">待核实</strong>。…</li>
+<li class="task">…没有面向第三方的 USB 设备（gadget）模式 API（否定性结论，<strong class="kw">待核实</strong>）。…</li>
+<li class="task">…usb | 跨平台库（在 macOS 上基于 IOKit） | — | 项目官方站 <a href="https://libusb.info/">https://libusb.info/</a> ；实现细节**待核实…</li>
+<li class="task">…如厂商 ID/产品 ID）[M9]；Info.plist 中 IOKitPersonalities 的具体写法以 Xcode 模板为准（<strong class="lead-in">待核实</strong>：本轮未逐键核对）。…</li>
+<li class="task">…BLE HID 外设 | 系统蓝牙栈作为 HoG 主机，设备出现在 HID 系统中（<strong class="lead-in">待核实</strong>：Apple 未在本轮抓取页面中描述 HoG 内部实现）；自定义 GATT 服务用 CoreBluetooth…</li>
+<li class="task">…在 IOUSBHost/USBDriverKit 文档中只看到 host-mode 能力 [M1][M3]（“完全没有”属于否定性结论，<strong class="kw">待核实</strong>）。…</li>
+<li class="task">…rollerInterface` 类（macOS 10.15+ 标注），从命名看与用户态主机控制器接口相关，但官方页面无说明文字，用途 <strong class="kw">待核实</strong> [M18]。…</li>
+<li class="task">…USB 设备电源/挂起策略由系统管理，DriverKit 驱动通过 IOService 电源接口参与；本轮未抓取具体 API 文档，<strong class="kw">待核实</strong>。…</li>
+</ul>
+<h3 id="待确认组-2">待确认组 2<a class="anchor" href="#待确认组-2" aria-label="链接到本节">#</a></h3>
+<ul class="tasks">
+<li class="task">…匹配到的驱动 | IORegistryExplorer 随 Apple “Additional Tools for Xcode” 分发（<strong class="lead-in">待核实</strong>：下载页需登录，本轮未核对）…</li>
+<li class="task">…系统信息 › USB（<code>system_profiler SPUSBDataType</code>） | 设备树与速率 | **待核实…</li>
+<li class="task">…atalina 及以后据称需关闭 SIP | [M21]（Wireshark 官方 Wiki，原文措辞为“apparently”，视为 <strong class="kw">待核实</strong>）…</li>
+</ul>
+
+<footer>导出自 09-macos-usb.md · 2026-11-28 15:15 · tech-doc export_html (static, Mermaid 11, reader theme)</footer>
+</div>
+</main>
+</div>
+<script>(function () {
+  var nav = document.querySelector("nav.sidebar"), lay = document.querySelector(".layout");
+  if (!nav || !lay || !window.PointerEvent) return;
+  var root = document.documentElement, KEY = "tech-doc:contents-width", MIN = 150, cur = 0;
+  var bar = document.createElement("div");
+  bar.className = "resizer"; bar.tabIndex = 0;
+  bar.setAttribute("role", "separator"); bar.setAttribute("aria-orientation", "vertical");
+  bar.setAttribute("aria-label", nav.getAttribute("aria-label") || "Contents");
+  lay.appendChild(bar); root.classList.add("js");
+  function place() { bar.style.left = nav.offsetLeft + nav.offsetWidth + (parseFloat(getComputedStyle(lay).columnGap) || 0) / 2 - bar.offsetWidth / 2 + "px"; }
+  function set(w) {
+    cur = Math.round(Math.max(MIN, Math.min(Math.min(560, window.innerWidth * 0.45), w)));
+    nav.style.width = cur + "px"; place();
+  }
+  function save() { try { localStorage.setItem(KEY, cur); } catch (e) {} }
+  try { var s = +localStorage.getItem(KEY); if (s) set(s); } catch (e) {}
+  place();
+  function reset() { cur = 0; nav.style.width = ""; place(); try { localStorage.removeItem(KEY); } catch (e) {} }
+  var last = 0;
+  bar.addEventListener("pointerdown", function (e) {
+    if (e.button) return;
+    var x0 = e.clientX, w0 = nav.offsetWidth, moved = false;
+    bar.setPointerCapture(e.pointerId); root.classList.add("dragging"); e.preventDefault();
+    function move(ev) { if (Math.abs(ev.clientX - x0) > 3) moved = true; set(w0 + ev.clientX - x0); }
+    function stop() {
+      bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", stop); bar.removeEventListener("pointercancel", stop);
+      root.classList.remove("dragging");
+      if (moved) { last = 0; save(); return; }
+      var t = Date.now();
+      if (t - last < 500) { last = 0; reset(); } else { last = t; }
+    }
+    bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", stop); bar.addEventListener("pointercancel", stop);
+  });
+  bar.addEventListener("keydown", function (e) {
+    var d = e.key === "ArrowLeft" ? -16 : e.key === "ArrowRight" ? 16 : 0;
+    if (d) { e.preventDefault(); set(nav.offsetWidth + d); save(); }
+  });
+  window.addEventListener("resize", function () { if (cur) set(cur); place(); });
+  window.addEventListener("load", place);
+  if (window.ResizeObserver) new ResizeObserver(place).observe(nav);
+})();</script>
+
+</body>
+</html>

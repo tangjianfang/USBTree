@@ -2,7 +2,9 @@
 # USBTree 全库一致性校验：链接 / 代码围栏 / 图谱引用 / frontmatter 覆盖 / 关系边端点 /
 # title≡H1 / 导出新鲜度 / H1 唯一 / 命名区块 / 孤页可达 / 统计数字
 # 用法: bash tools/validate.sh   （退出码 0 = 全部通过）
-# ai-kb/ 是 tools/ai-kb/build_kb.py 的派生产物，不参与链接/围栏/内容页/篇数统计。
+# ai-kb/ 与 tech-doc/ 是派生产物，不参与内容页检查与篇数统计（见 check_orphans.py、gen_stats.py）。
+# ai-kb/ 沿用原规则，不参与链接与围栏检查。tech-doc/ 的 Markdown 参与这两项；
+# 其 HTML 阅读版在第 1 项里检查站内链接（.html → .html）。
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 rc=0
@@ -32,6 +34,28 @@ while IFS= read -r f; do
     fi
   done < <(grep -oE '\]\([^)#][^)]*\)' "$f" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//')
 done < <(find . -name '*.md' -type f -not -path './ai-kb/*')
+# tech-doc HTML：跳过 http/锚点；相对链接必须存在，且不得指向 .md（阅读版链到 .html）。
+if [ -d ./tech-doc ]; then
+  while IFS= read -r f; do
+    dir=$(dirname "$f")
+    while IFS= read -r link; do
+      [ -n "$link" ] || continue
+      case "$link" in
+        http://*|https://*|mailto:*|data:*|\#*) continue ;;
+      esac
+      path="${link%%#*}"
+      path="${path%%\?*}"
+      [ -n "$path" ] || continue
+      case "$path" in
+        *.md)
+          echo "  HTML 链接应指向 .html: [$f] -> $link"; broken=$((broken+1)); continue ;;
+      esac
+      if [ ! -e "$dir/$path" ]; then
+        echo "  断链: [$f] -> $link"; broken=$((broken+1))
+      fi
+    done < <(grep -oE 'href="[^"]*"' "$f" 2>/dev/null | sed -E 's/^href="//; s/"$//')
+  done < <(find ./tech-doc -name '*.html' -type f)
+fi
 [ "$broken" -eq 0 ] && echo "  通过（另有 $specinfo 条规范二进制引用，按预期仅存在于本地缓存）" || rc=1
 
 echo "== 2/11 代码围栏闭合 =="

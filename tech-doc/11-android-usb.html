@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>架构文档：Android USB（Host API、AOA、Gadget HAL 与 HID）</title>
+<style>
+:root{color-scheme:light;--bg:#fff;--fg:#1f2328;--muted:#59636e;--line:#d8dee4;--soft:#f6f8fa;--link:#0969da;--code-fg:#0a6a7a;--mark:#ffec99;
+--tk-comment:#59636e;--tk-keyword:#cf222e;--tk-string:#0a3069;--tk-number:#0550ae;--tk-fn:#6639ba;--tk-var:#953800;--tk-tag:#116329;--tk-del:#82071e;
+--info-bg:#ddf4ff;--info-fg:#0550ae;--info-bd:#b6e3ff;--success-bg:#dafbe1;--success-fg:#116329;--success-bd:#aceebb;
+--warn-bg:#fff8c5;--warn-fg:#7d4e00;--warn-bd:#eac54f;--danger-bg:#ffebe9;--danger-fg:#a40e26;--danger-bd:#ffcecb;
+--neutral-bg:#eaeef2;--neutral-fg:#424a53;--neutral-bd:#d0d7de;--accent-bg:#fbefff;--accent-fg:#6639ba;--accent-bd:#e2c5ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+.content p a,.content li a,.content td a,.callout a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.content p a:hover,.content li a:hover,.content td a:hover,.callout a:hover{text-decoration-thickness:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--bg);padding:6px 12px;z-index:10}.skip:focus{left:8px}
+.progress{display:none}
+@supports (animation-timeline:scroll()){.progress{display:block;position:sticky;top:0;z-index:5;height:3px;margin-bottom:-3px;background:var(--link);transform:scaleX(0);transform-origin:0 50%;animation:adoc-progress linear both;animation-timeline:scroll(root block)}
+@keyframes adoc-progress{to{transform:scaleX(1)}}}
+.layout{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:48px;padding:32px 32px 72px;align-items:start}
+nav.sidebar{position:sticky;top:24px;width:210px;min-width:150px;max-width:min(560px,45vw);max-height:calc(100vh - 48px);overflow:auto;resize:horizontal;font-size:13px;padding-right:8px}
+.js nav.sidebar{resize:none}
+.resizer{position:absolute;top:0;bottom:0;width:12px;cursor:col-resize;touch-action:none;user-select:none;z-index:3}
+.resizer::after{content:"";position:absolute;top:24px;bottom:24px;left:5px;width:2px;border-radius:1px;background:transparent}
+.resizer:hover::after,.resizer:focus-visible::after,.dragging .resizer::after{background:var(--link)}
+.resizer:focus-visible{outline:none}
+.dragging,.dragging *{cursor:col-resize!important;user-select:none!important}
+nav.sidebar .nav-title{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px}
+nav.sidebar ol{list-style:none;margin:0;padding:0;counter-reset:n}
+nav.sidebar li{counter-increment:n}
+nav.sidebar a{display:block;padding:3px 0;color:var(--muted);line-height:1.45}
+.numbered nav.sidebar a::before{content:counter(n) ".";display:inline-block;min-width:1.7em}
+nav.sidebar a:hover{color:var(--link);text-decoration:none}
+nav.sidebar ol.sub{margin:0 0 4px 1.2em;counter-reset:m}
+nav.sidebar ol.sub li{counter-increment:m}
+nav.sidebar ol.sub a{font-size:12.5px;padding:2px 0}
+.numbered nav.sidebar ol.sub a::before{content:counter(n) "." counter(m);min-width:2.5em}
+main{min-width:0}
+.hero{padding:0 0 14px;border-bottom:1px solid var(--line)}
+.hero h1{margin:0 0 8px;font-size:28px;line-height:1.3;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.chip:not(:last-child)::after{content:"·";margin:0 .6em}
+.chip b{font-weight:600;margin-right:.4em}
+.chip .age.stale{font-weight:600;color:var(--warn-fg)}
+.hero code{font-size:.92em}
+.statusbar{margin-top:8px;font-size:13px}
+.stat{margin-right:1.3em;color:var(--fg);white-space:nowrap}a.stat:hover{text-decoration:underline}
+.stat b{font-weight:600}.stat.danger b{color:var(--danger-fg)}.stat.warn b{color:var(--warn-fg)}.stat.accent b{color:var(--accent-fg)}
+.content{counter-reset:sec;padding:0}
+.content>p,.content>ul,.content>ol,.content>details>p,.content>details>ul{max-width:48em}
+html:lang(en) .content>p,html:lang(en) .content>ul,html:lang(en) .content>ol,html:lang(en) .content>details>p,html:lang(en) .content>details>ul{max-width:42em}
+h1,h2,h3,h4{line-height:1.3;color:var(--fg);font-weight:600}
+.content h2{counter-increment:sec;counter-reset:sub;font-size:22px;margin:2em 0 .6em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+.numbered .content h2::before{content:counter(sec) ".";margin-right:.45em;color:var(--muted);font-weight:400}
+.content h3{counter-increment:sub;font-size:17px;margin:1.6em 0 .5em}
+.numbered .content h3::before{content:counter(sec) "." counter(sub);margin-right:.45em;color:var(--muted);font-weight:400}
+.content h4{font-size:15px;margin:1.3em 0 .4em}
+.anchor{margin-left:.4em;opacity:0;font-weight:400;font-size:.8em;color:var(--muted)}
+h2:hover .anchor,h3:hover .anchor,.anchor:focus{opacity:1}
+p,ul,ol,pre,figure,.tbl,.callout,details{margin:0 0 1em}
+li{margin:.25em 0}
+p.sub{margin:1.4em 0 .4em}
+p.caption{margin-top:-.2em;color:var(--muted);font-size:14px}
+code{font:.9em/1.4 Consolas,"Cascadia Mono",monospace;color:var(--code-fg)}
+pre{position:relative;background:var(--soft);padding:12px 16px;border-radius:6px;overflow-x:auto;border:1px solid var(--line);line-height:1.5}
+pre code{color:inherit}
+pre[data-lang]::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:11px;line-height:1;color:var(--muted)}
+.tk-file{color:var(--tk-tag)}.tk-flag,.tk-num,.tk-const,.tk-lit{color:var(--tk-number)}.tk-fn{color:var(--tk-fn)}.tk-var{color:var(--tk-var)}.tk-str{color:var(--tk-string)}.tk-arg{color:var(--fg)}.tk-op,.tk-kw{color:var(--tk-keyword)}
+.hljs-comment,.hljs-quote{color:var(--tk-comment)}
+.hljs-keyword,.hljs-doctag,.hljs-template-tag,.hljs-meta,.hljs-meta .hljs-keyword{color:var(--tk-keyword)}
+.hljs-string,.hljs-regexp,.hljs-meta .hljs-string{color:var(--tk-string)}
+.hljs-number,.hljs-literal,.hljs-symbol,.hljs-bullet,.hljs-attr,.hljs-attribute,.hljs-property,.hljs-selector-id,.hljs-selector-class,.hljs-selector-attr{color:var(--tk-number)}
+.hljs-title,.hljs-title.function_,.hljs-built_in{color:var(--tk-fn)}
+.hljs-title.class_,.hljs-type,.hljs-variable,.hljs-template-variable{color:var(--tk-var)}
+.hljs-name,.hljs-tag,.hljs-selector-tag{color:var(--tk-tag)}
+.hljs-section{color:var(--tk-number);font-weight:600}.hljs-strong{font-weight:600}.hljs-emphasis{font-style:italic}
+.hljs-addition{color:var(--tk-tag);background:var(--success-bg)}.hljs-deletion{color:var(--tk-del);background:var(--danger-bg)}
+blockquote{margin:0 0 1em;padding:0 1em;color:var(--muted);border-left:3px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+strong{font-weight:600}
+strong.kw{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:.5em;text-underline-offset:-.3em;text-decoration-skip-ink:none}
+mark{padding:0 .2em;border-radius:3px;background:var(--mark);color:inherit}
+kbd{padding:.1em .45em;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;background:var(--soft);font:.85em Consolas,"Cascadia Mono",monospace}
+p.lead,ul.lead,ol.lead{border-left:3px solid var(--link);font-size:16px}
+p.lead{padding-left:14px}
+ul.lead,ol.lead{padding-left:2.2em}
+td.key{font-weight:600}
+.callout{padding:10px 14px;background:var(--soft);border-left:3px solid var(--neutral-fg);border-radius:0 6px 6px 0;color:var(--fg)}
+.content>.callout{max-width:60em}
+.callout>*:last-child{margin-bottom:0}
+.callout p{max-width:none}
+.callout-title{margin-bottom:4px;font-size:14px;font-weight:600;color:var(--neutral-fg)}
+.callout.note{border-left-color:var(--info-fg)}.callout.note .callout-title{color:var(--info-fg)}
+.callout.key,.callout.action{padding:12px 16px;border-left-width:4px;font-size:16px}
+.callout.key .callout-title,.callout.action .callout-title{font-size:15px}
+.callout.key{background:var(--info-bg);border-left-color:var(--link)}.callout.key .callout-title{color:var(--info-fg)}
+.callout.action{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.action .callout-title{color:var(--accent-fg)}
+.callout.tip,.callout.tldr{background:var(--success-bg);border-left-color:var(--success-fg)}.callout.tip .callout-title,.callout.tldr .callout-title{color:var(--success-fg)}
+.callout.important{background:var(--accent-bg);border-left-color:var(--accent-fg)}.callout.important .callout-title{color:var(--accent-fg)}
+.callout.warning{background:var(--warn-bg);border-left-color:var(--warn-fg)}.callout.warning .callout-title{color:var(--warn-fg)}
+.callout.caution{background:var(--danger-bg);border-left-color:var(--danger-fg)}.callout.caution .callout-title{color:var(--danger-fg)}
+.callout.tldr ul{margin:.2em 0 .3em;padding-left:1.2em}
+details.basis{padding:2px 0 2px 12px;border-left:3px solid var(--line);color:var(--muted);font-size:14px}
+details.basis summary{cursor:pointer;font-weight:600}
+details.basis[open] summary{margin-bottom:4px}
+details.fold{margin:2em 0 1em;border-top:1px solid var(--line)}
+details.fold>summary{cursor:pointer;list-style:none}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary h2{display:flex;align-items:baseline;margin:0;padding:.6em 0;border:0;font-size:18px}
+details.fold>summary h2::after{content:"▸";margin-left:.5em;color:var(--muted);font-size:.75em}
+details.fold[open]>summary h2::after{content:"▾"}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55}
+.tbl th{padding:6px 12px;border:1px solid var(--line);background:var(--soft);font-weight:600;text-align:left;white-space:nowrap}
+.tbl td{padding:6px 12px;border:1px solid var(--line);vertical-align:top}
+.tbl code{font-size:.88em;overflow-wrap:break-word}
+.tbl td.fit,.tbl th.fit{white-space:nowrap}
+.cell-list{margin:0;padding-left:1.15em}
+.cell-list li{margin:.2em 0}
+td.id{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;padding:0 8px;border:1px solid var(--neutral-bd);border-radius:4px;background:var(--neutral-bg);color:var(--neutral-fg);font-size:12px;font-weight:600;line-height:1.7;white-space:nowrap}
+.tone-info{background:var(--info-bg);color:var(--info-fg);border-color:var(--info-bd)}
+.tone-success{background:var(--success-bg);color:var(--success-fg);border-color:var(--success-bd)}
+.tone-warn{background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-bd)}
+.tone-danger{background:var(--danger-bg);color:var(--danger-fg);border-color:var(--danger-bd)}
+.tone-accent{background:var(--accent-bg);color:var(--accent-fg);border-color:var(--accent-bd)}
+.tag.verdict{padding:1px 12px;font-size:14px}
+.status-note{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+.infer{border-bottom:1px dotted var(--warn-fg);cursor:help}
+ul.tasks{list-style:none;padding-left:.2em}
+li.task::before{content:"☐";margin-right:.55em;color:var(--muted)}
+li.task.done::before{content:"☑";color:var(--success-fg)}
+figure.mermaid-figure,pre.mermaid{margin:1.2em 0;padding:16px 8px;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#fff;color:#1f2937;text-align:center}
+figure.mermaid-figure svg{max-width:100%;height:auto}
+.fig{position:relative}
+.fig figure.mermaid-figure svg{width:min(100%,calc(var(--w)*.85));max-height:max(85vh,calc(var(--h)*.7));max-width:none!important;height:auto}
+.fig-toggle:checked~figure.mermaid-figure svg{width:var(--w);max-height:none}
+.fig .fig-zoom{display:block!important;position:absolute;top:calc(1.2em + 8px);right:10px;z-index:1;padding:1px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--muted);font-size:12px;line-height:1.6;cursor:pointer}
+.fig .fig-zoom::after{content:attr(data-off)}
+.fig-toggle:checked~.fig-zoom::after{content:attr(data-on)}
+.fig .fig-zoom:hover{color:var(--link);border-color:var(--link)}
+.fig-toggle:focus-visible~.fig-zoom{outline:2px solid var(--link);outline-offset:2px}
+.mermaid-error{text-align:left;color:#b42318;background:#fef3f2;border:1px solid #fecdca}
+footer{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+@media (max-width:1000px){.resizer{display:none}.layout{grid-template-columns:1fr;gap:16px;padding:20px 16px}nav.sidebar{position:static;width:auto!important;max-width:none;max-height:none;resize:none;padding-bottom:12px;border-bottom:1px solid var(--line)}}
+@media print{.progress,.resizer,.fig .fig-zoom{display:none!important}.fig figure.mermaid-figure svg{width:min(100%,var(--w))!important;max-height:none!important}body{font-size:11pt}.layout{display:block;padding:0}nav.sidebar,.skip,.anchor{display:none}.hero{border-bottom:2px solid #000}.tbl,figure,.callout,tr{break-inside:avoid}.tbl{overflow:visible}details.fold{border:0}a{color:inherit}}
+</style>
+</head>
+<body id="top" class="numbered">
+<a class="skip" href="#content">跳到正文</a>
+<div class="progress" aria-hidden="true"></div>
+<div class="layout">
+<nav class="sidebar" aria-label="目录"><div class="nav-title">目录</div><ol><li><a href="#overview">Overview</a></li><li><a href="#核心事实-key-facts已核对">核心事实 Key Facts（已核对）</a></li><li><a href="#架构分层appsystem_serverhal-与内核">架构分层：App、system_server、HAL 与内核</a></li><li><a href="#usb-host-api-要点">USB Host API 要点</a></li><li><a href="#accessory-模式与-aoaandroid-作为-usb-设备">Accessory 模式与 AOA（Android 作为 USB 设备）</a></li><li><a href="#设备侧gadget-halconfigfsmtpptp">设备侧：Gadget HAL、ConfigFS、MTP/PTP</a></li><li><a href="#hidusb-与蓝牙ble">HID：USB 与蓝牙/BLE</a></li><li><a href="#电源与-type-c">电源与 Type-C</a></li><li><a href="#调试工具">调试工具</a></li><li><a href="#与-windows-的映射">与 Windows 的映射</a></li><li><a href="#参考来源">参考来源</a><ol class="sub"><li><a href="#来源组-1">来源组 1</a></li><li><a href="#来源组-2">来源组 2</a></li><li><a href="#来源组-3">来源组 3</a></li></ol></li><li><a href="#待确认项">待确认项</a></li></ol></nav>
+<main id="content">
+<header class="hero"><h1>架构文档：Android USB（Host API、AOA、Gadget HAL 与 HID）</h1><div class="chips"><span class="chip"><b>类型</b>arch</span><span class="chip"><b>模式</b>Reverse</span><span class="chip"><b>代码基线</b>&lt;code&gt;developer.android.com、source.android.com（含 Android 15 CDD）、android.googlesource.com（2026-11-28 抓取）&lt;/code&gt;</span><span class="chip"><b>最后核对</b>2026-11-28 <span class="age">· 今天核对</span></span><span class="chip"><b>范围</b>&lt;code&gt;android.hardware.usb, AOA/AOAv2, USB HAL, Gadget HAL, MTP/PTP, 输入链路&lt;/code&gt;</span><span class="chip">约 7 分钟读完</span></div><div class="statusbar"><a class="stat accent" href="#待确认项"><b>9</b> 待确认</a></div></header>
+<div class="content">
+
+
+<h2 id="overview">Overview<a class="anchor" href="#overview" aria-label="链接到本节">#</a></h2>
+<p class="lead">Android 在 Linux 内核 USB 栈（见 <a href="07-linux-usb-stack.html">07-linux-usb-stack.html</a>）之上加了框架层：Host API 要 Android <strong class="kw">3.1（API 12）</strong> 以上，外设模式经 AOA（VID <code>0x18D1</code>，PID <code>0x2D00</code>–<code>0x2D05</code>），Android 15 CDD 要求带外设口的手持设备必须实现 AOA。读者是要在手机上做 USB 外设通信、或把手机当虚拟 USB 设备的工程师。</p>
+<div class="callout tldr"><div class="callout-title">TL;DR</div><ul>
+<li>主机模式：<code>UsbManager</code> + 每设备用户授权，不装驱动。</li>
+<li>外设模式：AOA 握手（请求 51 / 52 / 53），AOAv2 还能由配件注入 HID。</li>
+<li>设备侧由 Gadget HAL 通过 ConfigFS 组装，MTP/PTP 用 FunctionFS。</li>
+<li>HID 输入走 内核 HID → evdev → EventHub → InputReader；蓝牙 HID 设备角色用 <code>BluetoothHidDevice</code>（API 28+）。</li>
+</ul></div>
+
+<p>蓝 = 用户空间应用，红 = 内核/系统级驱动，绿 = 用户态驱动或守护进程，橙 = 系统框架，灰 = 硬件与外部。</p>
+<h2 id="核心事实-key-facts已核对">核心事实 Key Facts（已核对）<a class="anchor" href="#核心事实-key-facts已核对" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th class="fit">#</th>
+<th class="fit">事实</th>
+<th>值 / 说明</th>
+<th class="fit">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="id fit">1</td>
+<td class="fit">USB Host 模式</td>
+<td>Android 3.1+ 支持</td>
+<td class="fit">[D1]</td>
+</tr>
+<tr>
+<td class="id fit">1.2</td>
+<td class="fit">USB Host 模式</td>
+<td>API 在 <code class="tk-file">android.hardware.usb</code></td>
+<td class="fit">[D1]</td>
+</tr>
+<tr>
+<td class="id fit">1.3</td>
+<td class="fit">USB Host 模式</td>
+<td>manifest 需 <code>&lt;uses-feature android:name="android.hardware.usb.host"/&gt;</code>，minSdk ≥ 12</td>
+<td class="fit">[D1]</td>
+</tr>
+<tr>
+<td class="id fit">2</td>
+<td class="fit">Host API 主要类</td>
+<td><code>UsbManager</code>（枚举/通信）、<code>UsbDevice</code>、<code>UsbInterface</code>、<code>UsbEndpoint</code>、<code>UsbDeviceConnection</code>（同步/异步传输）、<code>UsbRequest</code>（异步请求）、<code>UsbConstants</code>（对应 Linux <code class="tk-file">linux/usb/ch9.h</code>）</td>
+<td class="fit">[D1]</td>
+</tr>
+<tr>
+<td class="id fit">3</td>
+<td class="fit">UsbDeviceConnection 关键方法</td>
+<td><code>claimInterface(intf, force)</code>、<code class="tk-fn">controlTransfer(...)</code>、<code class="tk-fn">bulkTransfer(...)</code>、<code class="tk-fn">getRawDescriptors()</code>、<code class="tk-fn">getFileDescriptor()</code>（返回原生 fd，可交给 native 代码/libusb）</td>
+<td class="fit">[D3]</td>
+</tr>
+<tr>
+<td class="id fit">4</td>
+<td class="fit">权限模型</td>
+<td>① 通过 intent filter <code>android.hardware.usb.action.USB_DEVICE_ATTACHED</code> + <code class="tk-file">res/xml/device_filter.xml</code>（VID/PID 等）匹配，用户确认后 App 在设备断开前持有权限；② 或显式 <code class="tk-fn">UsbManager.requestPermission()</code> 弹窗，经广播接收结果</td>
+<td class="fit">[D1][D2]</td>
+</tr>
+<tr>
+<td class="id fit">5</td>
+<td class="fit">Accessory 模式</td>
+<td>外部配件作 USB 主机并供电，Android 作设备</td>
+<td class="fit">[D4]</td>
+</tr>
+<tr>
+<td class="id fit">5.2</td>
+<td class="fit">Accessory 模式</td>
+<td>Android 3.1（API 12）引入，回移到 2.3.4（API 10，<code class="tk-file">com.android.future.usb</code> 附加库）</td>
+<td class="fit">[D4]</td>
+</tr>
+<tr>
+<td class="id fit">5.3</td>
+<td class="fit">Accessory 模式</td>
+<td>manifest 用 <code>android.hardware.usb.accessory</code></td>
+<td class="fit">[D4]</td>
+</tr>
+<tr>
+<td class="id fit">6</td>
+<td class="fit">AOA 握手</td>
+<td>配件检查 VID = Google <code>0x18D1</code></td>
+<td class="fit">[D5]</td>
+</tr>
+<tr>
+<td class="id fit">6.2</td>
+<td class="fit">AOA 握手</td>
+<td>PID <code>0x2D00</code>（accessory）或 <code>0x2D01</code>（accessory+adb）表示已在配件模式</td>
+<td class="fit">[D5]</td>
+</tr>
+<tr>
+<td class="id fit">6.3</td>
+<td class="fit">AOA 握手</td>
+<td>否则发厂商请求 <strong>51</strong> Get Protocol → <strong>52</strong> 发送字符串（manufacturer/model/description/version/URI/serial，ID 0–5，每串 ≤256 字节）→ <strong>53</strong> Start，设备重新枚举</td>
+<td class="fit">[D5]</td>
+</tr>
+<tr>
+<td class="id fit">7</td>
+<td class="fit">AOAv2</td>
+<td>新增音频输出（<strong>Android 8.0 已弃用</strong>）与 HID</td>
+<td class="fit">[D6]</td>
+</tr>
+<tr>
+<td class="id fit">7.2</td>
+<td class="fit">AOAv2</td>
+<td>PID <code>0x2D02</code>–<code>0x2D05</code> 为音频组合</td>
+<td class="fit">[D6]</td>
+</tr>
+<tr>
+<td class="id fit">7.3</td>
+<td class="fit">AOAv2</td>
+<td>HID 请求 <code class="tk-const">ACCESSORY_REGISTER_HID</code>=54 等，全部经 EP0 控制请求，无需新接口</td>
+<td class="fit">[D6]</td>
+</tr>
+<tr>
+<td class="id fit">7.4</td>
+<td class="fit">AOAv2</td>
+<td><code class="tk-const">SET_AUDIO_MODE</code>=58</td>
+<td class="fit">[D6]</td>
+</tr>
+<tr>
+<td class="id fit">8</td>
+<td class="fit">CDD：外设模式</td>
+<td>Android 15 手持设备若 USB 口支持外设模式，<strong>MUST 实现 AOA API</strong>；若支持主机模式，<strong>MUST 实现 USB 音频类</strong></td>
+<td class="fit">[D7]</td>
+</tr>
+<tr>
+<td class="id fit">9</td>
+<td class="fit">CDD：存储暴露</td>
+<td>外设模式设备 MUST 提供主机访问共享存储的机制，MAY 用 USB 大容量存储但 SHOULD 用 MTP；SHOULD 报 USB 设备类 0x00、接口名 'MTP'</td>
+<td class="fit">[D7]</td>
+</tr>
+<tr>
+<td class="id fit">10</td>
+<td class="fit">USB HAL</td>
+<td>Android 8.0 起 USB 命令处理从 init 脚本移到原生 USB HAL 守护进程</td>
+<td class="fit">[D8]</td>
+</tr>
+<tr>
+<td class="id fit">10.2</td>
+<td class="fit">USB HAL</td>
+<td>HAL 查询端口状态并执行数据角色/电源角色切换</td>
+<td class="fit">[D8]</td>
+</tr>
+<tr>
+<td class="id fit">10.3</td>
+<td class="fit">USB HAL</td>
+<td>Android 12 Gadget HAL 增加 NCM 与查询 HAL 版本/USB 速率的 API</td>
+<td class="fit">[D8]</td>
+</tr>
+<tr>
+<td class="id fit">11</td>
+<td class="fit">Gadget 实现</td>
+<td>Gadget HAL 通过 <strong>ConfigFS</strong> 组装函数</td>
+<td class="fit">[D9][D10][D11]</td>
+</tr>
+<tr>
+<td class="id fit">11.2</td>
+<td class="fit">Gadget 实现</td>
+<td>MTP/PTP 以 FunctionFS 实例 <code class="tk-file">ffs.mtp</code>/<code class="tk-file">ffs.ptp</code> 实现，端点 <code class="tk-file">/dev/usb-ffs/mtp/ep0..ep3</code></td>
+<td class="fit">[D9][D10][D11]</td>
+</tr>
+<tr>
+<td class="id fit">11.3</td>
+<td class="fit">Gadget 实现</td>
+<td>Android 14 起 UVC 函数加入 <code class="tk-file">GadgetFunction.aidl</code>，同样挂到 ConfigFS</td>
+<td class="fit">[D9][D10][D11]</td>
+</tr>
+<tr>
+<td class="id fit">12</td>
+<td class="fit">USB 摄像头（设备作 UVC）</td>
+<td>Android 14 QPR1+ 可把设备作为 USB 网络摄像头（UVC），由 DeviceAsWebcam 服务提供</td>
+<td class="fit">[D11]</td>
+</tr>
+<tr>
+<td class="id fit">13</td>
+<td class="fit">HID 输入链路</td>
+<td>内核 HID/输入驱动 → Linux input 协议（evdev）→ EventHub 读取 → InputReader 按设备类解码</td>
+<td class="fit">[D12]</td>
+</tr>
+<tr>
+<td class="id fit">14</td>
+<td class="fit">蓝牙 HID 设备角色</td>
+<td><code>BluetoothHidDevice</code>（API 28+）让 Android 充当蓝牙 HID 设备（registerApp/sendReport）；Android 12（S）起需 <code class="tk-const">BLUETOOTH_CONNECT</code> 权限</td>
+<td class="fit">[D13]</td>
+</tr>
+<tr>
+<td class="id fit">15</td>
+<td class="fit">GKI</td>
+<td>统一核心内核，SoC/板级支持移到可加载 vendor 模块，提供稳定 KMI</td>
+<td class="fit">[D14]</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="架构分层appsystem_serverhal-与内核">架构分层：App、system_server、HAL 与内核<a class="anchor" href="#架构分层appsystem_serverhal-与内核" aria-label="链接到本节">#</a></h2>
+<div class="fig large" style="--w:1779.578125px;--h:650px"><input class="fig-toggle" type="checkbox" id="adoc-fig-1" aria-label="查看原始大小" style="position:absolute;opacity:0;width:0;height:0"><figure class="mermaid-figure large"><svg id="adoc-diagram-1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 1779.58px; background-color: white;" viewBox="0 0 1779.578125 650" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#adoc-diagram-1{font-size:14px;fill:#111827;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#adoc-diagram-1 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#adoc-diagram-1 .error-icon{fill:#ffffff;}#adoc-diagram-1 .error-text{fill:#000000;stroke:#000000;}#adoc-diagram-1 .edge-thickness-normal{stroke-width:1px;}#adoc-diagram-1 .edge-thickness-thick{stroke-width:3.5px;}#adoc-diagram-1 .edge-pattern-solid{stroke-dasharray:0;}#adoc-diagram-1 .edge-thickness-invisible{stroke-width:0;fill:none;}#adoc-diagram-1 .edge-pattern-dashed{stroke-dasharray:3;}#adoc-diagram-1 .edge-pattern-dotted{stroke-dasharray:2;}#adoc-diagram-1 .marker{fill:#4b5563;stroke:#4b5563;}#adoc-diagram-1 .marker.cross{stroke:#4b5563;}#adoc-diagram-1 svg{font-size:14px;}#adoc-diagram-1 p{margin:0;}#adoc-diagram-1 .label{color:#111827;}#adoc-diagram-1 .cluster-label text{fill:#000000;}#adoc-diagram-1 .cluster-label span{color:#000000;}#adoc-diagram-1 .cluster-label span p{background-color:transparent;}#adoc-diagram-1 .label text,#adoc-diagram-1 span{fill:#111827;color:#111827;}#adoc-diagram-1 .node rect,#adoc-diagram-1 .node circle,#adoc-diagram-1 .node ellipse,#adoc-diagram-1 .node polygon,#adoc-diagram-1 .node path{fill:#f3f4f6;stroke:#6b7280;stroke-width:1px;}#adoc-diagram-1 .rough-node .label text,#adoc-diagram-1 .node .label text,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-anchor:middle;}#adoc-diagram-1 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#adoc-diagram-1 .rough-node .label,#adoc-diagram-1 .node .label,#adoc-diagram-1 .image-shape .label,#adoc-diagram-1 .icon-shape .label{text-align:center;}#adoc-diagram-1 .node.clickable{cursor:pointer;}#adoc-diagram-1 .root .anchor path{fill:#4b5563!important;stroke-width:0;stroke:#4b5563;}#adoc-diagram-1 .arrowheadPath{fill:#0b0b0b;}#adoc-diagram-1 .edgePaths .path{stroke:#4b5563;stroke-width:1px;}#adoc-diagram-1 .flowchart-link{stroke:#4b5563;fill:none;}#adoc-diagram-1 .edgeLabel{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .edgeLabel p{background-color:#ffffff;}#adoc-diagram-1 .edgeLabel rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .labelBkg{background-color:rgba(255, 255, 255, 0.5);}#adoc-diagram-1 .cluster rect{fill:#ffffff;stroke:hsl(0, 0%, 90%);stroke-width:1px;}#adoc-diagram-1 .cluster text{fill:#000000;}#adoc-diagram-1 .cluster span{color:#000000;}#adoc-diagram-1 .node .collapsed-indicator{fill:hsl(0, 0%, 90%);stroke:none;opacity:0.6;}#adoc-diagram-1 .node .collapsed-separator{stroke:hsl(0, 0%, 90%);stroke-width:0.75px;}#adoc-diagram-1 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-size:12px;background:#ffffff;border:1px solid hsl(0, 0%, 90%);border-radius:2px;pointer-events:none;z-index:100;}#adoc-diagram-1 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#111827;}#adoc-diagram-1 rect.text{fill:none;stroke-width:0;}#adoc-diagram-1 .icon-shape,#adoc-diagram-1 .image-shape{background-color:#ffffff;text-align:center;}#adoc-diagram-1 .icon-shape p,#adoc-diagram-1 .image-shape p{background-color:#ffffff;padding:2px;}#adoc-diagram-1 .icon-shape .label rect,#adoc-diagram-1 .image-shape .label rect{opacity:0.5;background-color:#ffffff;fill:#ffffff;}#adoc-diagram-1 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#adoc-diagram-1 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#adoc-diagram-1 .node .neo-node{stroke:#6b7280;}#adoc-diagram-1 [data-look="neo"].node rect,#adoc-diagram-1 [data-look="neo"].cluster rect,#adoc-diagram-1 [data-look="neo"].node polygon{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].swimlane.cluster rect{filter:none;}#adoc-diagram-1 [data-look="neo"].node path{stroke:url(#adoc-diagram-1-gradient);stroke-width:1px;}#adoc-diagram-1 [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node .neo-line path{stroke:#6b7280;filter:none;}#adoc-diagram-1 [data-look="neo"].node circle{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].node circle .state-start{fill:#000000;}#adoc-diagram-1 [data-look="neo"].icon-shape .icon{fill:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 [data-look="neo"].icon-shape .icon-neo path{stroke:url(#adoc-diagram-1-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#adoc-diagram-1 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#adoc-diagram-1 .renderer&gt;*{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer span{fill:rgb(219, 234, 254)!important;stroke:rgb(37, 99, 235)!important;color:rgb(30, 58, 138)!important;}#adoc-diagram-1 .renderer tspan{fill:rgb(30, 58, 138)!important;}#adoc-diagram-1 .main&gt;*{fill:rgb(255, 237, 213)!important;stroke:rgb(234, 88, 12)!important;color:rgb(124, 45, 18)!important;}#adoc-diagram-1 .main span{fill:rgb(255, 237, 213)!important;stroke:rgb(234, 88, 12)!important;color:rgb(124, 45, 18)!important;}#adoc-diagram-1 .main tspan{fill:rgb(124, 45, 18)!important;}#adoc-diagram-1 .service&gt;*{fill:rgb(220, 252, 231)!important;stroke:rgb(22, 163, 74)!important;color:rgb(20, 83, 45)!important;}#adoc-diagram-1 .service span{fill:rgb(220, 252, 231)!important;stroke:rgb(22, 163, 74)!important;color:rgb(20, 83, 45)!important;}#adoc-diagram-1 .service tspan{fill:rgb(20, 83, 45)!important;}#adoc-diagram-1 .driver&gt;*{fill:rgb(254, 226, 226)!important;stroke:rgb(220, 38, 38)!important;color:rgb(127, 29, 29)!important;}#adoc-diagram-1 .driver span{fill:rgb(254, 226, 226)!important;stroke:rgb(220, 38, 38)!important;color:rgb(127, 29, 29)!important;}#adoc-diagram-1 .driver tspan{fill:rgb(127, 29, 29)!important;}</style><g><marker id="adoc-diagram-1_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"/></marker><marker id="adoc-diagram-1_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"/></marker><g class="root"><g class="clusters"><g class="cluster" id="adoc-diagram-1-KN" data-look="classic"><rect style="fill:#fee2e255 !important;stroke:#dc2626 !important;stroke-opacity:0.5 !important" x="8" y="394" width="1068.40625" height="101"/><g class="cluster-label" transform="translate(438.1328125, 394)"><foreignObject width="208.140625" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel" style="color:#7f1d1d !important"><p>Linux 内核（GKI + vendor 模块）</p></span></div></foreignObject></g></g><g class="cluster" id="adoc-diagram-1-HAL" data-look="classic"><rect style="fill:#dcfce755 !important;stroke:#16a34a !important;stroke-opacity:0.5 !important" x="22.4140625" y="201" width="748.8515625" height="122"/><g class="cluster-label" transform="translate(383.22265625, 201)"><foreignObject width="27.234375" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel" style="color:#14532d !important"><p>HAL</p></span></div></foreignObject></g></g><g class="cluster" id="adoc-diagram-1-FW" data-look="classic"><rect style="fill:#ffedd555 !important;stroke:#ea580c !important;stroke-opacity:0.5 !important" x="1096.40625" y="201" width="564.58203125" height="441"/><g class="cluster-label" transform="translate(1333.181640625, 201)"><foreignObject width="91.03125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel" style="color:#7c2d12 !important"><p>system_server</p></span></div></foreignObject></g></g><g class="cluster" id="adoc-diagram-1-APP" data-look="classic"><rect style="fill:#dbeafe55 !important;stroke:#2563eb !important;stroke-opacity:0.5 !important" x="1101.65625" y="8" width="669.921875" height="122"/><g class="cluster-label" transform="translate(1424.15625, 8)"><foreignObject width="24.921875" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel" style="color:#1e3a8a !important"><p>App</p></span></div></foreignObject></g></g></g><g class="edgePaths"><path d="M1207.297,105L1207.297,109.167C1207.297,113.333,1207.297,121.667,1207.297,131.75C1207.297,141.833,1207.297,153.667,1207.297,165.5C1207.297,177.333,1207.297,189.167,1213.372,198.896C1219.447,208.625,1231.597,216.249,1237.673,220.062L1243.748,223.874" id="adoc-diagram-1-L_H_US_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_H_US_0" data-points="W3sieCI6MTIwNy4yOTY4NzUsInkiOjEwNX0seyJ4IjoxMjA3LjI5Njg3NSwieSI6MTMwfSx7IngiOjEyMDcuMjk2ODc1LCJ5IjoxNjUuNX0seyJ4IjoxMjA3LjI5Njg3NSwieSI6MjAxfSx7IngiOjEyNDcuMTM1ODIyMjMzNjA2NiwieSI6MjI2fV0=" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M1401.711,105L1401.711,109.167C1401.711,113.333,1401.711,121.667,1401.711,131.75C1401.711,141.833,1401.711,153.667,1401.711,165.5C1401.711,177.333,1401.711,189.167,1395.636,198.896C1389.561,208.625,1377.41,216.249,1371.335,220.062L1365.26,223.874" id="adoc-diagram-1-L_AC_US_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_AC_US_0" data-points="W3sieCI6MTQwMS43MTA5Mzc1LCJ5IjoxMDV9LHsieCI6MTQwMS43MTA5Mzc1LCJ5IjoxMzB9LHsieCI6MTQwMS43MTA5Mzc1LCJ5IjoxNjUuNX0seyJ4IjoxNDAxLjcxMDkzNzUsInkiOjIwMX0seyJ4IjoxMzYxLjg3MTk5MDI2NjM5MzQsInkiOjIyNn1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M1249.858,298L1243.534,302.167C1237.209,306.333,1224.56,314.667,1218.235,324.75C1211.91,334.833,1211.91,346.667,1211.91,358.5C1211.91,370.333,1211.91,382.167,1134.751,394.865C1057.591,407.564,903.272,421.128,826.113,427.91L748.953,434.692" id="adoc-diagram-1-L_US_UC_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_US_UC_0" data-points="W3sieCI6MTI0OS44NTg0MTQ0NDY3MjEzLCJ5IjoyOTh9LHsieCI6MTIxMS45MTAxNTYyNSwieSI6MzIzfSx7IngiOjEyMTEuOTEwMTU2MjUsInkiOjM1OC41fSx7IngiOjEyMTEuOTEwMTU2MjUsInkiOjM5NH0seyJ4Ijo3NDQuOTY4NzUsInkiOjQzNS4wNDIyNTg0NTI3MTAzN31d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M1366.443,298L1373.612,302.167C1380.781,306.333,1395.119,314.667,1402.288,324.75C1409.457,334.833,1409.457,346.667,1409.457,358.5C1409.457,370.333,1409.457,382.167,1349.612,394.204C1289.767,406.241,1170.076,418.483,1110.231,424.603L1050.385,430.724" id="adoc-diagram-1-L_US_G_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_US_G_0" data-points="W3sieCI6MTM2Ni40NDM0NTU0MzAzMjgsInkiOjI5OH0seyJ4IjoxNDA5LjQ1NzAzMTI1LCJ5IjozMjN9LHsieCI6MTQwOS40NTcwMzEyNSwieSI6MzU4LjV9LHsieCI6MTQwOS40NTcwMzEyNSwieSI6Mzk0fSx7IngiOjEwNDYuNDA2MjUsInkiOjQzMS4xMzA4MTM2NTQ1MjMxNH1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M635.789,298L635.789,302.167C635.789,306.333,635.789,314.667,635.789,324.75C635.789,334.833,635.789,346.667,635.789,358.5C635.789,370.333,635.789,382.167,659.996,392.451C684.203,402.735,732.618,411.47,756.825,415.838L781.032,420.205" id="adoc-diagram-1-L_GH_G_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_GH_G_0" data-points="W3sieCI6NjM1Ljc4OTA2MjUsInkiOjI5OH0seyJ4Ijo2MzUuNzg5MDYyNSwieSI6MzIzfSx7IngiOjYzNS43ODkwNjI1LCJ5IjozNTguNX0seyJ4Ijo2MzUuNzg5MDYyNSwieSI6Mzk0fSx7IngiOjc4NC45Njg3NSwieSI6NDIwLjkxNTM4NTA0NDc5ODZ9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M1563.637,287.5L1563.637,293.417C1563.637,299.333,1563.637,311.167,1563.637,323C1563.637,334.833,1563.637,346.667,1563.637,358.5C1563.637,370.333,1563.637,382.167,1478.096,394.75C1392.556,407.334,1221.475,420.667,1135.935,427.334L1050.394,434.001" id="adoc-diagram-1-L_MTP_G_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_MTP_G_0" data-points="W3sieCI6MTU2My42MzY3MTg3NSwieSI6Mjg3LjV9LHsieCI6MTU2My42MzY3MTg3NSwieSI6MzIzfSx7IngiOjE1NjMuNjM2NzE4NzUsInkiOjM1OC41fSx7IngiOjE1NjMuNjM2NzE4NzUsInkiOjM5NH0seyJ4IjoxMDQ2LjQwNjI1LCJ5Ijo0MzQuMzEyMDE1MDcxNTkwMDV9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M131.414,298L131.414,302.167C131.414,306.333,131.414,314.667,131.414,324.75C131.414,334.833,131.414,346.667,131.414,358.5C131.414,370.333,131.414,382.167,131.414,391.583C131.414,401,131.414,408,131.414,411.5L131.414,415" id="adoc-diagram-1-L_UH_TC_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_UH_TC_0" data-points="W3sieCI6MTMxLjQxNDA2MjUsInkiOjI5OH0seyJ4IjoxMzEuNDE0MDYyNSwieSI6MzIzfSx7IngiOjEzMS40MTQwNjI1LCJ5IjozNTguNX0seyJ4IjoxMzEuNDE0MDYyNSwieSI6Mzk0fSx7IngiOjEzMS40MTQwNjI1LCJ5Ijo0MTl9XQ==" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/><path d="M377.297,470L377.297,474.167C377.297,478.333,377.297,486.667,542.004,495C706.711,503.333,1036.125,511.667,1200.832,519.333C1365.539,527,1365.539,534,1365.539,537.5L1365.539,541" id="adoc-diagram-1-L_HK_IN_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_HK_IN_0" data-points="W3sieCI6Mzc3LjI5Njg3NSwieSI6NDcwfSx7IngiOjM3Ny4yOTY4NzUsInkiOjQ5NX0seyJ4IjoxMzY1LjUzOTA2MjUsInkiOjUyMH0seyJ4IjoxMzY1LjUzOTA2MjUsInkiOjU0NX1d" data-look="classic" marker-end="url(#adoc-diagram-1_flowchart-v2-pointEnd)"/></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(1207.296875, 165.5)"><g class="label" data-id="L_H_US_0" transform="translate(-28.4609375, -10.5)"><foreignObject width="56.921875" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>①</b> Binder</p></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_AC_US_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1211.91015625, 358.5)"><g class="label" data-id="L_US_UC_0" transform="translate(-29.2265625, -10.5)"><foreignObject width="58.453125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>②</b> 主机侧</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1409.45703125, 358.5)"><g class="label" data-id="L_US_G_0" transform="translate(-29.2265625, -10.5)"><foreignObject width="58.453125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>③</b> 设备侧</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(635.7890625, 358.5)"><g class="label" data-id="L_GH_G_0" transform="translate(-37.40625, -10.5)"><foreignObject width="74.8125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p><b>④</b> ConfigFS</p></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_MTP_G_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_UH_TC_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_HK_IN_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default renderer" id="adoc-diagram-1-flowchart-H-0" data-look="classic" transform="translate(1207.296875, 69)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-75.640625" y="-36" width="151.28125" height="72"/><g class="label" style="color:#1e3a8a !important" transform="translate(-45.640625, -21)"><rect/><foreignObject width="91.28125" height="42"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>USB Host API</b><br /><span style="color:#6b7280font-size:12px">UsbManager</span></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-AC-1" data-look="classic" transform="translate(1401.7109375, 69)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-78.7734375" y="-36" width="157.546875" height="72"/><g class="label" style="color:#1e3a8a !important" transform="translate(-48.7734375, -21)"><rect/><foreignObject width="97.546875" height="42"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>Accessory API</b><br /><span style="color:#6b7280font-size:12px">UsbAccessory</span></p></span></div></foreignObject></g></g><g class="node default renderer" id="adoc-diagram-1-flowchart-BT-2" data-look="classic" transform="translate(1631.03125, 69)"><rect class="basic label-container" style="fill:#dbeafe !important;stroke:#2563eb !important" x="-110.546875" y="-36" width="221.09375" height="72"/><g class="label" style="color:#1e3a8a !important" transform="translate(-80.546875, -21)"><rect/><foreignObject width="161.09375" height="42"><div style="color: rgb(30, 58, 138) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#1e3a8a !important" class="nodeLabel"><p><b>android.bluetooth</b><br /><span style="color:#6b7280font-size:12px">BLE / BluetoothHidDevice</span></p></span></div></foreignObject></g></g><g class="node default main" id="adoc-diagram-1-flowchart-US-3" data-look="classic" transform="translate(1304.50390625, 262)"><rect class="basic label-container" style="fill:#ffedd5 !important;stroke:#ea580c !important" x="-151.78125" y="-36" width="303.5625" height="72"/><g class="label" style="color:#7c2d12 !important" transform="translate(-121.78125, -21)"><rect/><foreignObject width="243.5625" height="42"><div style="color: rgb(124, 45, 18) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7c2d12 !important" class="nodeLabel"><p><b>UsbService</b><br /><span style="color:#6b7280font-size:12px">UsbHostManager / UsbDeviceManager</span></p></span></div></foreignObject></g></g><g class="node default main" id="adoc-diagram-1-flowchart-IN-4" data-look="classic" transform="translate(1365.5390625, 581)"><rect class="basic label-container" style="fill:#ffedd5 !important;stroke:#ea580c !important" x="-110.1640625" y="-36" width="220.328125" height="72"/><g class="label" style="color:#7c2d12 !important" transform="translate(-80.1640625, -21)"><rect/><foreignObject width="160.328125" height="42"><div style="color: rgb(124, 45, 18) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7c2d12 !important" class="nodeLabel"><p><b>InputFlinger</b><br /><span style="color:#6b7280font-size:12px">EventHub → InputReader</span></p></span></div></foreignObject></g></g><g class="node default main" id="adoc-diagram-1-flowchart-MTP-5" data-look="classic" transform="translate(1563.63671875, 262)"><rect class="basic label-container" style="fill:#ffedd5 !important;stroke:#ea580c !important" x="-67.3515625" y="-25.5" width="134.703125" height="51"/><g class="label" style="color:#7c2d12 !important" transform="translate(-37.3515625, -10.5)"><rect/><foreignObject width="74.703125" height="21"><div style="color: rgb(124, 45, 18) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7c2d12 !important" class="nodeLabel"><p><b>MtpService</b></p></span></div></foreignObject></g></g><g class="node default service" id="adoc-diagram-1-flowchart-UH-6" data-look="classic" transform="translate(131.4140625, 262)"><rect class="basic label-container" style="fill:#dcfce7 !important;stroke:#16a34a !important" x="-79" y="-36" width="158" height="72"/><g class="label" style="color:#14532d !important" transform="translate(-49, -21)"><rect/><foreignObject width="98" height="42"><div style="color: rgb(20, 83, 45) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#14532d !important" class="nodeLabel"><p><b>USB HAL</b><br /><span style="color:#6b7280font-size:12px">端口状态与角色</span></p></span></div></foreignObject></g></g><g class="node default service" id="adoc-diagram-1-flowchart-GH-7" data-look="classic" transform="translate(635.7890625, 262)"><rect class="basic label-container" style="fill:#dcfce7 !important;stroke:#16a34a !important" x="-105.4765625" y="-36" width="210.953125" height="72"/><g class="label" style="color:#14532d !important" transform="translate(-75.4765625, -21)"><rect/><foreignObject width="150.953125" height="42"><div style="color: rgb(20, 83, 45) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#14532d !important" class="nodeLabel"><p><b>Gadget HAL</b><br /><span style="color:#6b7280font-size:12px">setCurrentUsbFunctions</span></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-UC-8" data-look="classic" transform="translate(637.3671875, 444.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-107.6015625" y="-25.5" width="215.203125" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-77.6015625, -10.5)"><rect/><foreignObject width="155.203125" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>usbcore + xHCI / DWC3</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-HK-9" data-look="classic" transform="translate(377.296875, 444.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-112.46875" y="-25.5" width="224.9375" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-82.46875, -10.5)"><rect/><foreignObject width="164.9375" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>HID core → input / evdev</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-G-10" data-look="classic" transform="translate(915.6875, 444.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-130.71875" y="-25.5" width="261.4375" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-100.71875, -10.5)"><rect/><foreignObject width="201.4375" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>ConfigFS + FunctionFS + UDC</b></p></span></div></foreignObject></g></g><g class="node default driver" id="adoc-diagram-1-flowchart-TC-11" data-look="classic" transform="translate(131.4140625, 444.5)"><rect class="basic label-container" style="fill:#fee2e2 !important;stroke:#dc2626 !important" x="-93.4140625" y="-25.5" width="186.828125" height="51"/><g class="label" style="color:#7f1d1d !important" transform="translate(-63.4140625, -10.5)"><rect/><foreignObject width="126.828125" height="21"><div style="color: rgb(127, 29, 29) !important; display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 360px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#7f1d1d !important" class="nodeLabel"><p><b>typec class / TCPM</b></p></span></div></foreignObject></g></g></g></g></g><defs><filter id="adoc-diagram-1-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><defs><filter id="adoc-diagram-1-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><linearGradient id="adoc-diagram-1-gradient" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6b7280" stop-opacity="1"/><stop offset="100%" stop-color="hsl(100, 0%, 85.8823529412%)" stop-opacity="1"/></linearGradient></svg></figure><label class="fig-zoom" for="adoc-fig-1" data-off="查看原始大小" data-on="适应宽度" style="display:none"></label></div>
+<p class="caption">① 到 ④ 是 App 与 HAL 进入内核的四条入口；主机侧与设备侧在内核里分属不同子系统，不要混为一条链。</p>
+<ul>
+<li><code>UsbDeviceManager</code> 通过 Gadget HAL 设置函数，并在 MTP/PTP 启用时绑定 MtpService [D15]。</li>
+</ul>
+<h2 id="usb-host-api-要点">USB Host API 要点<a class="anchor" href="#usb-host-api-要点" aria-label="链接到本节">#</a></h2>
+<ol>
+<li>Manifest：<code>uses-feature android.hardware.usb.host</code>；如需插入自动拉起，Activity 加 <code class="tk-const">USB_DEVICE_ATTACHED</code> intent filter 与 <code class="tk-file">device_filter.xml</code> [D1]。</li>
+<li>权限：自动匹配时用户确认即授权到断开；否则 <code class="tk-fn">requestPermission()</code> [D1][D2]。</li>
+<li>传输：<code>claimInterface</code> → <code>controlTransfer</code>/<code>bulkTransfer</code>（同步）或 <code>UsbRequest</code>（异步，可用于中断端点）[D1][D3]。</li>
+<li>Native：<code class="tk-fn">getFileDescriptor()</code> 取 fd，交给 NDK/libusb 处理（libusb 在 Android 上的使用方式见其官方文档，<strong class="kw">待核实</strong>）[D3]。</li>
+<li>HID 设备：系统内核 HID 驱动会接管标准键鼠/手柄（进入输入子系统）[D12]；App 若用 Host API 直接访问 HID 接口是否需要/能够 <code>force</code> claim 依具体设备与系统版本，<strong class="kw">待核实</strong>。</li>
+</ol>
+<h2 id="accessory-模式与-aoaandroid-作为-usb-设备">Accessory 模式与 AOA（Android 作为 USB 设备）<a class="anchor" href="#accessory-模式与-aoaandroid-作为-usb-设备" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>适用：Android 不能/不想当主机时，由外部配件（MCU、车机）当主机 [D4]。</li>
+<li>握手流程见 Key Facts #6；<code>0x2D01</code> 额外提供 ADB 接口，便于开发调试 [D5][D6]。</li>
+<li>AOAv2 HID：配件可经 EP0 向 Android 注册多个虚拟 HID 设备（<code class="tk-const">ACCESSORY_REGISTER_HID</code> / <code class="tk-const">ACCESSORY_UNREGISTER_HID</code> / <code class="tk-const">ACCESSORY_SET_HID_REPORT_DESC</code> / <code class="tk-const">ACCESSORY_SEND_HID_EVENT</code>）——这是<strong class="kw">无需 Android 当主机就让外设向手机注入 HID</strong> 的官方机制 [D6]。</li>
+<li>CDD 要求手持设备的外设口实现 AOA [D7]。</li>
+</ul>
+<h2 id="设备侧gadget-halconfigfsmtpptp">设备侧：Gadget HAL、ConfigFS、MTP/PTP<a class="anchor" href="#设备侧gadget-halconfigfsmtpptp" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>Android 8.0 引入 USB HAL，替代设备特定 init 脚本，原因包括 sysfs 写失败无法回传、init 操作受限等 [D8]。</li>
+<li>Gadget 函数（adb、mtp、ptp、rndis/ncm、midi、uvc…）通过 ConfigFS 组合；adb、MTP/PTP 走 FunctionFS（<code class="tk-file">/dev/usb-ffs/adb</code>、<code class="tk-file">/dev/usb-ffs/mtp</code>）[D9][D10][D11]。</li>
+<li>MTP：CDD 建议使用 MTP 暴露共享存储、兼容 Android File Transfer 参考主机 [D7]；原生实现位于 <code class="tk-file">frameworks/av/media/mtp</code>（MtpFfsHandle 等）[D10]。</li>
+<li>研究虚拟 USB：Android 设备 = 现成的 Linux gadget 平台；root/工程机上可直接操作 ConfigFS（见 <a href="07-linux-usb-stack.html">07-linux-usb-stack.html</a> 的“设备侧”节），但量产设备由 Gadget HAL 独占管理（<strong class="lead-in">待核实</strong>：权限/SELinux 细节因厂商而异）。</li>
+</ul>
+<h2 id="hidusb-与蓝牙ble">HID：USB 与蓝牙/BLE<a class="anchor" href="#hidusb-与蓝牙ble" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>USB HID：内核 HID 驱动 → evdev → EventHub/InputReader；键盘布局/键码映射通过 <code>.kl</code>/<code>.kcm</code>/<code>.idc</code> 配置文件 [D12][D16]。</li>
+<li>CDD 对 USB-C 耳机 HID 按键规定了映射（如 Usage Page 0x0C Usage 0x0CD → <code class="tk-const">KEY_PLAYPAUSE</code> → <code class="tk-const">KEYCODE_MEDIA_PLAY_PAUSE</code>）[D7]。</li>
+<li>BLE：平台内建 BLE <strong class="kw">中心角色</strong>支持并提供 API（发现、查询服务、传输）[D17]；BLE HID 键鼠（HoG）由系统蓝牙栈处理（内部实现，如是否经 uhid，<strong class="kw">待核实</strong>）。</li>
+<li>Android 作为 HID 设备：经典蓝牙 <code>BluetoothHidDevice</code>（API 28+）[D13]；USB 方向可用 AOAv2 HID（由配件注入）或 gadget <code>f_hid</code>（需系统/厂商支持，<strong class="kw">待核实</strong>）。</li>
+</ul>
+<h2 id="电源与-type-c">电源与 Type-C<a class="anchor" href="#电源与-type-c" aria-label="链接到本节">#</a></h2>
+<ul>
+<li>USB HAL 负责查询端口状态与数据/电源角色切换 [D8]；底层是 Linux typec class/TCPM（见 <code class="tk-file">08-arm-embedded-usb.md</code>）。</li>
+<li>主机侧 autosuspend 由内核 runtime PM 管理（同 Linux）；Android 特有策略 <strong class="kw">待核实</strong>。</li>
+</ul>
+<h2 id="调试工具">调试工具<a class="anchor" href="#调试工具" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>adb shell dumpsys usb</code></td>
+<td>UsbService 状态（端口、函数、设备）</td>
+<td><strong>待核实</strong>（未在本轮抓取的官方页面中出现）</td>
+</tr>
+<tr>
+<td><code>adb shell getevent</code></td>
+<td>查看输入事件（HID → evdev）</td>
+<td><strong>待核实</strong></td>
+</tr>
+<tr>
+<td>usbmon（需 root/debugfs）</td>
+<td>同 Linux</td>
+<td>[L7]（见 <code class="tk-file">07-linux-usb-stack.md</code>）</td>
+</tr>
+<tr>
+<td>外部 PC 抓包（Wireshark/USBPcap）观察 AOA 握手</td>
+<td>—</td>
+<td>见 <code class="tk-file">12-cross-platform-comparison.md</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="与-windows-的映射">与 Windows 的映射<a class="anchor" href="#与-windows-的映射" aria-label="链接到本节">#</a></h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Windows</th>
+<th>Android</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WinUSB + WinUsb_ControlTransfer/ReadPipe</td>
+<td>UsbDeviceConnection.controlTransfer/bulkTransfer [D3]</td>
+</tr>
+<tr>
+<td>SetupDi 枚举 + 设备接口 GUID</td>
+<td>UsbManager.getDeviceList + intent filter [D1][D2]</td>
+</tr>
+<tr>
+<td>INF 绑定驱动</td>
+<td>device_filter.xml + 用户授权（无驱动安装）[D1]</td>
+</tr>
+<tr>
+<td>UFX（function controller）</td>
+<td>Linux gadget + Gadget HAL [D8]</td>
+</tr>
+<tr>
+<td>hidclass → Raw Input</td>
+<td>HID core → evdev → InputReader [D12]</td>
+</tr>
+<tr>
+<td>VHF</td>
+<td>AOAv2 HID（配件侧注入）；系统内部 uhid（<strong>待核实</strong>）[D6]</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="参考来源">参考来源<a class="anchor" href="#参考来源" aria-label="链接到本节">#</a></h2>
+<h3 id="来源组-1">来源组 1<a class="anchor" href="#来源组-1" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[D1] USB host overview <a href="https://developer.android.com/develop/connectivity/usb/host">https://developer.android.com/develop/connectivity/usb/host</a></li>
+<li>[D2] UsbManager <a href="https://developer.android.com/reference/android/hardware/usb/UsbManager">https://developer.android.com/reference/android/hardware/usb/UsbManager</a></li>
+<li>[D3] UsbDeviceConnection <a href="https://developer.android.com/reference/android/hardware/usb/UsbDeviceConnection">https://developer.android.com/reference/android/hardware/usb/UsbDeviceConnection</a></li>
+<li>[D4] USB accessory overview <a href="https://developer.android.com/develop/connectivity/usb/accessory">https://developer.android.com/develop/connectivity/usb/accessory</a></li>
+<li>[D5] Android Open Accessory protocol 1.0 <a href="https://source.android.com/docs/core/interaction/accessories/aoa">https://source.android.com/docs/core/interaction/accessories/aoa</a></li>
+<li>[D6] Android Open Accessory 2.0 <a href="https://source.android.com/docs/core/interaction/accessories/aoa2">https://source.android.com/docs/core/interaction/accessories/aoa2</a></li>
+<li>[D7] Android 15 Compatibility Definition（§7.7 USB、§7.6 存储、§7.8.2.2 耳机 HID 映射）<a href="https://source.android.com/docs/compatibility/15/android-15-cdd">https://source.android.com/docs/compatibility/15/android-15-cdd</a></li>
+<li>[D8] Implement USB HAL <a href="https://source.android.com/docs/core/permissions/usb-hal">https://source.android.com/docs/core/permissions/usb-hal</a></li>
+</ul>
+<h3 id="来源组-2">来源组 2<a class="anchor" href="#来源组-2" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[D9] device/google/crosshatch usb/UsbGadget.cpp（ffs.mtp/ffs.ptp 链接示例）<a href="https://android.googlesource.com/device/google/crosshatch/+/master/usb/UsbGadget.cpp">https://android.googlesource.com/device/google/crosshatch/+/master/usb/UsbGadget.cpp</a></li>
+<li>[D10] frameworks/av media/mtp/MtpDescriptors.h（/dev/usb-ffs/mtp/ep0..ep3）<a href="https://android.googlesource.com/platform/frameworks/av/+/master/media/mtp/MtpDescriptors.h">https://android.googlesource.com/platform/frameworks/av/+/master/media/mtp/MtpDescriptors.h</a></li>
+<li>[D11] Use a device as a webcam <a href="https://source.android.com/docs/core/camera/webcam">https://source.android.com/docs/core/camera/webcam</a></li>
+<li>[D12] Input <a href="https://source.android.com/docs/core/interaction/input">https://source.android.com/docs/core/interaction/input</a></li>
+<li>[D13] BluetoothHidDevice <a href="https://developer.android.com/reference/android/bluetooth/BluetoothHidDevice">https://developer.android.com/reference/android/bluetooth/BluetoothHidDevice</a></li>
+<li>[D14] Generic Kernel Image (GKI) project <a href="https://source.android.com/docs/core/architecture/kernel/generic-kernel-image">https://source.android.com/docs/core/architecture/kernel/generic-kernel-image</a></li>
+<li>[D15] frameworks/base UsbDeviceManager.java <a href="https://android.googlesource.com/platform/frameworks/base.git/+/master/services/usb/java/com/android/server/usb/UsbDeviceManager.java">https://android.googlesource.com/platform/frameworks/base.git/+/master/services/usb/java/com/android/server/usb/UsbDeviceManager.java</a></li>
+<li>[D16] Input device configuration files <a href="https://source.android.com/docs/core/interaction/input/input-device-configuration-files">https://source.android.com/docs/core/interaction/input/input-device-configuration-files</a> ；Keyboard devices <a href="https://source.android.com/docs/core/interaction/input/keyboard-devices">https://source.android.com/docs/core/interaction/input/keyboard-devices</a></li>
+</ul>
+<h3 id="来源组-3">来源组 3<a class="anchor" href="#来源组-3" aria-label="链接到本节">#</a></h3>
+<ul>
+<li>[D17] Bluetooth Low Energy overview <a href="https://developer.android.com/develop/connectivity/bluetooth/ble/ble-overview">https://developer.android.com/develop/connectivity/bluetooth/ble/ble-overview</a></li>
+</ul>
+<h2 id="待确认项">待确认项<a class="anchor" href="#待确认项" aria-label="链接到本节">#</a></h2>
+<ul class="tasks">
+<li class="task">…leDescriptor()` 取 fd，交给 NDK/libusb 处理（libusb 在 Android 上的使用方式见其官方文档，<strong class="kw">待核实</strong>）[D3]。…</li>
+<li class="task">…统）[D12]；App 若用 Host API 直接访问 HID 接口是否需要/能够 <code>force</code> claim 依具体设备与系统版本，<strong class="kw">待核实</strong>。…</li>
+<li class="task">…可直接操作 ConfigFS（见 <a href="07-linux-usb-stack.html">07-linux-usb-stack.html</a> 的“设备侧”节），但量产设备由 Gadget HAL 独占管理（<strong class="lead-in">待核实</strong>：权限/SELinux 细节因厂商而异）。…</li>
+<li class="task">…**支持并提供 API（发现、查询服务、传输）[D17]；BLE HID 键鼠（HoG）由系统蓝牙栈处理（内部实现，如是否经 uhid，<strong class="kw">待核实</strong>）。…</li>
+<li class="task">…e<code>（API 28+）[D13]；USB 方向可用 AOAv2 HID（由配件注入）或 gadget </code>f_hid`（需系统/厂商支持，<strong class="kw">待核实</strong>）。…</li>
+<li class="task">…主机侧 autosuspend 由内核 runtime PM 管理（同 Linux）；Android 特有策略 <strong class="kw">待核实</strong>。…</li>
+<li class="task">…<code>adb shell dumpsys usb</code> | UsbService 状态（端口、函数、设备）| <strong class="kw">待核实</strong>（未在本轮抓取的官方页面中出现）…</li>
+<li class="task">…<code>adb shell getevent</code> | 查看输入事件（HID → evdev）| **待核实…</li>
+<li class="task">…VHF | AOAv2 HID（配件侧注入）；系统内部 uhid（<strong class="kw">待核实</strong>）[D6]…</li>
+</ul>
+
+<footer>导出自 11-android-usb.md · 2026-11-28 15:15 · tech-doc export_html (static, Mermaid 11, reader theme)</footer>
+</div>
+</main>
+</div>
+<script>(function () {
+  var nav = document.querySelector("nav.sidebar"), lay = document.querySelector(".layout");
+  if (!nav || !lay || !window.PointerEvent) return;
+  var root = document.documentElement, KEY = "tech-doc:contents-width", MIN = 150, cur = 0;
+  var bar = document.createElement("div");
+  bar.className = "resizer"; bar.tabIndex = 0;
+  bar.setAttribute("role", "separator"); bar.setAttribute("aria-orientation", "vertical");
+  bar.setAttribute("aria-label", nav.getAttribute("aria-label") || "Contents");
+  lay.appendChild(bar); root.classList.add("js");
+  function place() { bar.style.left = nav.offsetLeft + nav.offsetWidth + (parseFloat(getComputedStyle(lay).columnGap) || 0) / 2 - bar.offsetWidth / 2 + "px"; }
+  function set(w) {
+    cur = Math.round(Math.max(MIN, Math.min(Math.min(560, window.innerWidth * 0.45), w)));
+    nav.style.width = cur + "px"; place();
+  }
+  function save() { try { localStorage.setItem(KEY, cur); } catch (e) {} }
+  try { var s = +localStorage.getItem(KEY); if (s) set(s); } catch (e) {}
+  place();
+  function reset() { cur = 0; nav.style.width = ""; place(); try { localStorage.removeItem(KEY); } catch (e) {} }
+  var last = 0;
+  bar.addEventListener("pointerdown", function (e) {
+    if (e.button) return;
+    var x0 = e.clientX, w0 = nav.offsetWidth, moved = false;
+    bar.setPointerCapture(e.pointerId); root.classList.add("dragging"); e.preventDefault();
+    function move(ev) { if (Math.abs(ev.clientX - x0) > 3) moved = true; set(w0 + ev.clientX - x0); }
+    function stop() {
+      bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", stop); bar.removeEventListener("pointercancel", stop);
+      root.classList.remove("dragging");
+      if (moved) { last = 0; save(); return; }
+      var t = Date.now();
+      if (t - last < 500) { last = 0; reset(); } else { last = t; }
+    }
+    bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", stop); bar.addEventListener("pointercancel", stop);
+  });
+  bar.addEventListener("keydown", function (e) {
+    var d = e.key === "ArrowLeft" ? -16 : e.key === "ArrowRight" ? 16 : 0;
+    if (d) { e.preventDefault(); set(nav.offsetWidth + d); save(); }
+  });
+  window.addEventListener("resize", function () { if (cur) set(cur); place(); });
+  window.addEventListener("load", place);
+  if (window.ResizeObserver) new ResizeObserver(place).observe(nav);
+})();</script>
+
+</body>
+</html>
