@@ -34,7 +34,7 @@ flowchart TD
     C --> I["接口描述符 Interface Descriptor<br/>bInterfaceClass = 0x03 (HID)"]
     I --> HD["HID 类描述符 (0x21)"]
     I --> EP["中断端点描述符"]
-    HD -.->|GET_DESCRIPTOR(0x22) 单独获取| RD["报告描述符 Report Descriptor<br/>描述设备的数据格式"]
+    HD -.->|"GET_DESCRIPTOR(0x22) 单独获取"| RD["报告描述符 Report Descriptor<br/>描述设备的数据格式"]
 ```
 
 主机看到 `bInterfaceClass=0x03` 后加载通用 HID 类驱动，再解析报告描述符即可知道"这个设备会上报什么格式的数据"，无需厂商驱动。

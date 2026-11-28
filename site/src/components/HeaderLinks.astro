@@ -1,0 +1,20 @@
+---
+// 顶栏快捷入口（替换 SocialIcons 位：桌面端显示在搜索右侧，移动端出现在菜单底部）
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+import gen from '../generated/topics.json';
+const link = (id: string, fb: string) => (gen as any).topics.find((t: any) => t.id === id)?.link ?? fb;
+const path = Astro.url.pathname;
+const links = [
+  { label: '路线', href: '/guide/learning-paths/' },
+  { label: '速查', href: '/reference/cheatsheets/' },
+  { label: '图谱', href: '/explore/graph/' },
+  { label: '实验室', href: '/labs/' },
+  { label: '工具', href: link('tools', '/tools/') },
+  { label: '框架', href: link('frameworks', '/frameworks/') },
+  { label: 'AI', href: link('ai', '/ai/') },
+];
+---
+<nav class="header-links" aria-label="快捷入口">
+  {links.map((l) => <a href={l.href} aria-current={path.startsWith(l.href) ? 'page' : undefined}>{l.label}</a>)}
+</nav>
+<Default />

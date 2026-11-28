@@ -2,12 +2,12 @@
 
 [![validate](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml/badge.svg)](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-109%20%E7%AF%87%C2%B719750%E8%A1%8C-blue)
-<!-- usbtree-stats: articles=109 lines=19750 entities=89 edges=85 specs=71 checks=11 -->
+![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-109%20%E7%AF%87%C2%B719751%E8%A1%8C-blue)
+<!-- usbtree-stats: articles=109 lines=19751 entities=89 edges=85 specs=71 checks=11 -->
 
 > **知识树 × 关系图谱 × 可执行技能 × 官方规范缓存**
 >
-> 🌐 在线阅读（可搜索、手机友好）：<https://usbtree.gumuhub.com> · 构建方式见 [tools/site/README.md](tools/site/README.md)
+> 🌐 在线阅读（可搜索、手机友好）：<https://usbtree.gumuhub.com> · 构建方式见 [site/README.md](site/README.md)
 >
 > English TL;DR — A Chinese knowledge system for USB & Bluetooth LE: a hierarchical
 > knowledge tree (109 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,

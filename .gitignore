@@ -17,7 +17,4 @@ tech-doc/build/os-kb/
 tech-doc/**/*.bak
 tech-doc/shots-check/
 
-# 静态站点构建产物（tools/site/build.sh）
-_site/
-_site_src/
-.site-cache/
+# 静态站点（site/）的依赖与构建产物见 site/.gitignore

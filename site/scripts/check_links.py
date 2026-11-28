@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Check internal links (href/src) in a built static site. Exit 1 if any are broken.
-Usage: python3 tools/site/check_links.py _site"""
+Usage: python3 site/scripts/check_links.py site/dist"""
 import html.parser, os, sys, urllib.parse
 from pathlib import Path
 
-root = Path(sys.argv[1] if len(sys.argv) > 1 else "_site").resolve()
+root = Path(sys.argv[1] if len(sys.argv) > 1 else "dist").resolve()
 ids_cache = {}
 
 class P(html.parser.HTMLParser):

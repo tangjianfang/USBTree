@@ -1,0 +1,13 @@
+---
+title: 知识图谱
+description: USBTree 的实体与关系图：协议、设备类、Profile、机制之间的组成、承载、依赖与演进关系，点选节点直达定义文档。
+topic: reference
+tableOfContents: false
+wide: true
+editUrl: false
+---
+import KnowledgeGraph from '../../../components/KnowledgeGraph.astro';
+
+图谱数据来自仓库的 [graph/entities.yaml](repo:graph/entities.yaml) 与 [graph/relations.yaml](repo:graph/relations.yaml)，每条关系都带“依据”文档（`tools/validate.sh` 校验其存在）。节点越大，关联越多。
+
+<KnowledgeGraph />

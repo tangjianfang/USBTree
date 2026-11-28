@@ -1,0 +1,23 @@
+# USBTree · USB/BLE 知识树
+
+> 中文 USB 与蓝牙低功耗（BLE）领域知识系统：从 USB 核心协议（树干）到 HID/CDC/MSC/UAC/UVC、Type-C/PD、USB3/USB4、BLE、主机侧驱动与调试安全（枝干），每条事实尽量溯源到 USB-IF / Bluetooth SIG 官方规范。配套实现仓库 usb-labs 的实验与工具摘要见“实验室”。源仓库：https://github.com/tangjianfang/USBTree
+
+## 给 AI 的全量文本
+- [ai-kb 全量合并](https://usbtree.gumuhub.com/ai-kb/llms-full.md): 38 个主题的结构化知识（含 Key Facts 表），单文件
+- [ai-kb 索引](https://usbtree.gumuhub.com/ai-kb/index.md): 各主题文件入口
+- [tech-doc 全量合并](https://usbtree.gumuhub.com/tech-doc/llms-full.md): 13 篇规范可追溯文档（Chapter 9、HID/HOGP、PD R3.3、BC 1.2、BLE LLCP、Linux/ARM/macOS/iOS/Android/Windows USB 栈与对比）
+- [知识图谱 JSON](https://usbtree.gumuhub.com/data/graph.json): 实体与关系（由 graph/*.yaml 生成）
+
+## 人类阅读
+- [站点首页](https://usbtree.gumuhub.com/)
+- [学习路线](https://usbtree.gumuhub.com/guide/learning-paths/): 8 个阶段的由浅入深阅读顺序
+- [知识树总图](https://usbtree.gumuhub.com/00-%E7%9F%A5%E8%AF%86%E6%A0%91%E6%80%BB%E5%9B%BE/)
+- [速查卡](https://usbtree.gumuhub.com/reference/cheatsheets/)
+- [规范索引](https://usbtree.gumuhub.com/reference/specs/): 官方规范下载地址
+- [规范精读 tech-doc](https://usbtree.gumuhub.com/tech-doc/)
+- [实验室（usb-labs 摘要）](https://usbtree.gumuhub.com/labs/): HID/CDC+DFU/MSC/UVC+UAC/PD/BLE/扩展坞 七个实验与 usbsim、usbtest、DevStudio
+- [知识图谱（交互）](https://usbtree.gumuhub.com/explore/graph/)
+
+## 图谱原始数据
+- [entities.yaml](https://usbtree.gumuhub.com/graph/entities.yaml)
+- [relations.yaml](https://usbtree.gumuhub.com/graph/relations.yaml)

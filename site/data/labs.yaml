@@ -1,0 +1,99 @@
+# usb-labs（配套实现仓库）↔ USBTree 概念页的双向映射。
+# commit 固定：实验室页里所有源码链接都指向这个提交，避免 main 变动后行号漂移。
+# 更新流程：读新提交的代码 → 改 content/labs/*.md 摘要与行号 → 改这里的 commit。
+repo: https://github.com/tangjianfang/usb-labs
+commit: c99029204b73ce5b38f9feedf1997b143c766ca8
+commitDate: "2026-09-12"
+labs:
+  - id: lab1-hid-composite
+    title: Lab1 · HID 复合设备
+    concepts:
+      - 10-树干-USB核心/06-四种传输类型.md
+      - 10-树干-USB核心/07-描述符详解.md
+      - 10-树干-USB核心/08-枚举流程与标准请求.md
+      - 20-枝干-设备类协议/HID-人机接口设备/00-HID概述与定位.md
+      - 20-枝干-设备类协议/HID-人机接口设备/01-HID描述符.md
+      - 20-枝干-设备类协议/HID-人机接口设备/02-报告描述符与Item编码.md
+      - 20-枝干-设备类协议/HID-人机接口设备/04-传输与类特定请求.md
+      - 20-枝干-设备类协议/HID-人机接口设备/05-键盘详解.md
+      - 20-枝干-设备类协议/HID-人机接口设备/06-鼠标详解.md
+      - 20-枝干-设备类协议/HID-人机接口设备/07-消费控制与多媒体.md
+      - 20-枝干-设备类协议/HID-人机接口设备/11-实战完整报告描述符.md
+      - 60-枝干-主机侧与实现/05-实战-TinyUSB设备固件.md
+      - tech-doc/01-usb2-ch9-control.md
+  - id: lab2-cdc-dfu
+    title: Lab2 · CDC 虚拟串口 + DFU
+    concepts:
+      - 20-枝干-设备类协议/CDC-通信设备类/00-CDC概述.md
+      - 20-枝干-设备类协议/CDC-通信设备类/01-虚拟串口ACM.md
+      - 20-枝干-设备类协议/CDC-通信设备类/03-CDC规范级-请求与通知全表.md
+      - 20-枝干-设备类协议/其他设备类/01-DFU固件升级.md
+      - 60-枝干-主机侧与实现/03-设备端固件栈.md
+  - id: lab3-msc
+    title: Lab3 · MSC 大容量存储
+    concepts:
+      - 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+      - 20-枝干-设备类协议/MSC-大容量存储/01-SCSI命令与UFI.md
+      - 20-枝干-设备类协议/MSC-大容量存储/02-SCSI操作码与Sense全表.md
+  - id: lab4-uvc-uac
+    title: Lab4 · UVC 摄像头 + UAC 麦克风
+    concepts:
+      - 20-枝干-设备类协议/Video-UVC/00-UVC详解.md
+      - 20-枝干-设备类协议/Video-UVC/01-UVC规范级-控制与格式全表.md
+      - 20-枝干-设备类协议/Audio-UAC/00-UAC概述.md
+      - 20-枝干-设备类协议/Audio-UAC/01-UAC1.0详解.md
+      - 10-树干-USB核心/13-总线带宽与调度计算.md
+  - id: lab5-pd-charger
+    title: Lab5 · USB PD 电源（Sink/Source）
+    concepts:
+      - 30-枝干-接口与供电/02-USBType-C详解.md
+      - 30-枝干-接口与供电/04-USBPD协议.md
+      - 30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md
+      - 30-枝干-接口与供电/08-USBPD消息全表.md
+      - 30-枝干-接口与供电/09-TypeC规范级-状态机与CC时序.md
+      - tech-doc/03-usb-pd-messages-timers.md
+  - id: lab6-ble-hid-dongle
+    title: Lab6 · BLE 双模键鼠
+    concepts:
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/04-ATT与GATT.md
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/06-SMP安全与配对.md
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md
+      - 20-枝干-设备类协议/HID-人机接口设备/10-HID跨传输I2C与BLE.md
+      - tech-doc/02-hid-class-hogp.md
+  - id: lab7-dock-altmode
+    title: Lab7 · Type-C / USB4 扩展坞（概要）
+    concepts:
+      - 30-枝干-接口与供电/05-AlternateMode与E-marker.md
+      - 40-枝干-高速演进/02-USB4与雷电整合.md
+      - 40-枝干-高速演进/05-USB4深入-路由隧道与配置.md
+      - 10-树干-USB核心/09-集线器与连接管理.md
+  - id: usbsim
+    title: usbsim · 协议仿真器
+    concepts:
+      - 10-树干-USB核心/05-包格式与事务.md
+      - 10-树干-USB核心/08-枚举流程与标准请求.md
+      - 10-树干-USB核心/11-错误处理与可靠性.md
+      - 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+      - 30-枝干-接口与供电/04-USBPD协议.md
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/03-广播与连接.md
+      - tech-doc/06-linux-virtual-usb.md
+  - id: usbtest
+    title: usbtest · 产测框架
+    concepts:
+      - 70-枝干-调试测试与安全/02-枚举失败排查手册.md
+      - 70-枝干-调试测试与安全/05-合规测试实操.md
+      - 20-枝干-设备类协议/MSC-大容量存储/02-SCSI操作码与Sense全表.md
+  - id: devstudio
+    title: USB DevStudio · 原生上位机
+    concepts:
+      - 60-枝干-主机侧与实现/04-libusb与用户态访问.md
+      - 60-枝干-主机侧与实现/08-WindowsUSB驱动开发.md
+      - 60-枝干-主机侧与实现/09-macOS与Linux主机开发.md
+      - 70-枝干-调试测试与安全/01-协议分析仪与抓包.md
+      - tech-doc/09-macos-usb.md
+  - id: captures
+    title: 抓包教学样本
+    concepts:
+      - 70-枝干-调试测试与安全/01-协议分析仪与抓包.md
+      - 10-树干-USB核心/05-包格式与事务.md
+      - 10-树干-USB核心/08-枚举流程与标准请求.md

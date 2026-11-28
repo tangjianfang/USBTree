@@ -1,0 +1,46 @@
+---
+// 页头：分枝 · 标题 · 元信息（难度/阅读时长/更新/核对/待核实/源文件）· 关系（前置阅读/规范出处/实验/概念）
+const { entry } = Astro.locals.starlightRoute;
+const d = entry.data as any;
+const LEVEL: Record<number, string> = { 1: '入门', 2: '基础', 3: '进阶', 4: '专家' };
+const fmt = (date: unknown) => date instanceof Date && !isNaN(+date)
+  ? new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Shanghai' }).format(date).replace(/\//g, '-')
+  : null;
+const updated = fmt(d.lastUpdated);
+const showMeta = !!(d.level || d.readingMinutes || updated || d.sourceUrl);
+const rows = [
+  { k: '前置阅读', icon: '↩', items: d.prereqs ?? [], cls: 'pre' },
+  { k: '动手实验', icon: '🧪', items: d.labs ?? [], cls: 'lab' },
+  { k: '对应概念', icon: '📘', items: d.concepts ?? [], cls: 'concept' },
+  { k: '规范出处', icon: '§', items: d.specs ?? [], cls: 'spec' },
+].filter((r) => r.items.length);
+const ext = (h: string) => /^https?:/.test(h);
+---
+{d.template === 'splash' ? <span id="_top" class="splash-top"></span> : (
+<header class="page-head">
+  {d.section && <p class="page-eyebrow">{d.section}</p>}
+  <h1 id="_top">{d.title}</h1>
+  {showMeta && (
+    <div class="page-meta">
+      {d.level && <span class={`lvl lvl-${d.level}`} title="难度">L{d.level} {LEVEL[d.level]}</span>}
+      {d.readingMinutes && <span class="meta-i" title="预计阅读时长">⏱ 约 {d.readingMinutes} 分钟</span>}
+      {updated && <span class="meta-i" title="源文件最近一次提交">更新于 {updated}</span>}
+      {d.verified && <span class="meta-i" title="对照官方规范最后核对日期">✔ 规范核对 {d.verified}</span>}
+      {d.tbv > 0 && (d.tbvAnchor
+        ? <a class="meta-i tbv-count" href="#待确认项" title="本页标注为待核实的条目数，点击查看汇总">⚠ {d.tbv} 处待核实</a>
+        : <span class="meta-i tbv-count" title="本页标注为待核实的条目数">⚠ {d.tbv} 处待核实</span>)}
+      {d.sourceUrl && <a class="meta-i meta-src" href={d.sourceUrl}>源文件 ↗</a>}
+    </div>
+  )}
+  {rows.length > 0 && (
+    <dl class="page-rel">
+      {rows.map((r) => (
+        <div class={`rel-row rel-${r.cls}`}>
+          <dt><span aria-hidden="true">{r.icon}</span>{r.k}</dt>
+          <dd>{r.items.map((it: any) => <a class="rel-chip" href={it.href} title={it.title} {...(ext(it.href) ? { rel: 'noopener' } : {})}>{it.title}{ext(it.href) && <span class="ext" aria-hidden="true">↗</span>}</a>)}</dd>
+        </div>
+      ))}
+    </dl>
+  )}
+</header>
+)}

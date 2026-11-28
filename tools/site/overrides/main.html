@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-{% block scripts %}
-  {# 只在含 Mermaid 图的页面加载自托管 mermaid（Material 发现全局 mermaid 后不再请求 unpkg CDN） #}
-  {% if page and page.content and 'class="mermaid"' in page.content %}
-    <script src="{{ 'assets/js/mermaid.min.js' | url }}"></script>
-  {% endif %}
-  {{ super() }}
-{% endblock %}
