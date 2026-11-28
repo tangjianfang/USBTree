@@ -55,7 +55,6 @@ WEBM=1 videos/render.sh                  # 额外生成 VP9 WebM（默认不生�
 3. `QUALITY=draft videos/render.sh <id>` 看草稿，用 ffmpeg 抽帧检查重叠、裁切、缺字（豆腐块）；没问题再正式渲染。
 4. 在 `scripts/` 写旁白稿和“规范核对表”，每个数字都要能对到规范原文的章节 / 表号；查不到的标 **待核实**。
 
-## 许可（待确认）
+## 许可
 
-- 视频成品、旁白稿：CC BY-SA 4.0（待确认）
-- 动画源码（`*.py`、`render.sh`）：MIT，与仓库 [LICENSE](../LICENSE) 一致（待确认）
+视频与脚本遵循本仓库的 MIT 许可证（见 [LICENSE](../LICENSE)）。
