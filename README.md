@@ -2,8 +2,8 @@
 
 [![validate](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml/badge.svg)](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-109%20%E7%AF%87%C2%B719747%E8%A1%8C-blue)
-<!-- usbtree-stats: articles=109 lines=19747 entities=89 edges=85 specs=71 checks=11 -->
+![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-109%20%E7%AF%87%C2%B719750%E8%A1%8C-blue)
+<!-- usbtree-stats: articles=109 lines=19750 entities=89 edges=85 specs=71 checks=11 -->
 
 > **知识树 × 关系图谱 × 可执行技能 × 官方规范缓存**
 >
