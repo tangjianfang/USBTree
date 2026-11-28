@@ -78,6 +78,14 @@ graph LR
     libusb["libusb 1.0 用户态访问"]
     linux-gadget["Linux USB Gadget（configfs）"]
     usbip["USB over IP（usbip）"]
+    usbmon["Linux usbmon（URB 级抓包）"]
+    usbpcap["USBPcap（Windows URB 级抓包）"]
+    usb-etw["Windows USB ETW 事件跟踪"]
+    usb-protocol-analyzer["USB 硬件协议分析仪（线级）"]
+    pd-analyzer["USB PD / Type-C 分析仪"]
+    ble-sniffer["BLE 空口嗅探器"]
+    facedancer["Facedancer（可编程 USB 设备 / MITM）"]
+    raw-gadget["Linux Raw Gadget（调试用 gadget 驱动）"]
     dp-protocol["DisplayPort（外部协议）"]
     pcie["PCIe（外部协议）"]
     class-av["AV 设备类（AVControl CBP + AVDD） (0x10)"]
@@ -174,3 +182,10 @@ graph LR
     usb4-drom -->|part-of| usb4
     inter-domain-protocol -->|runs-on: 主机到主机网络服务（USB4NET）| usb4
     class-usbtmc -->|carries| scpi
+    usbmon -->|similar-to: 同为 URB 级软件抓包：Linux / Windows 对照| usbpcap
+    usb-etw -->|similar-to: ETW 记录集线器/控制器驱动判定与状态机，USBPcap 记录 URB| usbpcap
+    usb-protocol-analyzer -->|similar-to: 线级（包/事务/总线状态）与 URB 级观测对照| usbmon
+    pd-analyzer -->|uses: 在 CC 线上被动解码 BMC 报文| typec-cc
+    ble-sniffer -->|uses: 跟随连接需捕获 CONNECT_IND| ble-ll
+    facedancer -->|similar-to: 都在设备侧实现任意 USB 设备；Facedancer 跑在外部硬件上| linux-gadget
+    raw-gadget -->|part-of: gadget 驱动之一，所有请求交给用户态| linux-gadget

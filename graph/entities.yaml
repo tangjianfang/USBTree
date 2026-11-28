@@ -350,6 +350,40 @@ entities:
     name: USB over IP（usbip）
     docs: 60-枝干-主机侧与实现/07-实战-LinuxGadget与usbip.md
 
+  # ── 枝干：调试工具与分析仪 ──
+  - id: usbmon
+    type: tool
+    name: Linux usbmon（URB 级抓包）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+  - id: usbpcap
+    type: tool
+    name: USBPcap（Windows URB 级抓包）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+  - id: usb-etw
+    type: tool
+    name: Windows USB ETW 事件跟踪
+    docs: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+  - id: usb-protocol-analyzer
+    type: tool
+    name: USB 硬件协议分析仪（线级）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/02-商用USB协议分析仪详解.md
+  - id: pd-analyzer
+    type: tool
+    name: USB PD / Type-C 分析仪
+    docs: 70-枝干-调试测试与安全/工具与分析仪/03-PD与Type-C分析仪及电气测试仪器.md
+  - id: ble-sniffer
+    type: tool
+    name: BLE 空口嗅探器
+    docs: 70-枝干-调试测试与安全/工具与分析仪/04-开源与低成本分析工具.md
+  - id: facedancer
+    type: tool
+    name: Facedancer（可编程 USB 设备 / MITM）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/04-开源与低成本分析工具.md
+  - id: raw-gadget
+    type: mechanism
+    name: Linux Raw Gadget（调试用 gadget 驱动）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/08-测试仿真与虚拟化工具.md
+
   # ── 外部协议（被 USB 隧道/重映射承载） ──
   - id: dp-protocol
     type: external-protocol

@@ -2,16 +2,16 @@
 
 [![validate](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml/badge.svg)](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-109%20%E7%AF%87%C2%B719751%E8%A1%8C-blue)
-<!-- usbtree-stats: articles=109 lines=19751 entities=89 edges=85 specs=71 checks=11 -->
+![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-128%20%E7%AF%87%C2%B722112%E8%A1%8C-blue)
+<!-- usbtree-stats: articles=128 lines=22112 entities=97 edges=92 specs=71 checks=11 -->
 
 > **知识树 × 关系图谱 × 可执行技能 × 官方规范缓存**
 >
 > 🌐 在线阅读（可搜索、手机友好）：<https://usbtree.gumuhub.com> · 构建方式见 [site/README.md](site/README.md)
 >
 > English TL;DR — A Chinese knowledge system for USB & Bluetooth LE: a hierarchical
-> knowledge tree (109 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,
-> Type-C/PD, USB4 and BLE), a typed knowledge graph (89 entities / 85 relations),
+> knowledge tree (128 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,
+> Type-C/PD, USB4 and BLE), a typed knowledge graph (97 entities / 92 relations),
 > executable agent skills, and an index of 71 cached official specifications.
 > Content is MIT-licensed; third-party specification binaries are not
 > redistributed — fetch them via [80-参考资料/README.md](80-参考资料/README.md)
@@ -56,6 +56,7 @@ USBTree/
 │   └── BLE-低功耗蓝牙/        (17 篇: 架构HCI/链路层/广播/ATT-GATT/GAP/SMP/HOGP/对比/LEAudio/Mesh/经典Profile/LLCP全表/测向与信道探测/RF参数全表/A2DP参数/标准UUID全表)
 ├── 60-枝干-主机侧与实现/      (9 篇 + 00-索引: 主机控制器栈/操作系统/固件栈/libusb/实战TinyUSB/实战libusb/实战Gadget与usbip/Windows驱动开发/macOS与Linux主机开发)
 ├── 70-枝干-调试测试与安全/    (5 篇 + 00-索引: 抓包/排查手册/合规认证/USB 安全与 BadUSB/合规测试实操)
+│   └── 工具与分析仪/          (19 篇: 抓包原理/商用分析仪/PD与电气仪器/开源工具/对比选型/软件抓包/设备信息/仿真虚拟化 + 10 个实战案例)
 ├── 80-参考资料/               (官方规范原文缓存: 71 份（清单 tools/spec_fetch.sh，二进制不入库） + 索引 README + 提取文本)
 ├── 90-附录/                   (3 篇: 术语表/速查表大全/时序参数全表)
 ├── ai-kb/                     (给 AI 参考的技术文档: index.md · 38 个主题 · llms-full.md；python3 tools/ai-kb/build_kb.py 重建)
@@ -85,6 +86,7 @@ USBTree/
 - 搞蓝牙/BLE → [无线概览：USB 与 BLE 的交汇](50-枝干-无线关联/00-无线概览与USB交汇.md) → [BLE 子树](50-枝干-无线关联/BLE-低功耗蓝牙/00-BLE概述.md)
 - 设备枚举不出来 → [枚举失败排查手册](70-枝干-调试测试与安全/02-枚举失败排查手册.md)
 - 抓 USB 包 → [协议分析仪与抓包](70-枝干-调试测试与安全/01-协议分析仪与抓包.md)
+- 选/用 USB 分析仪与工具、看实战抓包案例 → [工具与分析仪索引](70-枝干-调试测试与安全/工具与分析仪/00-工具与分析仪索引.md) → [分析仪对比与选型](70-枝干-调试测试与安全/工具与分析仪/05-分析仪对比与选型指南.md)
 - 写主机程序操作设备 → [libusb 与用户态访问](60-枝干-主机侧与实现/04-libusb与用户态访问.md)
 - 查官方规范原文 → [80-参考资料/README.md](80-参考资料/README.md)（官方规范本地缓存 + 直链索引；份数以缓存索引页为准）
 - 深入 USB PD 状态机/消息全表 → [USBPD 深入](30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md)
@@ -107,7 +109,7 @@ USBTree/
 
 ## 🤖 Agent 使用指南（Graph + Skill 双引擎）
 
-- **Graph 回答"知道什么"**：`graph/entities.yaml`（89 个实体：协议/类/机制，带类码与主文档）+ `graph/relations.yaml`（85 条类型化关系边：carries/reuses/supersedes/tunnels/enables…，每条边带 evidence 指向正文）。查询示例："HOGP reuses HID-ReportDescriptor"——跨传输复用、代际更替（BOT→UAS、ECM→NCM、OTG→DRP）、隧道承载（USB4→USB3/PCIe/DP）全部结构化可查；全景图见 `graph/export.mmd`。
+- **Graph 回答"知道什么"**：`graph/entities.yaml`（97 个实体：协议/类/机制，带类码与主文档）+ `graph/relations.yaml`（92 条类型化关系边：carries/reuses/supersedes/tunnels/enables…，每条边带 evidence 指向正文）。查询示例："HOGP reuses HID-ReportDescriptor"——跨传输复用、代际更替（BOT→UAS、ECM→NCM、OTG→DRP）、隧道承载（USB4→USB3/PCIe/DP）全部结构化可查；全景图见 `graph/export.mmd`。
 - **Skill 回答"怎么做"**：`skills/` 下四个技能包，均含触发条件、分步动作、验证命令与回退路径——
   1. [usb-enum-troubleshoot](skills/usb-enum-troubleshoot/SKILL.md)：枚举失败分阶段排查；
   2. [usb-capture-analysis](skills/usb-capture-analysis/SKILL.md)：trace 分析方法论与异常特征表；

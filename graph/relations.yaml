@@ -519,3 +519,45 @@ relations:
     type: carries
     to: scpi
     evidence: 20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md
+  - id: rel-086
+    from: usbmon
+    type: similar-to
+    to: usbpcap
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+    note: 同为 URB 级软件抓包：Linux / Windows 对照
+  - id: rel-087
+    from: usb-etw
+    type: similar-to
+    to: usbpcap
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+    note: ETW 记录集线器/控制器驱动判定与状态机，USBPcap 记录 URB
+  - id: rel-088
+    from: usb-protocol-analyzer
+    type: similar-to
+    to: usbmon
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/01-USB抓包原理与观测分层.md
+    note: 线级（包/事务/总线状态）与 URB 级观测对照
+  - id: rel-089
+    from: pd-analyzer
+    type: uses
+    to: typec-cc
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/03-PD与Type-C分析仪及电气测试仪器.md
+    note: 在 CC 线上被动解码 BMC 报文
+  - id: rel-090
+    from: ble-sniffer
+    type: uses
+    to: ble-ll
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/04-开源与低成本分析工具.md
+    note: 跟随连接需捕获 CONNECT_IND
+  - id: rel-091
+    from: facedancer
+    type: similar-to
+    to: linux-gadget
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/04-开源与低成本分析工具.md
+    note: 都在设备侧实现任意 USB 设备；Facedancer 跑在外部硬件上
+  - id: rel-092
+    from: raw-gadget
+    type: part-of
+    to: linux-gadget
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/08-测试仿真与虚拟化工具.md
+    note: gadget 驱动之一，所有请求交给用户态
