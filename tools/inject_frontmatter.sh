@@ -13,7 +13,9 @@ layer_of() {
     40-*) echo "枝干/高速演进" ;;
     50-*) echo "枝干/无线关联" ;;
     60-*) echo "枝干/主机侧与实现" ;;
+    65-*) echo "枝干/框架与API" ;;
     70-*) echo "枝干/调试测试与安全" ;;
+    78-*) echo "枝干/AI时代的USB" ;;
     90-*) echo "附录" ;;
     *) echo "" ;;
   esac
@@ -41,6 +43,6 @@ while IFS= read -r f; do
     cat "$f"
   } > "$tmp" && mv "$tmp" "$f"
   injected=$((injected+1))
-done < <(find 10-* 20-* 30-* 40-* 50-* 60-* 70-* 90-* -name '*.md' -type f 2>/dev/null | sort)
+done < <(find 10-* 20-* 30-* 40-* 50-* 60-* 65-* 70-* 78-* 90-* -name '*.md' -type f 2>/dev/null | sort)
 
 echo "frontmatter 注入完成：新注入 $injected 篇，跳过（已有） $skipped 篇"

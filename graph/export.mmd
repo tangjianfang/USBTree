@@ -78,6 +78,19 @@ graph LR
     libusb["libusb 1.0 用户态访问"]
     linux-gadget["Linux USB Gadget（configfs）"]
     usbip["USB over IP（usbip）"]
+    usbmon["Linux usbmon（URB 级抓包）"]
+    usbpcap["USBPcap（Windows URB 级抓包）"]
+    usb-etw["Windows USB ETW 事件跟踪"]
+    usb-protocol-analyzer["USB 硬件协议分析仪（线级）"]
+    pd-analyzer["USB PD / Type-C 分析仪"]
+    ble-sniffer["BLE 空口嗅探器"]
+    facedancer["Facedancer（可编程 USB 设备 / MITM）"]
+    raw-gadget["Linux Raw Gadget（调试用 gadget 驱动）"]
+    webhid["WebHID（浏览器 HID 报告级 API）"]
+    web-serial["Web Serial（浏览器串口 API）"]
+    web-bluetooth["Web Bluetooth（浏览器 GATT Client API）"]
+    hidapi["hidapi 跨平台 HID 库"]
+    winusb["WinUSB（Windows 通用 USB 驱动与 API）"]
     dp-protocol["DisplayPort（外部协议）"]
     pcie["PCIe（外部协议）"]
     class-av["AV 设备类（AVControl CBP + AVDD） (0x10)"]
@@ -89,6 +102,8 @@ graph LR
     usb4-drom["USB4 DROM 设备 ROM"]
     inter-domain-protocol["USB4 Inter-Domain Service Protocol（USB4NET）"]
     scpi["SCPI（外部协议，仪器命令语言）"]
+    mcp["Model Context Protocol（外部协议，AI 工具调用）"]
+    syzkaller-usb["syzkaller USB 外部模糊测试"]
     class-hid -->|uses: Input/Output 报告走中断端点轮询| transfer-interrupt
     cdc-acm -->|uses| transfer-bulk
     msc-bot -->|uses| transfer-bulk
@@ -174,3 +189,20 @@ graph LR
     usb4-drom -->|part-of| usb4
     inter-domain-protocol -->|runs-on: 主机到主机网络服务（USB4NET）| usb4
     class-usbtmc -->|carries| scpi
+    usbmon -->|similar-to: 同为 URB 级软件抓包：Linux / Windows 对照| usbpcap
+    usb-etw -->|similar-to: ETW 记录集线器/控制器驱动判定与状态机，USBPcap 记录 URB| usbpcap
+    usb-protocol-analyzer -->|similar-to: 线级（包/事务/总线状态）与 URB 级观测对照| usbmon
+    pd-analyzer -->|uses: 在 CC 线上被动解码 BMC 报文| typec-cc
+    ble-sniffer -->|uses: 跟随连接需捕获 CONNECT_IND| ble-ll
+    facedancer -->|similar-to: 都在设备侧实现任意 USB 设备；Facedancer 跑在外部硬件上| linux-gadget
+    raw-gadget -->|part-of: gadget 驱动之一，所有请求交给用户态| linux-gadget
+    webhid -->|uses: 报告级访问，经 OS HID 类驱动；键鼠/FIDO 集合被黑名单屏蔽| class-hid
+    webhid -->|similar-to: 同一权限模型（手势+选择器+origin 授权），WebUSB 不能访问 HID 类| webusb
+    web-serial -->|uses: open()/setSignals() 经 OS 驱动变为 SET_LINE_CODING / SET_CONTROL_LINE_STATE| cdc-acm
+    web-bluetooth -->|uses: 网页作 GATT Client；HID Service 0x1812 被 GATT 黑名单屏蔽| gatt
+    hidapi -->|similar-to: 同为报告级 API，报告 ID 字节约定不同（hidapi 首字节 vs WebHID 独立参数）| webhid
+    webusb -->|runs-on: Windows 上 Chromium 只能打开已绑定 WinUSB 的接口| winusb
+    ms-os-descriptors -->|enables: MS OS 2.0 兼容 ID WINUSB 让 Windows 8.1+ 自动绑定| winusb
+    libusb -->|runs-on: Windows 首选子后端（另有 libusbK/UsbDk）| winusb
+    syzkaller-usb -->|uses: Raw Gadget + Dummy HCD/UDC 在内核内仿真外部设备| linux-gadget
+    mcp -->|uses: 只读 MCP 工具把 sysfs 描述符字段交给模型；设备字符串属不可信输入| descriptors

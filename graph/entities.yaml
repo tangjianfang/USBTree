@@ -350,6 +350,61 @@ entities:
     name: USB over IP（usbip）
     docs: 60-枝干-主机侧与实现/07-实战-LinuxGadget与usbip.md
 
+  # ── 枝干：调试工具与分析仪 ──
+  - id: usbmon
+    type: tool
+    name: Linux usbmon（URB 级抓包）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+  - id: usbpcap
+    type: tool
+    name: USBPcap（Windows URB 级抓包）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+  - id: usb-etw
+    type: tool
+    name: Windows USB ETW 事件跟踪
+    docs: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+  - id: usb-protocol-analyzer
+    type: tool
+    name: USB 硬件协议分析仪（线级）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/02-商用USB协议分析仪详解.md
+  - id: pd-analyzer
+    type: tool
+    name: USB PD / Type-C 分析仪
+    docs: 70-枝干-调试测试与安全/工具与分析仪/03-PD与Type-C分析仪及电气测试仪器.md
+  - id: ble-sniffer
+    type: tool
+    name: BLE 空口嗅探器
+    docs: 70-枝干-调试测试与安全/工具与分析仪/04-开源与低成本分析工具.md
+  - id: facedancer
+    type: tool
+    name: Facedancer（可编程 USB 设备 / MITM）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/04-开源与低成本分析工具.md
+  - id: raw-gadget
+    type: mechanism
+    name: Linux Raw Gadget（调试用 gadget 驱动）
+    docs: 70-枝干-调试测试与安全/工具与分析仪/08-测试仿真与虚拟化工具.md
+  # ── 枝干：框架与 API（应用层访问 USB/HID/串口/BLE） ──
+  - id: webhid
+    type: standard
+    name: WebHID（浏览器 HID 报告级 API）
+    docs: 65-枝干-框架与API/03-WebHID详解.md
+  - id: web-serial
+    type: standard
+    name: Web Serial（浏览器串口 API）
+    docs: 65-枝干-框架与API/04-WebSerial与WebBluetooth.md
+  - id: web-bluetooth
+    type: standard
+    name: Web Bluetooth（浏览器 GATT Client API）
+    docs: 65-枝干-框架与API/04-WebSerial与WebBluetooth.md
+  - id: hidapi
+    type: tool
+    name: hidapi 跨平台 HID 库
+    docs: 65-枝干-框架与API/07-C与C++-libusb与hidapi.md
+  - id: winusb
+    type: tool
+    name: WinUSB（Windows 通用 USB 驱动与 API）
+    docs: 65-枝干-框架与API/08-操作系统原生API-Windows-macOS-Linux.md
+
   # ── 外部协议（被 USB 隧道/重映射承载） ──
   - id: dp-protocol
     type: external-protocol
@@ -399,3 +454,13 @@ entities:
     type: external-protocol
     name: SCPI（外部协议，仪器命令语言）
     docs: 20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md
+
+  # ── AI 时代的 USB（78） ──
+  - id: mcp
+    type: external-protocol
+    name: Model Context Protocol（外部协议，AI 工具调用）
+    docs: 78-AI时代的USB/03-AI辅助抓包分析与MCP工具.md
+  - id: syzkaller-usb
+    type: tool
+    name: syzkaller USB 外部模糊测试
+    docs: 78-AI时代的USB/04-AI辅助驱动固件开发与模糊测试.md

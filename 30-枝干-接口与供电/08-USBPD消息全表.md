@@ -255,7 +255,7 @@ BIST Carrier Mode 持续 **30~60 ms**（内核 `PD_T_BIST_CONT_MODE` 典型 50 m
 | 定时器/计数器 | 内核典型值 | 规范范围 | 用途 |
 | --- | --- | --- | --- |
 | tReceive | — | 0.9~1.1 ms | 收帧/GoodCRC 窗口（见 07 篇） |
-| tSenderResponse | 60（放宽实现） | 24~30 ms | 请求类消息应答时限（内核注释 "relaxed"） |
+| tSenderResponse | 60（放宽实现） | 27~50 ms（PD R3.3 Table 7.10） | 请求类消息应答时限（内核注释 "relaxed"） |
 | tReceiverResponse | 15 | ≤15 ms | 接收方响应上限 |
 | tTypeCSendSourceCap（PD_T_SEND_SOURCE_CAP） | 150 | 100~200 ms | Source 重发 Source_Cap 间隔 |
 | tFirstSourceCap | — | 约 100~250 ms（见 PD 规范 PD Timers 表） | attach 后首包 Source_Cap 窗口 |

@@ -75,9 +75,9 @@ while IFS= read -r p; do
 done < <(grep -E '^[[:space:]]*(docs|evidence):' graph/entities.yaml graph/relations.yaml | sed -E 's/^[^:]*:[[:space:]]*//; s/^(docs|evidence):[[:space:]]*//')
 [ "$badref" -eq 0 ] && echo "  通过" || rc=1
 
-echo "== 4/11 frontmatter 覆盖（10~90 内容目录） =="
+echo "== 4/11 frontmatter 覆盖（10~90 内容目录，含 65、78） =="
 total=0; missing=0
-for d in 10-* 20-* 30-* 40-* 50-* 60-* 70-* 90-*; do
+for d in 10-* 20-* 30-* 40-* 50-* 60-* 65-* 70-* 78-* 90-*; do
   [ -d "$d" ] || continue
   while IFS= read -r f; do
     total=$((total+1))
@@ -103,7 +103,7 @@ rm -f /tmp/usbtree_ids.$$
 
 echo "== 6/11 frontmatter title 与正文 H1 一致 =="
 mismatch=0
-for d in 10-* 20-* 30-* 40-* 50-* 60-* 70-* 90-*; do
+for d in 10-* 20-* 30-* 40-* 50-* 60-* 65-* 70-* 78-* 90-*; do
   [ -d "$d" ] || continue
   while IFS= read -r f; do
     fmtitle=$(awk '
@@ -138,7 +138,7 @@ fi
 echo "== 8/11 内容文件 H1 标题唯一性 =="
 list=$(mktemp)
 dups=$(mktemp)
-for d in 10-* 20-* 30-* 40-* 50-* 60-* 70-* 90-*; do
+for d in 10-* 20-* 30-* 40-* 50-* 60-* 65-* 70-* 78-* 90-*; do
   [ -d "$d" ] || continue
   while IFS= read -r f; do
     h1=$(grep -m1 '^# ' "$f" | sed 's/^#[[:space:]]*//; s/[[:space:]]*$//')

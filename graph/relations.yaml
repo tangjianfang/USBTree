@@ -519,3 +519,109 @@ relations:
     type: carries
     to: scpi
     evidence: 20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md
+  - id: rel-086
+    from: usbmon
+    type: similar-to
+    to: usbpcap
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+    note: 同为 URB 级软件抓包：Linux / Windows 对照
+  - id: rel-087
+    from: usb-etw
+    type: similar-to
+    to: usbpcap
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+    note: ETW 记录集线器/控制器驱动判定与状态机，USBPcap 记录 URB
+  - id: rel-088
+    from: usb-protocol-analyzer
+    type: similar-to
+    to: usbmon
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/01-USB抓包原理与观测分层.md
+    note: 线级（包/事务/总线状态）与 URB 级观测对照
+  - id: rel-089
+    from: pd-analyzer
+    type: uses
+    to: typec-cc
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/03-PD与Type-C分析仪及电气测试仪器.md
+    note: 在 CC 线上被动解码 BMC 报文
+  - id: rel-090
+    from: ble-sniffer
+    type: uses
+    to: ble-ll
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/04-开源与低成本分析工具.md
+    note: 跟随连接需捕获 CONNECT_IND
+  - id: rel-091
+    from: facedancer
+    type: similar-to
+    to: linux-gadget
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/04-开源与低成本分析工具.md
+    note: 都在设备侧实现任意 USB 设备；Facedancer 跑在外部硬件上
+  - id: rel-092
+    from: raw-gadget
+    type: part-of
+    to: linux-gadget
+    evidence: 70-枝干-调试测试与安全/工具与分析仪/08-测试仿真与虚拟化工具.md
+    note: gadget 驱动之一，所有请求交给用户态
+
+  # ── 框架与 API ──
+  - id: rel-093
+    from: webhid
+    type: uses
+    to: class-hid
+    evidence: 65-枝干-框架与API/03-WebHID详解.md
+    note: 报告级访问，经 OS HID 类驱动；键鼠/FIDO 集合被黑名单屏蔽
+  - id: rel-094
+    from: webhid
+    type: similar-to
+    to: webusb
+    evidence: 65-枝干-框架与API/01-浏览器设备API总览与安全模型.md
+    note: 同一权限模型（手势+选择器+origin 授权），WebUSB 不能访问 HID 类
+  - id: rel-095
+    from: web-serial
+    type: uses
+    to: cdc-acm
+    evidence: 65-枝干-框架与API/04-WebSerial与WebBluetooth.md
+    note: open()/setSignals() 经 OS 驱动变为 SET_LINE_CODING / SET_CONTROL_LINE_STATE
+  - id: rel-096
+    from: web-bluetooth
+    type: uses
+    to: gatt
+    evidence: 65-枝干-框架与API/04-WebSerial与WebBluetooth.md
+    note: 网页作 GATT Client；HID Service 0x1812 被 GATT 黑名单屏蔽
+  - id: rel-097
+    from: hidapi
+    type: similar-to
+    to: webhid
+    evidence: 65-枝干-框架与API/12-实战案例-外设控制七例.md
+    note: 同为报告级 API，报告 ID 字节约定不同（hidapi 首字节 vs WebHID 独立参数）
+  - id: rel-098
+    from: webusb
+    type: runs-on
+    to: winusb
+    evidence: 65-枝干-框架与API/02-WebUSB详解.md
+    note: Windows 上 Chromium 只能打开已绑定 WinUSB 的接口
+  - id: rel-099
+    from: ms-os-descriptors
+    type: enables
+    to: winusb
+    evidence: 65-枝干-框架与API/10-设备端框架与WebUSB固件桥接.md
+    note: MS OS 2.0 兼容 ID "WINUSB" 让 Windows 8.1+ 自动绑定
+  - id: rel-100
+    from: libusb
+    type: runs-on
+    to: winusb
+    evidence: 65-枝干-框架与API/07-C与C++-libusb与hidapi.md
+    note: Windows 首选子后端（另有 libusbK/UsbDk）
+
+  # ── AI 时代的 USB ──
+  - id: rel-101
+    from: syzkaller-usb
+    type: uses
+    to: linux-gadget
+    evidence: 78-AI时代的USB/04-AI辅助驱动固件开发与模糊测试.md
+    note: Raw Gadget + Dummy HCD/UDC 在内核内仿真外部设备
+  - id: rel-102
+    from: mcp
+    type: uses
+    to: descriptors
+    evidence: 78-AI时代的USB/03-AI辅助抓包分析与MCP工具.md
+    note: 只读 MCP 工具把 sysfs 描述符字段交给模型；设备字符串属不可信输入

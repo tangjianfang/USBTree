@@ -13,8 +13,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/09-TypeC规范级-状态机与CC时序.md"
 spec_refs: ["USB Type-C Cable and Connector Specification 2.x"]
 related: ["21-charging-bc12-otg", "22-usb-pd", "23-altmode-emarker"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # 连接器演进与 USB Type-C（含 CC 状态机与时序）

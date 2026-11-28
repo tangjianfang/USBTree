@@ -4,8 +4,8 @@ topic: index
 level: 入门
 keywords: ["USB","index","knowledge base","USBTree"]
 source_repo: "https://github.com/tangjianfang/USBTree"
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # USB 知识库索引（AI 参考）

@@ -2,16 +2,16 @@
 
 [![validate](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml/badge.svg)](https://github.com/tangjianfang/USBTree/actions/workflows/validate.yml)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-109%20%E7%AF%87%C2%B719751%E8%A1%8C-blue)
-<!-- usbtree-stats: articles=109 lines=19751 entities=89 edges=85 specs=71 checks=11 -->
+![内容](https://img.shields.io/badge/%E5%86%85%E5%AE%B9-155%20%E7%AF%87%C2%B725944%E8%A1%8C-blue)
+<!-- usbtree-stats: articles=155 lines=25944 entities=104 edges=102 specs=71 checks=11 -->
 
 > **知识树 × 关系图谱 × 可执行技能 × 官方规范缓存**
 >
 > 🌐 在线阅读（可搜索、手机友好）：<https://usbtree.gumuhub.com> · 构建方式见 [site/README.md](site/README.md)
 >
 > English TL;DR — A Chinese knowledge system for USB & Bluetooth LE: a hierarchical
-> knowledge tree (109 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,
-> Type-C/PD, USB4 and BLE), a typed knowledge graph (89 entities / 85 relations),
+> knowledge tree (155 in-depth articles from the USB core to HID/CDC/MSC/UAC/UVC,
+> Type-C/PD, USB4 and BLE), a typed knowledge graph (104 entities / 102 relations),
 > executable agent skills, and an index of 71 cached official specifications.
 > Content is MIT-licensed; third-party specification binaries are not
 > redistributed — fetch them via [80-参考资料/README.md](80-参考资料/README.md)
@@ -25,7 +25,8 @@
 |---|---|---|
 | 🌱 根 | 总览与地图 | 本文件、[知识树总图](00-知识树总图.md) |
 | 🌳 树干 | USB 核心协议（13 篇） | [10-树干-USB核心/](10-树干-USB核心/01-概述与版本演进.md) |
-| 🌿 主枝 | 六大枝干：设备类 / 接口与供电 / 高速演进 / 无线关联 / 主机侧实现 / 调试安全 | `20~70` 目录 |
+| 🌿 主枝 | 七大枝干：设备类 / 接口与供电 / 高速演进 / 无线关联 / 主机侧实现 / 框架与API / 调试安全 | `20~70` 目录（含 `65`） |
+| 🤖 新枝 | AI 时代的 USB：AI 怎么帮 USB 工程（规范 RAG、描述符、抓包 MCP、模糊测试、硬件在环）+ USB 在 AI 硬件里的角色（加速器、UVC/UAC、USB4 eGPU、PD 供电、机器人、安全） | [78-AI时代的USB/](78-AI时代的USB/00-索引.md) |
 | 🍃 分枝→叶 | HID 报告描述符、BOT 传输、PD 协商、GATT 服务……直到单个字段/命令/电阻值 | 各枝干内的文件与小节 |
 
 ## 📂 目录结构
@@ -55,7 +56,10 @@ USBTree/
 │   ├── 00-无线概览与USB交汇.md · 99-WirelessUSB与MA-USB历史.md
 │   └── BLE-低功耗蓝牙/        (17 篇: 架构HCI/链路层/广播/ATT-GATT/GAP/SMP/HOGP/对比/LEAudio/Mesh/经典Profile/LLCP全表/测向与信道探测/RF参数全表/A2DP参数/标准UUID全表)
 ├── 60-枝干-主机侧与实现/      (9 篇 + 00-索引: 主机控制器栈/操作系统/固件栈/libusb/实战TinyUSB/实战libusb/实战Gadget与usbip/Windows驱动开发/macOS与Linux主机开发)
+├── 65-枝干-框架与API/          (12 篇 + 00-索引: 浏览器API与安全模型/WebUSB/WebHID/WebSerial与WebBluetooth/网页配置器与VIA/Node.js/libusb与hidapi/OS原生API/多语言绑定/WebUSB固件桥接/对比选型/实战七例)
 ├── 70-枝干-调试测试与安全/    (5 篇 + 00-索引: 抓包/排查手册/合规认证/USB 安全与 BadUSB/合规测试实操)
+│   └── 工具与分析仪/          (19 篇: 抓包原理/商用分析仪/PD与电气仪器/开源工具/对比选型/软件抓包/设备信息/仿真虚拟化 + 10 个实战案例)
+├── 78-AI时代的USB/            (13 篇 + 00-索引: AI 读规范与幻觉陷阱/描述符生成审查/抓包与 MCP/驱动固件与模糊测试/Agent 硬件在环/AI 加速器/UVC-UAC 带宽/USB4 eGPU 与 PD/机器人/可穿戴与安全/提示词模板/经验与坑/本地助手)
 ├── 80-参考资料/               (官方规范原文缓存: 71 份（清单 tools/spec_fetch.sh，二进制不入库） + 索引 README + 提取文本)
 ├── 90-附录/                   (3 篇: 术语表/速查表大全/时序参数全表)
 ├── ai-kb/                     (给 AI 参考的技术文档: index.md · 38 个主题 · llms-full.md；python3 tools/ai-kb/build_kb.py 重建)
@@ -81,10 +85,13 @@ USBTree/
 - 玩充电头/快充/线缆 → [接口与供电索引](30-枝干-接口与供电/00-索引.md) → [Type-C](30-枝干-接口与供电/02-USBType-C详解.md) → [USB PD](30-枝干-接口与供电/04-USBPD协议.md)
 - 看 USB3 / USB4 / DROM / 连接管理器 → [高速演进索引](40-枝干-高速演进/00-索引.md)
 - 写主机驱动（含 Windows / macOS / Linux） → [主机侧索引](60-枝干-主机侧与实现/00-索引.md)
+- 用 WebHID / WebUSB / Node.js / hidapi / Python 等框架控制外设 → [框架与 API 索引](65-枝干-框架与API/00-索引.md) → [选型指南](65-枝干-框架与API/11-框架横向对比与选型指南.md)
+- 做网页版外设配置器（改 DPI、改键） → [WebHID 详解](65-枝干-框架与API/03-WebHID详解.md) → [网页配置器案例](65-枝干-框架与API/05-网页配置器案例-WebHID与VIA.md)
 - 排查、合规与安全 → [调试测试与安全索引](70-枝干-调试测试与安全/00-索引.md)
 - 搞蓝牙/BLE → [无线概览：USB 与 BLE 的交汇](50-枝干-无线关联/00-无线概览与USB交汇.md) → [BLE 子树](50-枝干-无线关联/BLE-低功耗蓝牙/00-BLE概述.md)
 - 设备枚举不出来 → [枚举失败排查手册](70-枝干-调试测试与安全/02-枚举失败排查手册.md)
 - 抓 USB 包 → [协议分析仪与抓包](70-枝干-调试测试与安全/01-协议分析仪与抓包.md)
+- 选/用 USB 分析仪与工具、看实战抓包案例 → [工具与分析仪索引](70-枝干-调试测试与安全/工具与分析仪/00-工具与分析仪索引.md) → [分析仪对比与选型](70-枝干-调试测试与安全/工具与分析仪/05-分析仪对比与选型指南.md)
 - 写主机程序操作设备 → [libusb 与用户态访问](60-枝干-主机侧与实现/04-libusb与用户态访问.md)
 - 查官方规范原文 → [80-参考资料/README.md](80-参考资料/README.md)（官方规范本地缓存 + 直链索引；份数以缓存索引页为准）
 - 深入 USB PD 状态机/消息全表 → [USBPD 深入](30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md)
@@ -93,6 +100,8 @@ USBTree/
 - 做仪器/示波器通信 → [USBTMC](20-枝干-设备类协议/其他设备类/08-USBTMC测试测量类.md)
 - 从零跑通固件/主机程序 → [实战 TinyUSB](60-枝干-主机侧与实现/05-实战-TinyUSB设备固件.md) · [实战 libusb](60-枝干-主机侧与实现/06-实战-libusb主机程序.md)
 - 查一个缩写/编码 → [术语表](90-附录/01-术语表.md) · [速查表大全](90-附录/02-速查表大全.md)
+- 用 AI 读规范/审描述符/读抓包 → [AI 时代的 USB 索引](78-AI时代的USB/00-索引.md) → [提示词模板与检查清单](78-AI时代的USB/11-提示词模板与检查清单.md)
+- 做 AI 硬件（加速棒/摄像头/eGPU/机器人）→ [UVC 与 UAC 带宽计算](78-AI时代的USB/07-UVC与UAC喂给模型-带宽与延迟计算.md) · [USB4 eGPU 与 PD 供电](78-AI时代的USB/08-USB4雷电外接GPU与AI设备供电.md)
 
 ## 🎯 三条阅读路径
 
@@ -107,7 +116,7 @@ USBTree/
 
 ## 🤖 Agent 使用指南（Graph + Skill 双引擎）
 
-- **Graph 回答"知道什么"**：`graph/entities.yaml`（89 个实体：协议/类/机制，带类码与主文档）+ `graph/relations.yaml`（85 条类型化关系边：carries/reuses/supersedes/tunnels/enables…，每条边带 evidence 指向正文）。查询示例："HOGP reuses HID-ReportDescriptor"——跨传输复用、代际更替（BOT→UAS、ECM→NCM、OTG→DRP）、隧道承载（USB4→USB3/PCIe/DP）全部结构化可查；全景图见 `graph/export.mmd`。
+- **Graph 回答"知道什么"**：`graph/entities.yaml`（104 个实体：协议/类/机制，带类码与主文档）+ `graph/relations.yaml`（102 条类型化关系边：carries/reuses/supersedes/tunnels/enables…，每条边带 evidence 指向正文）。查询示例："HOGP reuses HID-ReportDescriptor"——跨传输复用、代际更替（BOT→UAS、ECM→NCM、OTG→DRP）、隧道承载（USB4→USB3/PCIe/DP）全部结构化可查；全景图见 `graph/export.mmd`。
 - **Skill 回答"怎么做"**：`skills/` 下四个技能包，均含触发条件、分步动作、验证命令与回退路径——
   1. [usb-enum-troubleshoot](skills/usb-enum-troubleshoot/SKILL.md)：枚举失败分阶段排查；
   2. [usb-capture-analysis](skills/usb-capture-analysis/SKILL.md)：trace 分析方法论与异常特征表；
@@ -115,6 +124,7 @@ USBTree/
   4. [build-usb-device](skills/build-usb-device/SKILL.md)：TinyUSB/libusb/gadget 三路工程模板路由。
 - **激活方式**：将 `skills/<name>/` 拷贝到所用 Agent 平台的技能目录（如 ZCode 的 skills 目录），或直接把 SKILL.md 作为系统提示的一部分引用。
 - **给 AI 检索的派生文库**：`ai-kb/` 把正文收成带 frontmatter 的主题文件（用途与重建方式见 [ai-kb/README.md](ai-kb/README.md)）。它是生成物，不计入上面的篇数；改完树干/枝干后在仓库根目录运行 `python3 tools/ai-kb/build_kb.py`。
+- **AI 时代的 USB**：[78-AI时代的USB/](78-AI时代的USB/00-索引.md) 讲怎么让 Agent 安全地用这套知识库与 USB 硬件——RAG 引用纪律、只读 MCP 工具（usbmon/tshark）最小实现、刷写类操作的人工确认护栏，以及本地模型助手的搭法。
 - **规范可追溯知识库**：`tech-doc/` 用 [tech-doc 技能](https://github.com/tangjianfang/tech-doc) 从官方规范与平台文档整理，并带同名 HTML 阅读版（与正文、`ai-kb/` 的分工和重建方式见 [tech-doc/README.md](tech-doc/README.md)）。不计入上面的篇数。
 - **一致性保障**：`bash tools/validate.sh`（共 11 项检查：链接/围栏/图谱引用/frontmatter/边端点/标题/导出/H1 唯一/命名区块/孤页/统计）；`bash tools/gen_graph.sh` 在改动关系表后重新生成全景图。数字以 `python3 tools/gen_stats.py` 为准。`ai-kb/` 与 `tech-doc/` 不参与内容页检查与篇数统计。
 

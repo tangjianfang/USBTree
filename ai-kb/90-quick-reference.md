@@ -11,8 +11,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/90-附录/03-时序参数全表.md"
 spec_refs: ["USB 2.0", "USB 3.2", "Type-C", "USB PD"]
 related: ["06-descriptors", "07-enumeration-requests", "05-transfer-types-bandwidth"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # 速查表大全与时序参数全表
@@ -307,7 +307,7 @@ generated: 2026-11-28
 | 定时器 | 数值 | 用途 |
 |---|---|---|
 | tReceive | 0.9~1.1 ms | GoodCRC 等待窗口，超时重发 |
-| tSenderResponse | 24~30 ms | 命令后等响应 |
+| tSenderResponse | 27~50 ms | 命令后等响应（PD R3.3 Table 7.10） |
 | nCapsCount | 50 | Source Capabilities 重发上限 |
 | tTypeCSendSourceCap | 100~200 ms | 上电后首广播窗口 |
 

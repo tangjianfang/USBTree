@@ -143,7 +143,7 @@ stateDiagram-v2
     state "Sink PE(简化)" as snk {
         [*] --> SNK_WaitCap: 等 Source_Cap
         SNK_WaitCap --> SNK_Evaluate: 收到 Source_Cap
-        SNK_Evaluate --> SNK_SendRequest: 选最优 PDO(tSenderResponse 24~30ms 内)
+        SNK_Evaluate --> SNK_SendRequest: 选最优 PDO(tSenderResponse 27~50ms 内)
         SNK_SendRequest --> SNK_WaitPSRDY: 收到 Accept
         SNK_WaitPSRDY --> SNK_Ready: 收到 PS_RDY
         SNK_WaitPSRDY --> SNK_WaitCap: Reject/Wait 超时/复位
@@ -262,7 +262,7 @@ PD 3.0 引入 **Security_Request / Security_Response** 扩展消息对，配合 
 | 定时器/计数器 | 取值 | 用途 |
 | --- | --- | --- |
 | tReceive | 0.9~1.1 ms | 收帧/GoodCRC 等待窗口 |
-| tSenderResponse | 24~30 ms | 收到请求类消息后的应答时限 |
+| tSenderResponse | 27~50 ms | 收到请求类消息后的应答时限（PD R3.3 Table 7.10；旧版 24~30 ms 已勘误） |
 | tTypeCSendSourceCap | 100~200 ms | Source 重发 Source_Cap 间隔 |
 | nCapsCount | 50 | Source_Cap 最大重发次数 |
 | tNoResponseTimer | 4.5~5.5 s | 无应答总超时（之后回退/报错） |
