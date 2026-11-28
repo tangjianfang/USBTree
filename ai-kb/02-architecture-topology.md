@@ -11,8 +11,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/10-树干-USB核心/09-集线器与连接管理.md"
 spec_refs: ["USB 2.0 Specification ch.4/5/9/11"]
 related: ["04-packets-transactions", "06-descriptors", "07-enumeration-requests"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # 体系架构、拓扑、端点与管道、集线器
@@ -87,7 +87,7 @@ graph LR
     end
     A1 <-. 逻辑通道/管道 .-> B1
     A2 <-. 默认管道 端点0 .-> B2
-    A3 === 总线 | D+ D- VBUS | === B3
+    A3 ===|"总线 D+ D- VBUS"| B3
 ```
 
 | 层 | 主机侧 | 设备侧 | 树内对应知识 |
@@ -111,10 +111,11 @@ graph LR
 
 ```mermaid
 stateDiagram-v2
+    state "Default" as DefaultState
     [*] --> Attached: 插入, VBUS 上电
     Attached --> Powered: 上电完成
-    Powered --> Default: 复位, 得到默认地址0
-    Default --> Addressed: SET_ADDRESS 成功
+    Powered --> DefaultState: 复位, 得到默认地址0
+    DefaultState --> Addressed: SET_ADDRESS 成功
     Addressed --> Configured: SET_CONFIGURATION 成功
     Configured --> Suspended: 总线空闲≥3ms
     Suspended --> Configured: 恢复信号

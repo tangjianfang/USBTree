@@ -54,14 +54,19 @@ try {
 } catch { warn.push('git log 不可用：最近更新时间留空'); }
 
 // ───────────────────────────── 主题（侧栏 topics）与分枝 ─────────────────────────────
-// 预留的顶层分枝：仓库里出现名字匹配的编号目录（如 70-工具与分析仪/、75-框架与API/）就自动接管该主题；
-// 目录尚不存在时用 site/content/<placeholder>/index.md 占位页兜底。
+// 预留分枝：仓库里出现名字匹配的目录就自动接管该主题——先找顶层编号目录（65-枝干-框架与API/、78-AI时代的USB/），
+// 再找顶层目录下一级的子目录（70-枝干-调试测试与安全/工具与分析仪/）；都没有时用 site/content/<placeholder>/index.md 占位页兜底。
 const RESERVED = [
-  { id: 'tools', label: '工具与分析仪', icon: 'analytics', re: /^\d\d-[^/]*(工具|分析仪)/, placeholder: 'tools' },
-  { id: 'frameworks', label: '框架与 API', icon: 'seti:json', re: /^\d\d-[^/]*(框架|API)/, placeholder: 'frameworks' },
-  { id: 'ai', label: 'AI 时代的 USB', icon: 'star', re: /^\d\d-(AI|[^/]*AI时代)/, placeholder: 'ai' },
+  { id: 'tools', label: '工具与分析仪', icon: 'analytics', re: /^(\d\d-)?[^/]*(工具|分析仪)[^/]*$/, placeholder: 'tools' },
+  { id: 'frameworks', label: '框架与 API', icon: 'seti:json', re: /^(\d\d-)?[^/]*(框架|API)[^/]*$/, placeholder: 'frameworks' },
+  { id: 'ai', label: 'AI 时代的 USB', icon: 'star', re: /^(\d\d-)?(AI|[^/]*AI时代)[^/]*$/, placeholder: 'ai' },
 ];
-for (const r of RESERVED) r.dir = fs.readdirSync(ROOT).find((d) => r.re.test(d) && fs.statSync(path.join(ROOT, d)).isDirectory());
+{
+  const isDir = (d) => fs.statSync(path.join(ROOT, d)).isDirectory();
+  const top = fs.readdirSync(ROOT).filter((d) => /^\d\d-/.test(d) && !d.startsWith('80-') && isDir(d)).sort();
+  const nested = top.flatMap((d) => fs.readdirSync(path.join(ROOT, d)).filter((s) => isDir(d + '/' + s)).sort().map((s) => d + '/' + s));
+  for (const r of RESERVED) r.dir = top.find((d) => r.re.test(d)) || nested.find((d) => r.re.test(path.posix.basename(d)));
+}
 const RES = Object.fromEntries(RESERVED.map((r) => [r.id, r]));
 const resTopic = (id) => ({ id, label: RES[id].label, icon: RES[id].icon, link: RES[id].dir ? `/${RES[id].dir}/` : `/${RES[id].placeholder}/` });
 const TOPICS = [
@@ -82,7 +87,7 @@ const TOPICS = [
 const DIR_LABEL = {
   '10-树干-USB核心': 'USB 2.0 核心（树干）', '20-枝干-设备类协议': '设备类协议', '30-枝干-接口与供电': '接口与供电',
   '40-枝干-高速演进': 'USB 3.x / USB4 高速演进', '50-枝干-无线关联': '无线关联', '60-枝干-主机侧与实现': '主机侧与实现',
-  '70-枝干-调试测试与安全': '调试、测试与安全', '80-参考资料': '参考资料', '90-附录': '附录',
+  '65-枝干-框架与API': '框架与 API', '70-枝干-调试测试与安全': '调试、测试与安全', '78-AI时代的USB': 'AI 时代的 USB', '80-参考资料': '参考资料', '90-附录': '附录',
   'HID-人机接口设备': 'HID 人机接口设备', 'CDC-通信设备类': 'CDC 通信设备类', 'MSC-大容量存储': 'MSC 大容量存储',
   'Video-UVC': 'UVC 视频类', 'Audio-UAC': 'UAC 音频类', '其他设备类': '其他设备类', 'BLE-低功耗蓝牙': 'BLE 低功耗蓝牙',
 };
@@ -143,7 +148,7 @@ function firstParagraph(body) {
     if (t.startsWith('```')) { inCode = !inCode; if ((t.match(/```/g) || []).length % 2 === 0) inCode = false; continue; }
     if (inCode || !t || /^(#|\||>|<|:::|-{3,}|```|\*\*?[^*]*\*\*?$)/.test(t) || /^[-*] /.test(t) || /^\d+\. /.test(t)) continue;
     const s = stripMd(t);
-    if (s.length >= 16) return s.length > 120 ? s.slice(0, 118) + '…' : s;
+    if (s.length >= 16 && !/[：:]$/.test(s)) return s.length > 120 ? s.slice(0, 118) + '…' : s; // 以冒号结尾的引导句不当简介
   }
   return '';
 }
@@ -158,7 +163,7 @@ function levelOf(rel, title) {
   if (/^tech-doc\/(0[6-9]|1\d)-/.test(rel)) return 3;
   if (/规范级|全表|附录|DROM|CM 指南|CM指南|配置空间|位级|权威编号/.test(title)) return 4;
   if (/索引|概述|概览|总图|演进|体系架构|术语|对比速查|README|定位/.test(title + rel)) return 1;
-  if (/深入|状态机|LTSSM|带宽|调度|错误处理|TestMode|Test Mode|驱动开发|Gadget|usbip|LLCP|测向|Mesh|LE Audio|安全|合规|USB4/.test(title)) return 3;
+  if (/案例|深入|状态机|LTSSM|模糊测试|硬件在环|带宽|调度|错误处理|TestMode|Test Mode|驱动开发|Gadget|usbip|LLCP|测向|Mesh|LE Audio|安全|合规|USB4/.test(title)) return 3;
   return 2;
 }
 const LEVEL_NAME = { 1: '入门', 2: '基础', 3: '进阶', 4: '专家' };
@@ -420,7 +425,7 @@ const stages = pathsCfg.stages.map((s, i) => ({
   labs: (s.labs || []).map((id) => ({ id, title: labTitle[id], url: `/labs/${id}/` })),
 }));
 {
-  let body = `按“由浅入深”排好的 8 个阶段。每个阶段列出必读文档（难度、预计阅读时长）与可以动手验证的实验。只想查资料，直接用顶部搜索或[速查卡](/reference/cheatsheets/)。\n\n`;
+  let body = `按“由浅入深”排好的 ${stages.length} 个阶段。每个阶段列出必读文档（难度、预计阅读时长）与可以动手验证的实验。只想查资料，直接用顶部搜索或[速查卡](/reference/cheatsheets/)。\n\n`;
   body += `<ol class="path-timeline">\n`;
   for (const s of stages) {
     const mins = s.pages.reduce((a, p) => a + p.minutes, 0);
@@ -430,7 +435,7 @@ const stages = pathsCfg.stages.map((s, i) => ({
       `\n</ul>${s.labs.length ? `<p class="path-labs">🧪 动手：${s.labs.map((l) => `<a href="${l.url}">${esc(l.title)}</a>`).join(' · ')}</p>` : ''}</li>\n`;
   }
   body += `</ol>\n`;
-  writeDoc('guide/learning-paths', { title: '学习路线', description: '从入门到规范精读的 8 个阶段，附每阶段必读文档与配套实验。', slug: 'guide/learning-paths', topic: 'guide', tableOfContents: false }, body);
+  writeDoc('guide/learning-paths', { title: '学习路线', description: `从入门到规范精读的 ${stages.length} 个阶段，附每阶段必读文档与配套实验。`, slug: 'guide/learning-paths', topic: 'guide', tableOfContents: false }, body);
 }
 
 // ───────────────────────────── 速查卡（按章节原样摘取） ─────────────────────────────
@@ -502,7 +507,11 @@ const subGroups = (dir, collapsed) => [...dirIndex.keys()].filter((d) => path.po
 const techDoc = (re) => [...pages.keys()].filter((r) => r.startsWith('tech-doc/') && re.test(r)).sort().map(item);
 const L = (label, link) => ({ label, link });
 const resItems = (id) => { const r = RES[id]; return r.dir
-  ? [{ label: dirLabel(r.dir), items: [L('分枝概览', `/${r.dir}/`), ...filesIn(r.dir).map(item)] }, ...subGroups(r.dir, false)]
+  ? (() => { // 案例篇 ≥3 时单独成组（工具与分析仪：10~19 篇实战案例）
+      const fs_ = filesIn(r.dir), cases = fs_.filter((f) => /\/\d\d-案例-/.test(f)), rest = fs_.filter((f) => !cases.includes(f));
+      return cases.length >= 3
+        ? [{ label: dirLabel(r.dir), items: [L('分枝概览', `/${r.dir}/`), ...rest.map(item)] }, { label: `实战案例（${cases.length}）`, items: cases.map(item) }, ...subGroups(r.dir, false)]
+        : [{ label: dirLabel(r.dir), items: [L('分枝概览', `/${r.dir}/`), ...fs_.map(item)] }, ...subGroups(r.dir, false)]; })()
   : [L(`${r.label}（建设中）`, `/${r.placeholder}/`)]; };
 const items = {
   guide: [L('学习路线', '/guide/learning-paths/'), L('研究路线：虚拟 USB · 驱动 · 固件', '/guide/research/'), L('知识树总图', '/00-知识树总图/'), L('关于 USBTree', '/about/'), L('如何阅读本站', '/guide/how-to-read/'),
@@ -512,7 +521,8 @@ const items = {
   power: [group('接口与供电', '30-枝干-接口与供电')],
   ble: [{ label: '无线关联', items: [L('分枝概览', '/50-枝干-无线关联/'), ...filesIn('50-枝干-无线关联').map(item)] }, ...subGroups('50-枝干-无线关联', false)],
   platform: [group('主机侧与实现', '60-枝干-主机侧与实现'), { label: '各平台 USB 栈', items: techDoc(/\/(0[7-9]|1[0-2])-/) }, { label: '虚拟 USB', items: techDoc(/\/06-/) }],
-  debug: [group('调试、测试与安全', '70-枝干-调试测试与安全'), { label: '可执行技能（skills）', items: [...pages.keys()].filter((r) => r.startsWith('skills/')).map((r) => ({ label: meta[r].title, link: meta[r].url })) }],
+  debug: [group('调试、测试与安全', '70-枝干-调试测试与安全'),
+    ...(RES.tools.dir?.startsWith('70-') ? [{ label: '工具与分析仪', items: [L(`分枝概览（${filesIn(RES.tools.dir).length} 篇）`, `/${RES.tools.dir}/`)] }] : []), { label: '可执行技能（skills）', items: [...pages.keys()].filter((r) => r.startsWith('skills/')).map((r) => ({ label: meta[r].title, link: meta[r].url })) }],
   tools: [...resItems('tools'),
     { label: '站内相关', items: [L('协议分析仪与抓包', '/70-枝干-调试测试与安全/01-协议分析仪与抓包/'), L('枚举失败排查手册', '/70-枝干-调试测试与安全/02-枚举失败排查手册/'),
       L('抓包教学样本', '/labs/captures/'), L('usbtest 产测框架', '/labs/usbtest/'), L('USB DevStudio', '/labs/devstudio/')] }],

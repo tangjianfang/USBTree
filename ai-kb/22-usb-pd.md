@@ -13,8 +13,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/08-USBPD消息全表.md"
 spec_refs: ["USB Power Delivery Specification Rev 3.2"]
 related: ["20-connectors-typec", "23-altmode-emarker", "21-charging-bc12-otg"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # USB Power Delivery：协议、状态机与消息全表
@@ -344,7 +344,7 @@ stateDiagram-v2
     state "Sink PE(简化)" as snk {
         [*] --> SNK_WaitCap: 等 Source_Cap
         SNK_WaitCap --> SNK_Evaluate: 收到 Source_Cap
-        SNK_Evaluate --> SNK_SendRequest: 选最优 PDO(tSenderResponse 24~30ms 内)
+        SNK_Evaluate --> SNK_SendRequest: 选最优 PDO(tSenderResponse 27~50ms 内)
         SNK_SendRequest --> SNK_WaitPSRDY: 收到 Accept
         SNK_WaitPSRDY --> SNK_Ready: 收到 PS_RDY
         SNK_WaitPSRDY --> SNK_WaitCap: Reject/Wait 超时/复位
@@ -463,7 +463,7 @@ PD 3.0 引入 **Security_Request / Security_Response** 扩展消息对，配合 
 | 定时器/计数器 | 取值 | 用途 |
 | --- | --- | --- |
 | tReceive | 0.9~1.1 ms | 收帧/GoodCRC 等待窗口 |
-| tSenderResponse | 24~30 ms | 收到请求类消息后的应答时限 |
+| tSenderResponse | 27~50 ms | 收到请求类消息后的应答时限（PD R3.3 Table 7.10；旧版 24~30 ms 已勘误） |
 | tTypeCSendSourceCap | 100~200 ms | Source 重发 Source_Cap 间隔 |
 | nCapsCount | 50 | Source_Cap 最大重发次数 |
 | tNoResponseTimer | 4.5~5.5 s | 无应答总超时（之后回退/报错） |
@@ -733,7 +733,7 @@ BIST Carrier Mode 持续 **30~60 ms**（内核 `PD_T_BIST_CONT_MODE` 典型 50 m
 | 定时器/计数器 | 内核典型值 | 规范范围 | 用途 |
 | --- | --- | --- | --- |
 | tReceive | — | 0.9~1.1 ms | 收帧/GoodCRC 窗口（见 07 篇） |
-| tSenderResponse | 60（放宽实现） | 24~30 ms | 请求类消息应答时限（内核注释 "relaxed"） |
+| tSenderResponse | 60（放宽实现） | 27~50 ms（PD R3.3 Table 7.10） | 请求类消息应答时限（内核注释 "relaxed"） |
 | tReceiverResponse | 15 | ≤15 ms | 接收方响应上限 |
 | tTypeCSendSourceCap（PD_T_SEND_SOURCE_CAP） | 150 | 100~200 ms | Source 重发 Source_Cap 间隔 |
 | tFirstSourceCap | — | 约 100~250 ms（见 PD 规范 PD Timers 表） | attach 后首包 Source_Cap 窗口 |

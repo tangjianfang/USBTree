@@ -21,8 +21,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md"
 spec_refs: ["Bluetooth Core Specification 6.0", "LC3 1.0", "Mesh Protocol 1.1", "A2DP 1.4", "AVDTP 1.3"]
 related: ["61-ble-core", "63-ble-uuid"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # BLE 进阶：LE Audio/LC3、Mesh、经典 Profile、LLCP、测向与信道探测、RF 参数、A2DP/AVDTP

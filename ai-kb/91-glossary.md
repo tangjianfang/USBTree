@@ -9,8 +9,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/90-附录/01-术语表.md"
 spec_refs: []
 related: ["index"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # 术语表（中英对照）

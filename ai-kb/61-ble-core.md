@@ -21,8 +21,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/50-枝干-无线关联/BLE-低功耗蓝牙/08-经典蓝牙与BLE对比.md"
 spec_refs: ["Bluetooth Core Specification 6.0"]
 related: ["60-usb-wireless-intersection", "62-ble-advanced", "63-ble-uuid"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # BLE 核心：概述、链路层/物理层、广播与连接、ATT/GATT、GAP、SMP、经典蓝牙对比

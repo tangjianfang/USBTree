@@ -89,6 +89,46 @@ stages:
       - tech-doc/08-arm-embedded-usb.md
       - 70-枝干-调试测试与安全/04-USB安全与BadUSB.md
     labs: [usbsim, devstudio]
+  - id: s9
+    title: 工具与分析仪：从抓包原理到十个实战案例
+    goal: 选对观测层（软件抓包 / 协议分析仪 / PD 与示波器），能按案例套路定位枚举、链路、PD 与音频问题。
+    hours: 12
+    pages:
+      - 70-枝干-调试测试与安全/工具与分析仪/00-工具与分析仪索引.md
+      - 70-枝干-调试测试与安全/工具与分析仪/01-USB抓包原理与观测分层.md
+      - 70-枝干-调试测试与安全/工具与分析仪/02-商用USB协议分析仪详解.md
+      - 70-枝干-调试测试与安全/工具与分析仪/05-分析仪对比与选型指南.md
+      - 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+      - 70-枝干-调试测试与安全/工具与分析仪/10-案例-枚举失败与bMaxPacketSize0.md
+      - 70-枝干-调试测试与安全/工具与分析仪/14-案例-USB3链路训练与Recovery循环.md
+      - 70-枝干-调试测试与安全/工具与分析仪/15-案例-PD契约协商失败.md
+    labs: [captures, usbtest]
+  - id: s10
+    title: 框架与 API：浏览器、Node.js 与原生栈
+    goal: 会用 WebUSB/WebHID/Web Serial、node-usb/node-hid、libusb/hidapi 与 OS 原生 API 写上位机，并能按场景选型。
+    hours: 10
+    pages:
+      - 65-枝干-框架与API/00-索引.md
+      - 65-枝干-框架与API/01-浏览器设备API总览与安全模型.md
+      - 65-枝干-框架与API/03-WebHID详解.md
+      - 65-枝干-框架与API/06-Nodejs生态-node-usb-node-hid-serialport.md
+      - 65-枝干-框架与API/07-C与C++-libusb与hidapi.md
+      - 65-枝干-框架与API/11-框架横向对比与选型指南.md
+      - 65-枝干-框架与API/12-实战案例-外设控制七例.md
+    labs: [devstudio, lab1-hid-composite]
+  - id: s11
+    title: AI 时代的 USB：让 AI 帮你做 USB 工程
+    goal: 用 RAG/MCP 安全地让 AI 读规范、审描述符、读抓包；理解 USB 在 AI 硬件中的带宽与供电约束。
+    hours: 8
+    pages:
+      - 78-AI时代的USB/00-索引.md
+      - 78-AI时代的USB/01-用AI读USB规范-RAG与幻觉陷阱.md
+      - 78-AI时代的USB/02-AI生成与审查描述符.md
+      - 78-AI时代的USB/03-AI辅助抓包分析与MCP工具.md
+      - 78-AI时代的USB/05-Agent硬件在环测试与安全护栏.md
+      - 78-AI时代的USB/07-UVC与UAC喂给模型-带宽与延迟计算.md
+      - 78-AI时代的USB/11-提示词模板与检查清单.md
+    labs: [captures, usbsim]
   - id: s8
     title: 规范精读与参考
     goal: 每条结论都能回溯到规范章节/表号；把速查表当工具用。

@@ -17,8 +17,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/HID-人机接口设备/04-传输与类特定请求.md"
 spec_refs: ["Device Class Definition for HID 1.11", "HID Usage Tables (HUT)"]
 related: ["12-hid-devices", "13-hid-spec-appendix", "41-windows-driver", "60-usb-wireless-intersection"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # HID 核心：类描述符、报告描述符 Item、Usage、类请求
@@ -97,7 +97,7 @@ flowchart TD
     C --> I["接口描述符 Interface Descriptor<br/>bInterfaceClass = 0x03 (HID)"]
     I --> HD["HID 类描述符 (0x21)"]
     I --> EP["中断端点描述符"]
-    HD -.->|GET_DESCRIPTOR(0x22) 单独获取| RD["报告描述符 Report Descriptor<br/>描述设备的数据格式"]
+    HD -.->|"GET_DESCRIPTOR(0x22) 单独获取"| RD["报告描述符 Report Descriptor<br/>描述设备的数据格式"]
 ```
 
 主机看到 `bInterfaceClass=0x03` 后加载通用 HID 类驱动，再解析报告描述符即可知道"这个设备会上报什么格式的数据"，无需厂商驱动。

@@ -15,8 +15,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/其他设备类/04-Printer打印机类.md"
 spec_refs: ["DFU 1.1", "CCID 1.1", "PIMA 15740 (PTP)", "MTP 1.1", "USB Printer 1.1"]
 related: ["10-class-index", "19-other-classes-b"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # 其他设备类 A：DFU、CCID、PTP/MTP、Printer

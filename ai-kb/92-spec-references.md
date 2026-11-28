@@ -11,8 +11,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/00-知识树总图.md"
 spec_refs: []
 related: ["index"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # 官方规范参考与缓存索引
@@ -147,10 +147,10 @@ bash tools/spec_fetch.sh USB4
 
 > Source: [00-知识树总图.md](https://github.com/tangjianfang/USBTree/blob/main/00-知识树总图.md)
 
-<!-- usbtree-stats: articles=109 lines=19750 entities=89 edges=85 specs=71 checks=11 -->
+<!-- usbtree-stats: articles=155 lines=25944 entities=104 edges=102 specs=71 checks=11 -->
 
 >  本文件是整棵知识树的地图。树干 = USB 核心协议；枝干 = 依赖/关联 USB 的协议族；分枝 = 子协议模块；叶 = 具体知识点。
->  本库定位：**USBTree · USB/BLE 领域知识系统** —— 知识树 × 关系图谱 × 可执行技能 × 官方规范缓存。图谱层（`graph/`，89 实体/85 边）与技能层（`skills/`，4 个技能包）已建成，见 [README](https://github.com/tangjianfang/USBTree/blob/main/README.md) 的 Agent 使用指南。
+>  本库定位：**USBTree · USB/BLE 领域知识系统** —— 知识树 × 关系图谱 × 可执行技能 × 官方规范缓存。图谱层（`graph/`，104 实体/102 边）与技能层（`skills/`，4 个技能包）已建成，见 [README](https://github.com/tangjianfang/USBTree/blob/main/README.md) 的 Agent 使用指南。
 
 ### 一、树的比喻：如何使用这棵树
 
@@ -158,7 +158,7 @@ bash tools/spec_fetch.sh USB4
 |---|---|---|
 | **树根** | 概述、历史与全景 | `00-知识树总图.md`、`README.md` |
 | **树干** | USB 核心协议（一切枝干的基础） | `10-树干-USB核心/` |
-| **主枝（枝干）** | 设备类、接口与供电、高速演进、无线关联、主机实现、调试安全 | `20~70` 各目录 |
+| **主枝（枝干）** | 设备类、接口与供电、高速演进、无线关联、主机实现、框架与API、调试安全 | `20~70` 各目录（含 `65`） |
 | **分枝** | HID、CDC、MSC、UAC、UVC、BLE 等协议族内部的子模块 | 各枝干目录下的子目录 |
 | **树叶** | 具体知识点：一个描述符、一条命令、一次配对、一个电阻值 | 各文件内的小节 |
 | **果实/枯枝** | 工具速查、术语表、失败的历史协议（Wireless USB） | `90-附录/`、`50/99-*.md` |
@@ -174,7 +174,9 @@ bash tools/spec_fetch.sh USB4
 - [接口与供电索引](https://github.com/tangjianfang/USBTree/blob/main/30-枝干-接口与供电/00-索引.md)
 - [高速演进索引](https://github.com/tangjianfang/USBTree/blob/main/40-枝干-高速演进/00-索引.md) · [USB4 DROM](31-usb4.md) · [USB4 CM 指南](31-usb4.md)
 - [主机侧索引](https://github.com/tangjianfang/USBTree/blob/main/60-枝干-主机侧与实现/00-索引.md) · [Windows 驱动开发](41-windows-driver.md) · [macOS 与 Linux 主机开发](42-linux-macos-libusb.md)
-- [调试测试与安全索引](https://github.com/tangjianfang/USBTree/blob/main/70-枝干-调试测试与安全/00-索引.md)
+- [框架与 API 索引](https://github.com/tangjianfang/USBTree/blob/main/65-枝干-框架与API/00-索引.md) · [WebHID 详解](https://github.com/tangjianfang/USBTree/blob/main/65-枝干-框架与API/03-WebHID详解.md) · [框架对比与选型](https://github.com/tangjianfang/USBTree/blob/main/65-枝干-框架与API/11-框架横向对比与选型指南.md)
+- [调试测试与安全索引](https://github.com/tangjianfang/USBTree/blob/main/70-枝干-调试测试与安全/00-索引.md) · [工具与分析仪索引](https://github.com/tangjianfang/USBTree/blob/main/70-枝干-调试测试与安全/工具与分析仪/00-工具与分析仪索引.md)
+- [AI 时代的 USB 索引](https://github.com/tangjianfang/USBTree/blob/main/78-AI时代的USB/00-索引.md) · [经验与坑](https://github.com/tangjianfang/USBTree/blob/main/78-AI时代的USB/12-经验与坑.md) · [本地模型 USB 助手](https://github.com/tangjianfang/USBTree/blob/main/78-AI时代的USB/13-本地模型USB助手工作流.md)
 - [Mesh 网络概述](62-ble-advanced.md) · [标准 UUID 全表](63-ble-uuid.md)
 
 ### 三、枝干之间的"嫁接点"（交叉关系）
@@ -215,6 +217,7 @@ graph TD
 | USB ↔ 蓝牙 | 蓝牙适配器 = HCI 命令/事件/数据流跑在 USB 批量端点上 | [蓝牙控制器类](19-other-classes-b.md) |
 | Type-C ↔ 一切 | Type-C 是 3.x/USB4 的物理载体，PD 决定供电，Alt Mode 决定显示 | [接口与供电](20-connectors-typec.md) |
 | 枚举 ↔ 一切 | 任何设备类的第一步都是树干的枚举流程 | [枚举流程](07-enumeration-requests.md) |
+| 固件 ↔ 浏览器 | BOS 中的 WebUSB 平台能力 + MS OS 2.0 让同一台设备免驱进入 WinUSB、libusb 与网页；HID 配置放厂商顶层集合才能被 WebHID 访问 | [WebUSB 固件桥接](https://github.com/tangjianfang/USBTree/blob/main/65-枝干-框架与API/10-设备端框架与WebUSB固件桥接.md) · [WebHID 详解](https://github.com/tangjianfang/USBTree/blob/main/65-枝干-框架与API/03-WebHID详解.md) |
 
 ### 四、三条推荐阅读路径
 

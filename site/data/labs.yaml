@@ -21,6 +21,9 @@ labs:
       - 20-枝干-设备类协议/HID-人机接口设备/11-实战完整报告描述符.md
       - 60-枝干-主机侧与实现/05-实战-TinyUSB设备固件.md
       - tech-doc/01-usb2-ch9-control.md
+      - 65-枝干-框架与API/03-WebHID详解.md
+      - 65-枝干-框架与API/05-网页配置器案例-WebHID与VIA.md
+      - 70-枝干-调试测试与安全/工具与分析仪/12-案例-8000Hz鼠标回报率与抖动.md
   - id: lab2-cdc-dfu
     title: Lab2 · CDC 虚拟串口 + DFU
     concepts:
@@ -29,6 +32,7 @@ labs:
       - 20-枝干-设备类协议/CDC-通信设备类/03-CDC规范级-请求与通知全表.md
       - 20-枝干-设备类协议/其他设备类/01-DFU固件升级.md
       - 60-枝干-主机侧与实现/03-设备端固件栈.md
+      - 65-枝干-框架与API/04-WebSerial与WebBluetooth.md
   - id: lab3-msc
     title: Lab3 · MSC 大容量存储
     concepts:
@@ -43,6 +47,8 @@ labs:
       - 20-枝干-设备类协议/Audio-UAC/00-UAC概述.md
       - 20-枝干-设备类协议/Audio-UAC/01-UAC1.0详解.md
       - 10-树干-USB核心/13-总线带宽与调度计算.md
+      - 70-枝干-调试测试与安全/工具与分析仪/17-案例-同步音频欠载.md
+      - 78-AI时代的USB/07-UVC与UAC喂给模型-带宽与延迟计算.md
   - id: lab5-pd-charger
     title: Lab5 · USB PD 电源（Sink/Source）
     concepts:
@@ -52,6 +58,8 @@ labs:
       - 30-枝干-接口与供电/08-USBPD消息全表.md
       - 30-枝干-接口与供电/09-TypeC规范级-状态机与CC时序.md
       - tech-doc/03-usb-pd-messages-timers.md
+      - 70-枝干-调试测试与安全/工具与分析仪/03-PD与Type-C分析仪及电气测试仪器.md
+      - 70-枝干-调试测试与安全/工具与分析仪/15-案例-PD契约协商失败.md
   - id: lab6-ble-hid-dongle
     title: Lab6 · BLE 双模键鼠
     concepts:
@@ -60,6 +68,7 @@ labs:
       - 50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md
       - 20-枝干-设备类协议/HID-人机接口设备/10-HID跨传输I2C与BLE.md
       - tech-doc/02-hid-class-hogp.md
+      - 70-枝干-调试测试与安全/工具与分析仪/16-案例-BLE-HOGP配对与ReportMap.md
   - id: lab7-dock-altmode
     title: Lab7 · Type-C / USB4 扩展坞（概要）
     concepts:
@@ -77,12 +86,16 @@ labs:
       - 30-枝干-接口与供电/04-USBPD协议.md
       - 50-枝干-无线关联/BLE-低功耗蓝牙/03-广播与连接.md
       - tech-doc/06-linux-virtual-usb.md
+      - 70-枝干-调试测试与安全/工具与分析仪/08-测试仿真与虚拟化工具.md
+      - 78-AI时代的USB/04-AI辅助驱动固件开发与模糊测试.md
   - id: usbtest
     title: usbtest · 产测框架
     concepts:
       - 70-枝干-调试测试与安全/02-枚举失败排查手册.md
       - 70-枝干-调试测试与安全/05-合规测试实操.md
       - 20-枝干-设备类协议/MSC-大容量存储/02-SCSI操作码与Sense全表.md
+      - 70-枝干-调试测试与安全/工具与分析仪/10-案例-枚举失败与bMaxPacketSize0.md
+      - 78-AI时代的USB/05-Agent硬件在环测试与安全护栏.md
   - id: devstudio
     title: USB DevStudio · 原生上位机
     concepts:
@@ -91,9 +104,15 @@ labs:
       - 60-枝干-主机侧与实现/09-macOS与Linux主机开发.md
       - 70-枝干-调试测试与安全/01-协议分析仪与抓包.md
       - tech-doc/09-macos-usb.md
+      - 70-枝干-调试测试与安全/工具与分析仪/07-设备信息与枚举查看工具.md
+      - 65-枝干-框架与API/07-C与C++-libusb与hidapi.md
+      - 65-枝干-框架与API/08-操作系统原生API-Windows-macOS-Linux.md
   - id: captures
     title: 抓包教学样本
     concepts:
       - 70-枝干-调试测试与安全/01-协议分析仪与抓包.md
       - 10-树干-USB核心/05-包格式与事务.md
       - 10-树干-USB核心/08-枚举流程与标准请求.md
+      - 70-枝干-调试测试与安全/工具与分析仪/01-USB抓包原理与观测分层.md
+      - 70-枝干-调试测试与安全/工具与分析仪/06-软件抓包工具实操.md
+      - 78-AI时代的USB/03-AI辅助抓包分析与MCP工具.md

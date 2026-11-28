@@ -21,8 +21,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/20-枝干-设备类协议/其他设备类/11-PHDC健康医疗类.md"
 spec_refs: ["Bluetooth Core Vol 4 Part B (USB Transport)", "WebUSB (WICG)", "Microsoft OS 2.0 Descriptors", "USB MIDI 1.0/2.0", "USBTMC 1.0", "Billboard 1.2", "PHDC 1.0"]
 related: ["10-class-index", "41-windows-driver", "42-linux-macos-libusb", "60-usb-wireless-intersection"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # 其他设备类 B：蓝牙 HCI、WebUSB/厂商类、MIDI、USBTMC、长尾类、AV、PHDC
@@ -296,7 +296,7 @@ WebUSB 复用 MS OS 2.0 同款的 BOS Platform Capability 机制，但使用自�
 | bVendorCode | 厂商请求码（主机用它发两条额外请求） |
 | iLandingPage | 落地页 URL 描述符索引（0 表示无） |
 
-主机随后用该厂商码请求 **URL 描述符**（类型编号 0x0002）：首字节为方案前缀（0x00=`http://`、0x01=`https://`、0xFF=无前缀），后接 UTF-8 URL。设备还可声明允许的来源（allowed origins）域名列表，只允许指定网站访问。
+主机随后用该厂商码发 **GET_URL** 请求（`bmRequestType=0xC0`、`bRequest=bVendorCode`、`wValue=`描述符索引、`wIndex=0x0002`），设备返回 **URL 描述符**（`bDescriptorType=WEBUSB_URL=3`）：`bScheme` 为方案前缀（0x00=`http://`、0x01=`https://`、0xFF=URL 字段即完整 URL），后接 UTF-8 URL。早期草案中的"允许来源（allowed origins）"列表已从现行规范删除（请求码 1 现为保留值）。字节级布局与固件回调见 [../../65-枝干-框架与API/10-设备端框架与WebUSB固件桥接.md](https://github.com/tangjianfang/USBTree/blob/main/65-枝干-框架与API/10-设备端框架与WebUSB固件桥接.md)。
 
 #### 4.2 主机侧 JavaScript API
 
@@ -320,9 +320,9 @@ await device.controlTransferOut({          // 控制传输(厂商请求)
 | 机制 | 说明 |
 |---|---|
 | 用户手势 + 选择器 | `requestDevice` 必须由点击触发，并弹出设备选择对话框，用户显式勾选 |
-| Origin 绑定 | 权限按网站来源授予并持久化；设备可声明允许的 origin，陌生站点即使知道 VID:PID 也无法静默连接 |
+| Origin 绑定 | 权限按网站来源授予并持久化（`getDevices()` 只返回本 origin 已授权设备），陌生站点即使知道 VID:PID 也无法静默连接 |
 | 浏览器支持 | Chromium 系（Chrome/Edge/Opera）实现；Firefox/Safari 未实现 |
-| 职责边界 | 不能访问系统保留接口（含声卡/网卡/HID 键盘等由内核占用的接口） |
+| 职责边界 | 受保护接口类不可认领：0x01 音频、0x03 HID、0x08 大容量存储、0x09 集线器、0x0B 智能卡、0x0E 视频、0x10 音视频、0xE0 无线控制器（WebUSB 规范 §6.4）；另有按 VID/PID 的 USB 黑名单 |
 
 ### 5. libusb：桌面端免驱访问
 
@@ -353,7 +353,7 @@ libusb 的 API（open/claimInterface/bulk transfer）与 WebUSB 高度同构—�
 - 0xEE 字符串描述符对非 Windows 系统是"多余"的，某些 Linux 工具会将其打印为乱码——属正常现象。
 - MS OS 2.0 的兼容 ID 条目是**函数级**的，要正确挂在对应接口子集下，否则 Windows 只会绑定设备级默认驱动。
 - WebUSB 的 `claimInterface` 与内核驱动互斥：若设备被 CDC/HID 内核驱动占用，浏览器将无法 claim，设计固件时应把 WebUSB 接口设为 0xFF。
-- WebUSB 规范要求落地页可被主机校验，避免恶意站冒名；发布前用 `chrome://usb-internals` 测试描述符。
+- 落地页只是浏览器"可以"提示用户访问的链接（规范用语为 MAY），不构成任何访问授权；网页访问设备始终需要用户在选择器中授权。发布前用 `chrome://usb-internals` 测试描述符。
 
 ## 原文：07-MIDI类
 

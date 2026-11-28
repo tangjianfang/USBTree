@@ -13,8 +13,8 @@ sources:
     url: "https://github.com/tangjianfang/USBTree/blob/main/40-枝干-高速演进/06-USB3x规范级-包格式与定时器.md"
 spec_refs: ["USB 3.2 Specification ch.6–8"]
 related: ["31-usb4", "08-power-management", "15-msc"]
-usbtree_commit: 03306ba
-generated: 2026-11-28
+usbtree_commit: d8dc27d
+generated: 2026-11-29
 ---
 
 # USB 3.x SuperSpeed：包格式、LTSSM、定时器
