@@ -12,7 +12,7 @@ from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent.parent
 # 只统计知识树正文。ai-kb/ 与 tech-doc/ 是派生产物，不在 CONTENT_TOP 里，不计入篇数与行数。
-CONTENT_TOP = ("10-", "20-", "30-", "40-", "50-", "60-", "70-", "90-")
+CONTENT_TOP = ("10-", "20-", "30-", "40-", "50-", "60-", "65-", "70-", "90-")
 STATS_FILES = ("README.md", "COVERAGE.md", "00-知识树总图.md")
 
 

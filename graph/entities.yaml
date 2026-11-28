@@ -383,6 +383,27 @@ entities:
     type: mechanism
     name: Linux Raw Gadget（调试用 gadget 驱动）
     docs: 70-枝干-调试测试与安全/工具与分析仪/08-测试仿真与虚拟化工具.md
+  # ── 枝干：框架与 API（应用层访问 USB/HID/串口/BLE） ──
+  - id: webhid
+    type: standard
+    name: WebHID（浏览器 HID 报告级 API）
+    docs: 65-枝干-框架与API/03-WebHID详解.md
+  - id: web-serial
+    type: standard
+    name: Web Serial（浏览器串口 API）
+    docs: 65-枝干-框架与API/04-WebSerial与WebBluetooth.md
+  - id: web-bluetooth
+    type: standard
+    name: Web Bluetooth（浏览器 GATT Client API）
+    docs: 65-枝干-框架与API/04-WebSerial与WebBluetooth.md
+  - id: hidapi
+    type: tool
+    name: hidapi 跨平台 HID 库
+    docs: 65-枝干-框架与API/07-C与C++-libusb与hidapi.md
+  - id: winusb
+    type: tool
+    name: WinUSB（Windows 通用 USB 驱动与 API）
+    docs: 65-枝干-框架与API/08-操作系统原生API-Windows-macOS-Linux.md
 
   # ── 外部协议（被 USB 隧道/重映射承载） ──
   - id: dp-protocol

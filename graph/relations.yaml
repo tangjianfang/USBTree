@@ -561,3 +561,53 @@ relations:
     to: linux-gadget
     evidence: 70-枝干-调试测试与安全/工具与分析仪/08-测试仿真与虚拟化工具.md
     note: gadget 驱动之一，所有请求交给用户态
+
+  # ── 框架与 API ──
+  - id: rel-093
+    from: webhid
+    type: uses
+    to: class-hid
+    evidence: 65-枝干-框架与API/03-WebHID详解.md
+    note: 报告级访问，经 OS HID 类驱动；键鼠/FIDO 集合被黑名单屏蔽
+  - id: rel-094
+    from: webhid
+    type: similar-to
+    to: webusb
+    evidence: 65-枝干-框架与API/01-浏览器设备API总览与安全模型.md
+    note: 同一权限模型（手势+选择器+origin 授权），WebUSB 不能访问 HID 类
+  - id: rel-095
+    from: web-serial
+    type: uses
+    to: cdc-acm
+    evidence: 65-枝干-框架与API/04-WebSerial与WebBluetooth.md
+    note: open()/setSignals() 经 OS 驱动变为 SET_LINE_CODING / SET_CONTROL_LINE_STATE
+  - id: rel-096
+    from: web-bluetooth
+    type: uses
+    to: gatt
+    evidence: 65-枝干-框架与API/04-WebSerial与WebBluetooth.md
+    note: 网页作 GATT Client；HID Service 0x1812 被 GATT 黑名单屏蔽
+  - id: rel-097
+    from: hidapi
+    type: similar-to
+    to: webhid
+    evidence: 65-枝干-框架与API/12-实战案例-外设控制七例.md
+    note: 同为报告级 API，报告 ID 字节约定不同（hidapi 首字节 vs WebHID 独立参数）
+  - id: rel-098
+    from: webusb
+    type: runs-on
+    to: winusb
+    evidence: 65-枝干-框架与API/02-WebUSB详解.md
+    note: Windows 上 Chromium 只能打开已绑定 WinUSB 的接口
+  - id: rel-099
+    from: ms-os-descriptors
+    type: enables
+    to: winusb
+    evidence: 65-枝干-框架与API/10-设备端框架与WebUSB固件桥接.md
+    note: MS OS 2.0 兼容 ID "WINUSB" 让 Windows 8.1+ 自动绑定
+  - id: rel-100
+    from: libusb
+    type: runs-on
+    to: winusb
+    evidence: 65-枝干-框架与API/07-C与C++-libusb与hidapi.md
+    note: Windows 首选子后端（另有 libusbK/UsbDk）
