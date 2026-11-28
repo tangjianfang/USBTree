@@ -59,7 +59,7 @@ bmRequestType 只允许两个值：`10100001b (0x81)` = Direction:Device-to-Host
 
 字段描述符布局见 [01-HID描述符.md](01-HID描述符.md)；规范原文：键盘可用它声明键帽语言，其余设备不要求填非 0 值（§6.2.1）。
 
-## 3. Usage Page 完整表（HUT 1.3 §3，Table 3.1，0x00~0xFF 已定义页）
+## 3. Usage Page 完整表（HUT 1.7 §3，Table 3.1 Usage Page Summary）
 
 | Page ID | 名称 | | Page ID | 名称 |
 |---|---|---|---|---|
@@ -80,7 +80,7 @@ bmRequestType 只允许两个值：`10100001b (0x81)` = Direction:Device-to-Host
 | 0x0E | Haptics | | 0x90 | Camera Control |
 | 0x0F | Physical Input Device | | 0x91 | Arcade |
 | 0x10 | Unicode | | 0x92 | Gaming Device |
-| 0x11 | 保留 | | 0x93~0xF1CF | 保留 |
+| 0x11 | SoC（HUT 1.7 §20；HUT 1.3 时为保留） | | 0x93~0xF1CF | 保留 |
 | 0x12 | Eye and Head Trackers | | 0xF1D0 | FIDO Alliance |
 | 0x13 | 保留 | | 0xF1D1~0xFEFF | 保留 |
 | 0x14 | Auxiliary Display | | 0xFF00~0xFFFF | 厂商自定义 |

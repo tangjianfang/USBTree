@@ -1,6 +1,6 @@
 # 参考资料缓存索引
 
-> 📎 本目录是知识树所依赖的**官方规范原文下载缓存**，按枝干分目录存放。下载日期：2026-09-05。
+> 📎 本目录是知识树所依赖的**官方规范原文下载缓存**，按枝干分目录存放。下载日期：2026-09-05；2026-11-28 按 usb.org / bluetooth.com / intel.com 现行版全量复核并补齐（新增条目见各表“2026-11 新增”）。
 > 法律提示：USB-IF 规范按其 Adopters Agreement 分发，蓝牙规范按 SIG 许可分发——此处缓存仅用于个人学习与工程参考，商用/再分发请阅读各规范附带的许可条款。
 
 ## 一、usb-core/ —— 核心规范
@@ -11,6 +11,12 @@
 | USB3.2-Specification-2018.zip | USB 3.2 Specification rev 1.0（2018-09-12，含 3.0/3.1 历史合并） | [usb.org](https://www.usb.org/sites/default/files/documents/usb_32_20180912.zip) | [高速演进](../40-枝干-高速演进/01-USB3x与SuperSpeed.md)、[包格式与LTSSM](../40-枝干-高速演进/04-USB3x包格式与LTSSM.md) |
 | USB4-Specification-v2-2025-11.zip | USB4 Specification Version 2.0（2025-11） | [usb.org 文档库](https://www.usb.org/documents) | [USB4 深入](../40-枝干-高速演进/05-USB4深入-路由隧道与配置.md) |
 | USB-TypeC-Spec-2.5-2026.zip | USB Type-C Cable and Connector Release 2.5（2026-03，**现行最新**） | [usb.org](https://www.usb.org/sites/default/files/USB%20Type-C%202.5%20Release%20202603.zip) | [Type-C 详解](../30-枝干-接口与供电/02-USBType-C详解.md) |
+| USB3.2-Rev1.1-2022-06.zip | USB 3.2 Specification **Revision 1.1**（2022-06，**现行最新**，含相对 R1.0 的 redline；2026-11 新增） | [usb.org 文档库](https://www.usb.org/document-library/usb-32-revision-11-june-2022) | 同 USB 3.2 行 |
+| USB-PD-3.3-V1.0.zip | USB Power Delivery **Rev 3.3 Ver 1.0**（2026-10-16，**现行最新**；内含 Reorganization Guide、R3.2 V1.2 上一版与 redline；2026-11 新增） | [usb.org 文档库](https://www.usb.org/document-library/usb-power-delivery) | [PD 协议](../30-枝干-接口与供电/04-USBPD协议.md)、[时序参数全表 §4](../90-附录/03-时序参数全表.md) |
+| UCSI-3.2.zip | UCSI Revision 3.2（2026-09，**现行最新**，含 ECN；2026-11 新增） | [usb.org 文档库](https://www.usb.org/document-library/usb-type-cr-connector-system-software-interface-ucsi-specification) | 同 UCSI 3.1 行 |
+| BC-1.2.zip | Battery Charging v1.2（含勘误 2012-03-15；2026-11 新增） | [usb.org 文档库](https://www.usb.org/document-library/battery-charging-v12-spec-and-adopters-agreement) | [BC1.2 与专有快充](../30-枝干-接口与供电/03-BC1.2与专有快充.md) |
+| eUSB2-PHY-Supplement-1.2.zip | eUSB2 物理层补充规范 Rev 1.2（2026-11 新增） | [usb.org 文档库](https://www.usb.org/document-library/embedded-usb2-eusb2-physical-layer-supplement-usb-revision-20-specification-rev-12) | 10-树干 物理层 |
+| USB-Authentication-1.0-2019.zip | USB Type-C Authentication 1.0（ECN/勘误至 2019-01-07；2026-11 新增） | [usb.org 文档库](https://www.usb.org/document-library/usb-authentication-specification-rev-10-ecn-and-errata-through-january-7-2019) | 70-枝干 安全 |
 | USB-TypeC-Spec-R2.0.pdf | Type-C Release 2.0（2019-08，可读性好的单 PDF，历史参考） | [usb.org](https://www.usb.org/sites/default/files/USB%20Type-C%20Spec%20R2.0%20-%20August%202019.pdf) | 同上 |
 | UCSI-3.1.zip | USB Type-C Connector System Software Interface (UCSI) 3.1 | [usb.org](https://www.usb.org/sites/default/files/USB%20Type-C%20Connector%20System%20Software%20Interface%20UCSI%20Revision_3.1.zip) | [PD 深入](../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md)（OS 侧接口） |
 | USB-PD-3.2-V1.2.zip | **USB Power Delivery Specification Rev 3.2 Ver 1.2**（公开包 `USB_PD_R3.2_V1.2_2.zip`，含 R3.2 V1.1/R2.0 历史版与 PDUSB 伴随规范——**EP-1 材料解锁**。文档库另有更新包，换版时改 `tools/spec_fetch.sh` 并复核 30/08） | [usb.org 直链](https://www.usb.org/sites/default/files/USB_PD_R3.2_V1.2_2.zip) · [文档库](https://www.usb.org/document-library/usb-power-delivery) | [PD 深入](../30-枝干-接口与供电/07-USBPD深入-状态机与消息全表.md)、[PD 消息全表](../30-枝干-接口与供电/08-USBPD消息全表.md) |
@@ -22,6 +28,12 @@
 |---|---|---|---|
 | HID-1.11.pdf | Device Class Definition for HID 1.11 | [usb.org](https://www.usb.org/sites/default/files/hid1_11.pdf) | [HID 子树](../20-枝干-设备类协议/HID-人机接口设备/00-HID概述与定位.md) |
 | HID-UsageTables-1.3.pdf | HID Usage Tables 1.3 | [usb.org](https://www.usb.org/sites/default/files/hut1_3_0.pdf) | [Usage 体系](../20-枝干-设备类协议/HID-人机接口设备/03-Usage体系与集合.md)（注：v1.4/1.5 起官网仅发布 docx，请按需到[文档库](https://www.usb.org/documents?search=usage+tables)取最新） |
+| HID-UsageTables-1.7.pdf | HID Usage Tables **1.7**（**现行最新**；新增 0x11 SoC 页等；2026-11 新增） | [usb.org 文档库](https://www.usb.org/document-library/hid-usage-tables-17) | [HID 规范级附录](../20-枝干-设备类协议/HID-人机接口设备/12-HID规范级附录.md) |
+| HID-PowerDevices-1.1.pdf / HID-PID-1.01.pdf | HID Power Devices 用法表 1.1 / PID 1.01（2026-11 新增） | [usb.org](https://usb.org/sites/default/files/pdcv11.pdf) · [PID](https://www.usb.org/sites/default/files/pid1_01_0.pdf) | HID 子树 |
+| CDC-NCM-1.1.zip / CDC-NCM-1.0.zip / CDC-EEM-1.0.pdf / CDC-MBIM-1.0-Errata1.zip / CDC-1.2-WMC-1.1-Errata-2013.zip | NCM 1.1（2026-02-05 含 Errata 1）、NCM 1.0、EEM 1.0、MBIM 1.0 Errata-1、CDC 1.2 勘误包（2026-11 新增） | [usb.org NCM 1.1](https://www.usb.org/document-library/usb-communications-class-subclass-specifications-network-control-model-devices-v11) | [CDC 网络子类](../20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-RNDIS.md) |
+| MSC-Overview-1.4.pdf / MSC-Bootability-1.0.pdf | MSC 规范总览 1.4、MSC 可引导 1.0（2026-11 新增） | [usb.org](https://www.usb.org/document-library/mass-storage-class-specification-overview-14) | MSC 子树 |
+| UAC-2.0-Errata-2026-09.pdf / UAC-3.0.zip / UAC-4.0-current.zip / MIDI-2.0.pdf | UAC 2.0 含勘误/ECN 至 **2026-09-14**（现行推荐阅读版）、UAC 3.0、UAC 4.0 现行包、USB MIDI 2.0（2026-11 新增） | [usb.org 文档库](https://www.usb.org/document-library/usb-device-class-definition-audio-devices-release-20-errata-and-ecn-through) | [UAC 子树](../20-枝干-设备类协议/Audio-UAC/02-UAC2与UAC3.md) |
+| Printer-1.1.pdf / IPP-USB-1.0.zip / MTP-1.1.zip / StillImage-1.0.zip / ICCD-1.0.pdf / I3C-1.1.pdf | 打印机类 1.1、IPP over USB 1.0、MTP 1.1、静态图像 1.0、ICCD 1.0、I3C 类 1.1（2026-11 新增） | [usb.org 文档库](https://www.usb.org/documents) | 其他设备类子树 |
 | CDC-1.2.zip | Class Definitions for Communication Devices 1.2（含 PSTN/WMC 等子规范） | [usb.org](https://www.usb.org/sites/default/files/CDC1.2_WMC1.1_012011_0.zip) | [CDC 枝干](../20-枝干-设备类协议/CDC-通信设备类/00-CDC概述.md) |
 | MSC-BOT-1.0.pdf | MSC Bulk-Only Transport 1.0 | [usb.org](https://www.usb.org/sites/default/files/usbmassbulk_10.pdf) | [BOT](../20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md) |
 | MSC-UFI-1.0.pdf | MSC UFI 1.0（软盘命令子集） | [usb.org](https://www.usb.org/sites/default/files/usbmass-ufi10.pdf) | [SCSI 与 UFI](../20-枝干-设备类协议/MSC-大容量存储/01-SCSI命令与UFI.md) |
@@ -49,10 +61,14 @@
 | HOGP-1.0.pdf | HID over GATT Profile (HOGP) 1.0 | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hid-over-gatt-profile-1-0/) | [HOGP](../50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md) |
 | HID-Service-1.1.pdf | HID Service (GATT) 1.1 | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hid-service-specification/) | 同上 |
 | Bluetooth-HID-Profile-1.1.1.pdf | Human Interface Device Profile 1.1.1（经典蓝牙 HID） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/human-interface-device-profile-1-1-1/) | [经典蓝牙 Profile 详解](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
-| A2DP-1.4.1.pdf | Advanced Audio Distribution Profile 1.4.1（2025-06-30） | **MANUAL**：[bluetooth.com 规范页](https://www.bluetooth.com/specifications/specs/a2dp-1-4-1/) 浏览器下载后保存为该文件名 | [A2DP 编解码与 AVDTP 参数](../50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) |
+| A2DP-1.4.1.pdf | Advanced Audio Distribution Profile 1.4.1（2025-06-30；2026-11 复核仍须浏览器下载） | **MANUAL**：[bluetooth.com 规范页](https://www.bluetooth.com/specifications/specs/a2dp-1-4-1/) 浏览器下载后保存为该文件名 | [A2DP 编解码与 AVDTP 参数](../50-枝干-无线关联/BLE-低功耗蓝牙/15-A2DP编解码与AVDTP参数.md) |
 | AVDTP-1.3.pdf | A/V Distribution Transport Protocol 1.3（Table 8.6 信令码/§8.21 编码能力） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-distribution-transport-protocol-1-3/) · DocMan `doc_id=260860` | 同上 |
-| AVRCP-1.6.3.pdf | A/V Remote Control Profile 1.6.3（绝对音量/浏览） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/a-v-remote-control-profile1-6-3/) | [经典 Profile 详解 · AVRCP](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
+| AVRCP-1.6.3.pdf | A/V Remote Control Profile 1.6.3（绝对音量/浏览） | **MANUAL（2026-11 起）**：files.bluetooth.com 现返回 HTML 下载页而非 PDF，须在 [bluetooth.com 规范页](https://www.bluetooth.com/specifications/specs/a-v-remote-control-profile1-6-3/) 用浏览器下载 | [经典 Profile 详解 · AVRCP](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
 | HFP-1.10.pdf | Hands-Free Profile 1.10（现行最新，AT 命令/eSCO） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hands-free-profile-1-10/) | [经典 Profile 详解 · HFP](../50-枝干-无线关联/BLE-低功耗蓝牙/11-经典蓝牙Profile详解.md) |
+| Bluetooth-Core-7.0.pdf | Bluetooth Core Specification **7.0**（bluetooth.com 发布于 2026-11-03，**现行最新**；LLCP 新增 0x3D~0x47；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/core-specification-7-0/) | BLE 子树（正文仍以 6.0 为引用基线，差异逐条标注） |
+| HOGP-latest.pdf | HID over GATT Profile **1.1**（2025-08-05 采纳，新增 HID ISO；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/specs/hid-over-gatt-profile/) | [HOGP](../50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md) |
+| BAS-latest.pdf / DIS-latest.pdf | Battery Service 1.1（2022-12-20）/ Device Information Service 1.2（2026-11 新增） | [BAS](https://www.bluetooth.com/specifications/specs/battery-service/) · [DIS](https://www.bluetooth.com/specifications/specs/device-information-service/) | HOGP 必备服务 |
+| Assigned_Numbers.pdf | Bluetooth Assigned Numbers（UUID/AD Type/公司 ID 等编号权威来源；2026-11 新增） | [bluetooth.com](https://www.bluetooth.com/specifications/assigned-numbers/) | [标准 UUID 全表](../50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md) |
 | GATT_Specification_Supplement.pdf | GATT Specification Supplement（现行 GSS；正文不含 UUID 编号，编号见 Assigned Numbers） | [Azure blob 直链](https://btprodspecificationrefs.blob.core.windows.net/gatt-specification-supplement/GATT_Specification_Supplement.pdf) | [标准 UUID 全表](../50-枝干-无线关联/BLE-低功耗蓝牙/16-标准UUID全表.md)、[ATT 与 GATT](../50-枝干-无线关联/BLE-低功耗蓝牙/04-ATT与GATT.md) |
 | *注* | `files.bluetooth.com` 新链需经中转页取 nonce 直链（见 [docs/lessons.md](../docs/lessons.md) L7）。`tools/spec_fetch.sh` 只接受文件头 `%PDF` 或 `PK`，HTML 登录页会判失败并删除。带 `MANUAL:` 的条目不建目录，按日志里的路径手工保存 | — | — |
 
@@ -62,10 +78,12 @@ USB PD 3.2 已有公开直链，见第一节 `USB-PD-3.2-V1.2.zip` 与 `bash too
 
 | 规范 | 状态 | 获取途径 |
 |---|---|---|
-| xHCI 规范 | USB-IF 会员限定 | 公开替代：[osdev xHCI 页](https://wiki.osdev.org/XHCI)、内核 [xhci.c](https://github.com/torvalds/linux/tree/master/drivers/usb/host) |
+| xHCI 1.2 / EHCI 1.0 | **已勘误：Intel 官网公开免费下载**，并非会员限定；已缓存为 `host-controllers/xHCI-1.2.pdf`（Revision 1.2，2019-05）与 `host-controllers/EHCI-1.0.pdf` | [xHCI 1.2](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/extensible-host-controler-interface-usb-xhci.pdf) · [EHCI 1.0](https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/ehci-specification-for-usb.pdf) |
 | PTP (ISO 15740) | ISO 付费标准 | 免费近似是 PTP-IP，即 [CIPA DC-005-2005](https://www.cipa.jp/std/documents/download_e.html?CIPA_DC-005-2005)（在 [CIPA 标准列表](https://www.cipa.jp/e/std/std-sec.html) 点标题下载；旧直链 `DC-009_E.pdf` 已 404，且 DC-009 是 DCF 相机文件规则，不是 PTP-IP）。白皮书直链：[CIPA DC-005 White Paper](https://www.cipa.jp/std/documents/e/CIPA_DC-005_Whitepaper_ENG.pdf)。另见 [Microsoft MTP 文档](https://learn.microsoft.com/windows/win32/wmdm/) |
 | HID over I2C | 微软规范，在线文档形态 | [HID over I2C Guide](https://learn.microsoft.com/windows-hardware/drivers/hid/hid-over-i2c-guide) |
 | Microsoft OS 2.0 Descriptors | 在线文档形态 | [Microsoft OS descriptors](https://learn.microsoft.com/windows-hardware/drivers/usbcon/microsoft-os-2-0-descriptors-specification) |
+| WinUSB / UDE / MS OS 1.0 描述符 | 微软在线文档 | [WinUSB 访问](https://learn.microsoft.com/windows-hardware/drivers/usbcon/using-winusb-api-to-communicate-with-a-usb-device) · [UDE 虚拟 USB](https://learn.microsoft.com/windows-hardware/drivers/usbcon/developing-windows-drivers-for-emulated-usb-host-controllers-and-devices) · [MS OS 1.0](https://learn.microsoft.com/windows-hardware/drivers/usbcon/microsoft-defined-usb-descriptors) |
+| Linux Gadget ConfigFS / FunctionFS / Raw Gadget / USB/IP | kernel.org 在线文档（虚拟 USB 设备实现参考） | [gadget_configfs](https://docs.kernel.org/usb/gadget_configfs.html) · [functionfs](https://docs.kernel.org/usb/functionfs.html) · [raw-gadget](https://docs.kernel.org/usb/raw-gadget.html) · [usbip_protocol](https://docs.kernel.org/usb/usbip_protocol.html) |
 | WebUSB | WICG 草案（在线） | [webusb spec](https://wicg.github.io/webusb/) |
 | Wireless USB / MA-USB（历史） | 文档库可下但意义有限 | [文档库检索](https://www.usb.org/documents?search=wireless+usb)；本库说明见 [Wireless USB 历史](../50-枝干-无线关联/99-WirelessUSB与MA-USB历史.md) |
 

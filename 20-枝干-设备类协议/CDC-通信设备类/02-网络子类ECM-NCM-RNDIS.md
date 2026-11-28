@@ -14,7 +14,7 @@ doc-path: 20-枝干-设备类协议/CDC-通信设备类/02-网络子类ECM-NCM-R
 | 模型 | 规范来源 | 接口签名 | 定位 |
 |---|---|---|---|
 | ECM (Ethernet Control Model) | CDC 1.2 | 0x02/0x06/0x00 | 官方基线，性能最弱 |
-| NCM (Network Control Model) | CDC-NCM 1.0 | 0x02/0x0D/0x00 | 官方演进版，一包多帧 |
+| NCM (Network Control Model) | CDC-NCM 1.0（现行 1.1：2025-05-22 发布，2026-02-05 合并 Errata 1，新增扩展能力） | 0x02/0x0D/0x00 | 官方演进版，一包多帧 |
 | EEM (Ethernet Emulation Model) | CDC-EEM | 0x02/0x0C/0x07 | 轻量帧封装，少见 |
 | RNDIS | 微软私有 | 0xEF/0x04/0x01（或伪装 0x02/0x06/0xFF） | 事实标准(历史)，Android 老方案 |
 
