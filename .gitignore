@@ -18,3 +18,6 @@ tech-doc/**/*.bak
 tech-doc/shots-check/
 
 # 静态站点（site/）的依赖与构建产物见 site/.gitignore
+
+# 代码视频：中间产物不入库（成品在 site/public/videos/，入库）
+videos/out/

@@ -31,6 +31,16 @@ const warn = [];
 const labsCfg = YAML.parse(fs.readFileSync(path.join(SITE, 'data/labs.yaml'), 'utf8'));
 const pathsCfg = YAML.parse(fs.readFileSync(path.join(SITE, 'data/paths.yaml'), 'utf8'));
 const sheetsCfg = YAML.parse(fs.readFileSync(path.join(SITE, 'data/cheatsheets.yaml'), 'utf8'));
+// 代码视频：清单在 videos/videos.yaml，渲染产物（mp4/png/vtt/manifest.json）在 site/public/videos/（入库）
+const VIDEO_PUB = path.join(SITE, 'public/videos');
+const videosCfg = exists('videos/videos.yaml') ? YAML.parse(read('videos/videos.yaml')).videos || [] : [];
+const videoManifest = fs.existsSync(path.join(VIDEO_PUB, 'manifest.json')) ? JSON.parse(fs.readFileSync(path.join(VIDEO_PUB, 'manifest.json'), 'utf8')) : {};
+const VIDEOS = videosCfg.filter((v) => {
+  const ok = fs.existsSync(path.join(VIDEO_PUB, `${v.id}.mp4`));
+  if (!ok) console.warn(`prepare: 视频 ${v.id} 尚未渲染（videos/render.sh ${v.id}），跳过`);
+  return ok;
+}).map((v) => ({ ...v, duration: videoManifest[v.id]?.duration || 0, bytes: videoManifest[v.id]?.mp4_bytes || 0 }));
+const mmss = (sec) => `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, '0')}`;
 const LABSRC = (p) => `${labsCfg.repo}/blob/${labsCfg.commit}/${encodeURI(p)}`;
 const LABTREE = (p) => `${labsCfg.repo}/tree/${labsCfg.commit}/${encodeURI(p)}`;
 
@@ -345,6 +355,27 @@ for (const pg of pages.values()) {
     lastUpdated: lastMod[pg.rel], topic: topicOf(pg.rel), prereqs, specs: specs.slice(0, 6), verified: ctx.verified, docType: ctx.docType };
   pg.body = body; pg.title = title;
 }
+// ───────────────────────────── 代码视频：嵌入对应正文 ─────────────────────────────
+const escA = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function videoFigure(v, { heading = true } = {}) {
+  const meta = [v.duration ? mmss(v.duration) : '', v.bytes ? `${(v.bytes / 1048576).toFixed(1)} MB` : ''].filter(Boolean).join(' · ');
+  return `<figure class="ut-video" id="video-${v.id}">\n` +
+    `<div class="ut-video-frame"><video controls preload="none" playsinline width="1280" height="720" poster="/videos/${v.id}.png" aria-label="${escA(v.title)}（代码动画讲解）">` +
+    `<source src="/videos/${v.id}.mp4" type="video/mp4"><track kind="captions" srclang="zh-CN" label="中文字幕" src="/videos/${v.id}.vtt"></video></div>\n` +
+    `<figcaption>${heading ? `<span class="ut-video-title">🎬 代码视频：${escA(v.title)}</span>` : ''}<span class="ut-video-meta">${meta}</span>` +
+    `<span class="ut-video-sum">${escA(v.summary)}</span>` +
+    `<span class="ut-video-links"><a href="/videos/#${v.id}">全部代码视频</a><a href="/videos/${v.id}.mp4" download>下载 MP4</a><a href="${GH}/blob/main/videos/scenes/${v.scene}">动画源码</a></span></figcaption>\n</figure>`;
+}
+for (const v of VIDEOS) for (const rel of v.pages || []) {
+  const pg = pages.get(rel);
+  if (!pg) { warn.push(`videos.yaml: 页面不存在 ${rel}`); continue; }
+  const fig = videoFigure(v);
+  // 放在第一个 H2 之前（导语之后）；正文没有 H2 时放最前
+  const i = pg.body.search(/^## /m);
+  pg.body = i >= 0 ? pg.body.slice(0, i) + fig + '\n\n' + pg.body.slice(i) : fig + '\n\n' + pg.body;
+  (meta[rel].videos ||= []).push({ id: v.id, title: v.title });
+}
+
 for (const pg of pages.values()) {
   const m = meta[pg.rel];
   const section = pg.rel.includes('/') ? dirLabel(path.posix.dirname(pg.rel)) : '';
@@ -471,6 +502,22 @@ for (const s of sheetsCfg.sheets) {
   writeDoc(`reference/cheatsheets/${s.id}`, { title: s.title, description: s.description, slug: `reference/cheatsheets/${s.id}`, topic: 'reference', wide: true, level: 2 }, body);
   sheetList.push({ id: s.id, title: s.title, desc: s.description, url: `/reference/cheatsheets/${s.id}/` });
 }
+{
+  // 代码视频索引页
+  let body = `用 [Manim](https://www.manim.community/) 写成的代码动画：每个场景都是一份 Python 源码（[videos/](${GH}/tree/main/videos)），画面里的数值与时序都按官方规范核对，片尾列出章节号。视频不自动播放，点开才加载；字幕可在播放器里打开。\n\n`;
+  body += `<div class="ut-video-grid">\n`;
+  for (const v of VIDEOS) {
+    const vtt = fs.readFileSync(path.join(VIDEO_PUB, `${v.id}.vtt`), 'utf8');
+    const lines = vtt.split(/\r?\n/).filter((l) => l && !/^(WEBVTT|NOTE|\d+$|\d\d:\d\d)/.test(l));
+    const pagesLinks = (v.pages || []).filter((r) => meta[r]).map((r) => `<a href="${meta[r].url}">${escA(meta[r].title)}</a>`).join('、');
+    body += `<section class="ut-video-item"><h2 id="${v.id}">${escA(v.title)}</h2>\n${videoFigure(v, { heading: false })}\n` +
+      `<p class="ut-video-rel">配套阅读：${pagesLinks}</p>\n` +
+      `<p class="ut-video-spec">规范出处：${(v.specs || []).map(escA).join('；')}</p>\n` +
+      `<details><summary>字幕全文</summary><ol>${lines.map((l) => `<li>${escA(l)}</li>`).join('')}</ol></details></section>\n`;
+  }
+  body += `</div>\n\n## 自己渲染\n\n源码与旁白稿在仓库 [videos/](${GH}/tree/main/videos)：\`pip install -r videos/requirements.txt\` 后运行 \`videos/render.sh\`，产物写到 \`site/public/videos/\`。详见 [videos/README.md](${GH}/blob/main/videos/README.md)。\n`;
+  if (VIDEOS.length) writeDoc('videos', { title: '代码视频讲解', description: `${VIDEOS.length} 个用代码生成的动画讲解：枚举、包与事务、传输调度、HID 报告描述符、Type-C/PD、NRZI 位填充。`, slug: 'videos', topic: 'guide', tableOfContents: false }, body);
+}
 writeDoc('reference/cheatsheets', { title: '速查卡', description: '开发时随手查：协议字段、请求码、类代码、PD 定时器、BLE 操作码。', slug: 'reference/cheatsheets', topic: 'reference', tableOfContents: false },
   `开发时随手查的表格合集。每张卡都从正文按章节原样摘取，与正文保持同步。\n\n<div class="doc-grid">\n${sheetList.map((s) => `<a class="doc-card" href="${s.url}"><span class="doc-card-title">${esc(s.title)}</span><span class="doc-card-desc">${esc(s.desc)}</span></a>`).join('\n')}\n<a class="doc-card" href="${meta['90-附录/02-速查表大全.md'].url}"><span class="doc-card-title">开发者速查表大全（完整版）</span><span class="doc-card-desc">所有速查表在一页，适合打印或 Ctrl+F。</span></a>\n<a class="doc-card" href="${meta['90-附录/03-时序参数全表.md'].url}"><span class="doc-card-title">时序参数全表</span><span class="doc-card-desc">USB 2.0 / Type-C / PD / BLE 的时序参数与出处。</span></a>\n</div>\n`);
 
@@ -514,7 +561,7 @@ const resItems = (id) => { const r = RES[id]; return r.dir
         : [{ label: dirLabel(r.dir), items: [L('分枝概览', `/${r.dir}/`), ...fs_.map(item)] }, ...subGroups(r.dir, false)]; })()
   : [L(`${r.label}（建设中）`, `/${r.placeholder}/`)]; };
 const items = {
-  guide: [L('学习路线', '/guide/learning-paths/'), L('研究路线：虚拟 USB · 驱动 · 固件', '/guide/research/'), L('知识树总图', '/00-知识树总图/'), L('关于 USBTree', '/about/'), L('如何阅读本站', '/guide/how-to-read/'),
+  guide: [L('学习路线', '/guide/learning-paths/'), ...(VIDEOS.length ? [L(`代码视频讲解（${VIDEOS.length}）`, '/videos/')] : []), L('研究路线：虚拟 USB · 驱动 · 固件', '/guide/research/'), L('知识树总图', '/00-知识树总图/'), L('关于 USBTree', '/about/'), L('如何阅读本站', '/guide/how-to-read/'),
     { label: '项目记录', collapsed: true, items: [L('覆盖度清单', '/COVERAGE/'), L('贡献指南', '/CONTRIBUTING/'), ...filesIn('docs').map(item)] }],
   core: [group('USB 2.0 核心（树干）', '10-树干-USB核心'), group('USB 3.x / USB4', '40-枝干-高速演进')],
   classes: [{ label: '总览', items: [L('分枝概览', '/20-枝干-设备类协议/'), ...filesIn('20-枝干-设备类协议').map(item)] }, ...subGroups('20-枝干-设备类协议', true)],
@@ -553,6 +600,7 @@ fs.writeFileSync(path.join(GEN, 'site-data.json'), JSON.stringify({
   stats: { pages: contentRels.length, techdoc: [...pages.keys()].filter((r) => /^tech-doc\/\d\d-/.test(r)).length, entities: ent.length, relations: relsAll.length,
     specs: SPEC_LIST.length, labs: labsCfg.labs.length, cheatsheets: sheetList.length },
   stages, recent, cheatsheets: sheetList, labsCommit: labsCfg.commit,
+  videos: VIDEOS.map((v) => ({ id: v.id, title: v.title, duration: mmss(v.duration), summary: v.summary })),
   topics: TOPICS.map((t) => ({ ...t, count: [...pages.keys()].filter((r) => meta[r].topic === t.id).length })),
 }, null, 1));
 

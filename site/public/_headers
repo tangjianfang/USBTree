@@ -11,3 +11,11 @@
   Access-Control-Allow-Origin: *
 /assets/*
   Cache-Control: public, max-age=604800
+/videos/*.mp4
+  Cache-Control: public, max-age=86400
+/videos/*.png
+  Cache-Control: public, max-age=86400
+/videos/*.jpg
+  Cache-Control: public, max-age=86400
+/videos/*.vtt
+  Cache-Control: public, max-age=86400

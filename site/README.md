@@ -55,6 +55,10 @@ site/
 - **实验室页**：`content/labs/*.md` 用 `labsrc:路径#Lx-Ly` 链接 usb-labs 源码，固定在 `data/labs.yaml` 的 `commit`。升级 usb-labs 版本时改 `commit` 并复核行号。
 - 手写页链接写法：`page:仓库相对路径.md`（知识树页面）、`page:站点路径`（手写页）、`repo:路径`（GitHub 源文件）。
 
+## 代码视频
+
+`/videos/` 页面和嵌在正文里的讲解视频来自仓库根目录的 [`videos/`](../videos/README.md)（Manim 源码）。成品 `public/videos/<id>.{mp4,png,thumb.jpg,vtt}` 与 `manifest.json` **随仓库提交**，构建时原样发布，CI 不渲染视频。`prepare.mjs` 读取 `videos/videos.yaml`：把 `<video controls preload="none">` 插到 `pages` 所列正文的第一个二级标题之前，生成 `/videos/` 索引页（含字幕全文），首页显示缩略图卡片。改了场景源码就运行 `videos/render.sh <id>` 重新渲染并提交产物。
+
 ## 部署
 
 `.github/workflows/site.yml`：PR 上构建 + 检查；`main` 上若配置了 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID` 就部署到 Pages 项目 `usbtree`。手动部署：

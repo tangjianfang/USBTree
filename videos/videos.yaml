@@ -1,0 +1,61 @@
+# USBTree 代码视频清单（render.sh 与 site/scripts/prepare.mjs 共用）
+# id      ：输出文件名 site/public/videos/<id>.{mp4,png,vtt}
+# scene   ：videos/scenes/ 下的场景文件；class 为 Manim 场景类名
+# page    ：嵌入到哪篇知识树正文（仓库相对路径），可多篇
+# poster  ：封面取第几秒
+# script  ：旁白 / 字幕稿（videos/scripts/）
+videos:
+  - id: 01-enumeration
+    title: USB 枚举全过程
+    scene: s01_enumeration.py
+    class: Enumeration
+    poster: 38
+    script: scripts/01-enumeration.md
+    pages: [10-树干-USB核心/08-枚举流程与标准请求.md]
+    summary: 从插入、去抖、复位，到读设备描述符、SET_ADDRESS、读配置描述符、SET_CONFIGURATION，主机与设备两条时间线逐步对照，附各步骤的规范时限。
+    specs: [USB 2.0 §9.1.1–§9.1.2, USB 2.0 §7.1.7.3 / §7.1.7.5, USB 2.0 §9.2.6.2–§9.2.6.3, USB 2.0 §9.3–§9.4 / 表 9-8]
+  - id: 02-packets
+    title: 包、事务与数据切换
+    scene: s02_packets.py
+    class: Packets
+    poster: 99
+    script: scripts/02-packets.md
+    pages: [10-树干-USB核心/05-包格式与事务.md]
+    summary: PID 的 4 位类型 + 4 位反码，令牌 / 数据 / 握手三类包，IN、OUT、SETUP 三种事务，以及 ACK 丢失时 DATA0/DATA1 如何防止重复数据。
+    specs: [USB 2.0 §8.3.1 表 8-1, USB 2.0 §8.4.1–§8.4.6, USB 2.0 §8.5, USB 2.0 §8.6.1–§8.6.4]
+  - id: 03-transfers
+    title: 四种传输类型与帧调度
+    scene: s03_transfers.py
+    class: Transfers
+    poster: 42
+    script: scripts/03-transfers.md
+    pages: [10-树干-USB核心/06-四种传输类型.md, 10-树干-USB核心/13-总线带宽与调度计算.md]
+    summary: 控制、批量、中断、同步四种传输的特点与最大包长；全速 1 ms 帧与高速 125 µs 微帧里谁先占位，bInterval 如何换算轮询周期，周期性传输的 90% / 80% 上限。
+    specs: [USB 2.0 §5.4–§5.8, USB 2.0 §5.5.4 / §5.6.4 / §5.7.4, USB 2.0 §9.6.6 表 9-13]
+  - id: 04-hid-report
+    title: HID 报告描述符解析
+    scene: s04_hid_report.py
+    class: HidReport
+    poster: 66
+    script: scripts/04-hid-report.md
+    pages: [20-枝干-设备类协议/HID-人机接口设备/02-报告描述符与Item编码.md, 20-枝干-设备类协议/HID-人机接口设备/06-鼠标详解.md]
+    summary: 用 HID 1.11 附录 E.10 的启动鼠标描述符，逐个字节拆出前缀（bTag/bType/bSize），演示解析器状态如何变化、3 字节输入报告如何排布，并解读一条真实报告。
+    specs: [HID 1.11 §6.2.2.2–§6.2.2.8, HID 1.11 附录 B.2 / E.10, HID Usage Tables 1.7 §4.2]
+  - id: 05-typec-pd
+    title: Type-C CC 检测与 PD 协商
+    scene: s05_typec_pd.py
+    class: TypeCPD
+    poster: 84
+    script: scripts/05-typec-pd.md
+    pages: [30-枝干-接口与供电/04-USBPD协议.md, 30-枝干-接口与供电/02-USBType-C详解.md]
+    summary: Rp / Rd 分压如何告诉 Sink 默认 / 1.5 A / 3.0 A，tCCDebounce 后输出 VBUS，再用 Source_Capabilities → Request → Accept → PS_RDY 建立 9 V 显式契约，并标出关键定时器。
+    specs: [USB Type-C R2.5 表 4-27 / 4-28 / 4-34 / 4-36, USB PD R3.3 §5.5.1, USB PD R3.3 表 6.4 / 6.5, USB PD R3.3 §7.31 表 7.10]
+  - id: 06-nrzi
+    title: NRZI 编码与位填充
+    scene: s06_nrzi.py
+    class: NRZI
+    poster: 22
+    script: scripts/06-nrzi.md
+    pages: [10-树干-USB核心/04-信号编码与比特流.md]
+    summary: 逐位画出 SYNC、ACK PID 与 EOP 的 NRZI 波形，演示连续 6 个 1 后插 0 的位填充、接收方如何删除，以及高速 EOP 故意违反位填充的做法。
+    specs: [USB 2.0 §7.1.8–§7.1.10, USB 2.0 §7.1.13.2, USB 2.0 §8.3.1 表 8-1]

@@ -1,7 +1,7 @@
 ---
 import { Icon } from '@astrojs/starlight/components';
 import data from '../generated/site-data.json';
-const { stats, stages, recent, topics } = data as any;
+const { stats, stages, recent, topics, videos = [] } = data as any;
 const LEVEL: Record<number, string> = { 1: '入门', 2: '基础', 3: '进阶', 4: '专家' };
 const TOPIC_DESC: Record<string, string> = {
   guide: '学习路线、研究路线、知识树总图与阅读说明',
@@ -75,6 +75,21 @@ const tools = [
       ))}
     </ol>
   </section>
+
+  {videos.length > 0 && (
+  <section class="l-sec">
+    <div class="l-head"><h2>代码视频讲解</h2><a href="/videos/">全部 {videos.length} 个视频与字幕全文 →</a></div>
+    <p class="l-sub">用 Manim 代码画出来的动画：枚举、事务、调度、HID、Type-C/PD、NRZI，数值都按规范核对。点开才加载，不自动播放。</p>
+    <ul class="vid-grid">
+      {videos.map((v: any) => (
+        <li><a class="vid-card" href={`/videos/#${v.id}`}>
+          <img src={`/videos/${v.id}.thumb.jpg`} alt={`${v.title} 视频封面`} width="640" height="360" loading="lazy" decoding="async" />
+          <span class="vid-t">{v.title}</span><span class="vid-d">▶ {v.duration}</span>
+        </a></li>
+      ))}
+    </ul>
+  </section>
+  )}
 
   <section class="l-sec">
     <div class="l-head"><h2>按主题浏览</h2></div>
