@@ -52,7 +52,7 @@ export default defineConfig({
           errorOnRelativeLinks: false,
           errorOnInvalidHashes: true,
           errorOnLocalLinks: true,
-          exclude: ['/ai-kb/*.md', '/tech-doc/*.html', '/tech-doc/*.md', '/graph/*', '/llms.txt', '/llms-full.txt', '/LICENSE.txt', '/data/*'],
+          exclude: ['/videos/*.mp4', '/videos/*.webm', '/videos/*.png', '/videos/*.vtt', '/ai-kb/*.md', '/tech-doc/*.html', '/tech-doc/*.md', '/graph/*', '/llms.txt', '/llms-full.txt', '/LICENSE.txt', '/data/*'],
         }),
       ],
     }),

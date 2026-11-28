@@ -1,0 +1,32 @@
+{
+ "01-enumeration": {
+  "title": "USB 枚举全过程",
+  "duration": 94.4,
+  "mp4_bytes": 2551960
+ },
+ "02-packets": {
+  "title": "包、事务与数据切换",
+  "duration": 113.7,
+  "mp4_bytes": 1994232
+ },
+ "03-transfers": {
+  "title": "四种传输类型与帧调度",
+  "duration": 77.6,
+  "mp4_bytes": 1592897
+ },
+ "04-hid-report": {
+  "title": "HID 报告描述符解析",
+  "duration": 100.6,
+  "mp4_bytes": 2026655
+ },
+ "05-typec-pd": {
+  "title": "Type-C CC 检测与 PD 协商",
+  "duration": 100.0,
+  "mp4_bytes": 1588384
+ },
+ "06-nrzi": {
+  "title": "NRZI 编码与位填充",
+  "duration": 74.6,
+  "mp4_bytes": 1238683
+ }
+}
