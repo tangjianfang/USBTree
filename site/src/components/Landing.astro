@@ -1,0 +1,136 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import data from '../generated/site-data.json';
+const { stats, stages, recent, topics } = data as any;
+const LEVEL: Record<number, string> = { 1: '入门', 2: '基础', 3: '进阶', 4: '专家' };
+const TOPIC_DESC: Record<string, string> = {
+  guide: '学习路线、研究路线、知识树总图与阅读说明',
+  core: '包 · 事务 · 四种传输 · 描述符 · 枚举 · 集线器 · 带宽；USB 3.x / USB4',
+  classes: 'HID、CDC、MSC、UVC、UAC、DFU、CCID、MTP、MIDI、USBTMC…',
+  power: 'Type-C、BC 1.2、USB PD 状态机与消息全表、Alt Mode、OTG',
+  ble: '链路层、广播连接、ATT/GATT、SMP、HOGP、LLCP、LE Audio',
+  platform: '主机控制器、Windows 驱动、Linux / macOS / iOS / Android 栈、虚拟 USB',
+  tools: '软件抓包工具与硬件协议分析仪（Beagle · LeCroy · Ellisys · Cynthion）：原理、选型与实战案例',
+  frameworks: 'WebUSB · WebHID · Web Serial · node-usb · libusb · hidapi · pyusb · Rust / Go / .NET',
+  ai: 'AI 辅助的 USB 工程（描述符、抓包解读、排障、规范检索）与 AI 硬件里的 USB',
+  debug: '协议分析与抓包、枚举失败排查、合规认证、BadUSB、可执行技能',
+  spec: '逐条标注规范章节号的 tech-doc：Ch9、HID/HOGP、PD R3.3、BC 1.2、LLCP',
+  labs: 'usb-labs 七个全栈实验 + 仿真器 + 产测框架 + 原生上位机',
+  reference: '速查卡、知识图谱、术语表、规范索引、给 AI 的原始文本',
+};
+const stack = [
+  { k: '平台与驱动', v: 'Windows · Linux · macOS · iOS · Android', href: '/60-枝干-主机侧与实现/', c: 'platform' },
+  { k: '设备类', v: 'HID · CDC · MSC · UVC · UAC · DFU', href: '/20-枝干-设备类协议/', c: 'classes' },
+  { k: 'USB 协议核心', v: '包 · 传输 · 描述符 · 枚举 · USB3/USB4', href: '/10-树干-USB核心/', c: 'core' },
+  { k: '接口与供电', v: 'Type-C · PD · BC 1.2 · Alt Mode', href: '/30-枝干-接口与供电/', c: 'power' },
+  { k: '无线关联', v: 'BLE · HOGP · LLCP · HCI over USB', href: '/50-枝干-无线关联/', c: 'ble' },
+];
+const tools = [
+  { t: '速查卡', d: `${stats.cheatsheets} 张卡：请求码、描述符、类代码、PD 定时器、LLCP 操作码`, href: '/reference/cheatsheets/', i: 'list-format' },
+  { t: '知识图谱', d: `${stats.entities} 个实体、${stats.relations} 条关系，点节点直达文档`, href: '/explore/graph/', i: 'random' },
+  { t: '规范索引', d: `${stats.specs} 份官方规范，全部指向 USB-IF / Bluetooth SIG 等官方下载`, href: '/reference/specs/', i: 'document' },
+  { t: '术语表', d: '中英对照的 USB / 蓝牙术语，一页查完', href: '/90-附录/01-术语表/', i: 'open-book' },
+];
+---
+<div class="landing">
+  <section class="hero2">
+    <div class="hero2-text">
+      <p class="eyebrow">中文 USB / BLE 工程知识库 · 规范可溯源</p>
+      <h1>从协议到驱动与固件，<br />一棵能溯源的 USB 知识树</h1>
+      <p class="lede">USB 2.0 核心、设备类、Type-C/PD、USB3/USB4、蓝牙 BLE，再到 Windows、Linux、macOS、iOS、Android 的驱动栈和虚拟 USB 研究。事实尽量标到官方规范的章节与表号；还有配套的 <a href="/labs/">usb-labs 实现</a>可以对照代码动手。</p>
+      <div class="cta">
+        <a class="btn primary" href="/guide/learning-paths/">按学习路线开始 <Icon name="right-arrow" size="1rem" /></a>
+        <a class="btn" href="/guide/research/">研究路线：虚拟 USB · 驱动 · 固件</a>
+        <a class="btn ghost" href="/explore/graph/">打开知识图谱</a>
+      </div>
+      <ul class="stats">
+        <li><b>{stats.pages}</b><span>知识树文档</span></li>
+        <li><b>{stats.techdoc}</b><span>规范精读</span></li>
+        <li><b>{stats.labs}</b><span>实验与工具</span></li>
+        <li><b>{stats.specs}</b><span>官方规范</span></li>
+      </ul>
+    </div>
+    <div class="hero2-stack" aria-label="知识树分层">
+      {stack.map((s, i) => (
+        <a class={`stack-layer s-${s.c}`} href={s.href} style={`--i:${i}`}>
+          <span class="stack-k">{s.k}</span><span class="stack-v">{s.v}</span>
+        </a>
+      ))}
+      <p class="stack-cap">点任一层进入对应分枝</p>
+    </div>
+  </section>
+
+  <section class="l-sec">
+    <div class="l-head"><h2>学习路线</h2><a href="/guide/learning-paths/">完整路线与每阶段书单 →</a></div>
+    <ol class="stage-grid">
+      {stages.map((s: any) => (
+        <li class="stage-card">
+          <a href={`/guide/learning-paths/#${s.id}`} class="stage-link">
+            <span class="stage-n">{String(s.n).padStart(2, '0')}</span>
+            <span class="stage-t">{s.title}</span>
+            <span class="stage-g">{s.goal}</span>
+            <span class="stage-m">{s.pages.length} 篇{s.labs.length ? ` · 🧪 ${s.labs.length} 个实验` : ''}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="l-sec">
+    <div class="l-head"><h2>按主题浏览</h2></div>
+    <div class="topic-grid">
+      {topics.filter((t: any) => t.id !== 'guide').map((t: any) => (
+        <a class:list={["topic-card", { "topic-feature": ["tools", "frameworks", "ai"].includes(t.id) }]} href={t.link}>
+          <span class="topic-ico"><Icon name={t.icon} size="1.25rem" /></span>
+          <span class="topic-t">{t.label}{["tools", "frameworks", "ai"].includes(t.id) && <em class="topic-new">新分枝</em>}<small>{t.id === 'labs' ? `${stats.labs} 项` : t.count ? `${t.count} 篇` : '建设中'}</small></span>
+          <span class="topic-d">{TOPIC_DESC[t.id]}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="l-sec two-col">
+    <div>
+      <div class="l-head"><h2>站内工具</h2></div>
+      <div class="tool-grid">
+        {tools.map((t) => (
+          <a class="tool-card" href={t.href}><Icon name={t.i as any} size="1.25rem" /><span class="tool-t">{t.t}</span><span class="tool-d">{t.d}</span></a>
+        ))}
+      </div>
+    </div>
+    <div>
+      <div class="l-head"><h2>最近更新</h2></div>
+      <ul class="recent">
+        {recent.map((r: any) => (
+          <li><a href={r.url}>{r.title}</a><span>{r.section} · {r.date}</span></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="l-sec research">
+    <div>
+      <p class="eyebrow">研究方向</p>
+      <h2>虚拟 USB · 驱动开发 · 固件</h2>
+      <p>不插硬件也能“造”一台 USB 设备：Linux ConfigFS / FunctionFS / Raw Gadget、dummy_hcd、USB/IP，再到 macOS DriverKit、Windows UDE 与 KMDF，以及 usb-labs 里的 usbsim 协议仿真器和 DevStudio 虚拟调试器。</p>
+      <a class="btn primary" href="/guide/research/">查看研究路线 <Icon name="right-arrow" size="1rem" /></a>
+    </div>
+    <ul class="research-list">
+      <li><a href="/tech-doc/06-linux-virtual-usb/">Linux 虚拟 USB：Gadget、Raw Gadget、USB/IP</a></li>
+      <li><a href="/tech-doc/12-cross-platform-comparison/">跨平台 USB 栈异同（含 Windows 对照）</a></li>
+      <li><a href="/60-枝干-主机侧与实现/08-WindowsUSB驱动开发/">Windows USB 驱动开发</a></li>
+      <li><a href="/labs/usbsim/">usbsim：纯软件协议仿真器</a></li>
+    </ul>
+  </section>
+
+  <section class="l-sec ai">
+    <h2>给 AI 用</h2>
+    <p>同一份知识以纯文本提供，适合放进 RAG 或直接贴给大模型：</p>
+    <div class="ai-links">
+      <a href="/llms.txt"><code>/llms.txt</code><span>入口索引</span></a>
+      <a href="/ai-kb/llms-full.md"><code>/ai-kb/llms-full.md</code><span>38 个主题，单文件</span></a>
+      <a href="/tech-doc/llms-full.md"><code>/tech-doc/llms-full.md</code><span>规范精读全文</span></a>
+      <a href="/graph/entities.yaml"><code>/graph/*.yaml</code><span>知识图谱原始数据</span></a>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,56 @@
+# 速查卡：从正文按章节原样摘取（不另写内容，避免两处事实漂移）。
+# match 是标题正则（匹配 "## " 或 "### " 后的文本）；摘取到下一个同级或更高级标题为止。
+sheets:
+  - id: usb2-protocol
+    title: USB 2.0 协议速查
+    description: 描述符类型码、11 个标准请求、bmRequestType 位分解、PID 编码、各传输最大包长、bInterval 换算。
+    blocks:
+      - { file: 90-附录/02-速查表大全.md, match: '^1\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^2\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^3\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^4\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^5\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^6\)' }
+  - id: descriptors
+    title: 标准描述符字段速查
+    description: 设备 / 配置 / 接口 / 端点描述符逐字节偏移、字段与取值要点。
+    blocks:
+      - { file: 10-树干-USB核心/07-描述符详解.md, match: '^2\.' }
+      - { file: 10-树干-USB核心/07-描述符详解.md, match: '^3\.' }
+      - { file: 10-树干-USB核心/07-描述符详解.md, match: '^4\.' }
+      - { file: 10-树干-USB核心/07-描述符详解.md, match: '^5\.' }
+      - { file: 10-树干-USB核心/07-描述符详解.md, match: '^6\.' }
+      - { file: 10-树干-USB核心/07-描述符详解.md, match: '^7\.' }
+  - id: enumeration
+    title: 枚举与标准请求速查
+    description: Setup 包 8 字节、十一个标准请求、枚举全流程与每一步的典型失败现象。
+    blocks:
+      - { file: 10-树干-USB核心/08-枚举流程与标准请求.md, match: '^1\.' }
+      - { file: 10-树干-USB核心/08-枚举流程与标准请求.md, match: '^2\.' }
+      - { file: 10-树干-USB核心/08-枚举流程与标准请求.md, match: '^3\.' }
+      - { file: 10-树干-USB核心/08-枚举流程与标准请求.md, match: '^4\.' }
+  - id: classes-hid
+    title: 设备类代码与 HID 速查
+    description: bDeviceClass / bInterfaceClass 总表、HID 键值（Usage ID）与 HID 类请求。
+    blocks:
+      - { file: 90-附录/02-速查表大全.md, match: '^7\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^8\)' }
+  - id: power-pd
+    title: 供电与 PD 速查
+    description: PD 固定电压档与功率、PD 核心定时器、时序参数。
+    blocks:
+      - { file: 90-附录/02-速查表大全.md, match: '^10\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^15\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^11\)' }
+  - id: ble
+    title: 蓝牙 BLE 速查
+    description: GATT UUID、ATT Opcode、LLCP Opcode 常用段。
+    blocks:
+      - { file: 90-附录/02-速查表大全.md, match: '^9\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^14\)' }
+  - id: speed-usb3
+    title: 速度命名与 USB3 速查
+    description: USB-IF 营销名 ↔ 规范名 ↔ 速率，USB3 Header Packet 字段。
+    blocks:
+      - { file: 90-附录/02-速查表大全.md, match: '^12\)' }
+      - { file: 90-附录/02-速查表大全.md, match: '^13\)' }

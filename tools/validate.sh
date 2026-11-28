@@ -3,7 +3,7 @@
 # title≡H1 / 导出新鲜度 / H1 唯一 / 命名区块 / 孤页可达 / 统计数字
 # 用法: bash tools/validate.sh   （退出码 0 = 全部通过）
 # ai-kb/ 与 tech-doc/ 是派生产物，不参与内容页检查与篇数统计（见 check_orphans.py、gen_stats.py）。
-# _site_src/ 与 _site/ 是 tools/site/build.sh 的本地构建产物（gitignore），不参与任何检查。
+# site/ 是静态站点工程（Astro Starlight，正文在构建时从仓库生成，含 node_modules），不参与任何检查。
 # ai-kb/ 沿用原规则，不参与链接与围栏检查。tech-doc/ 的 Markdown 参与这两项；
 # 其 HTML 阅读版在第 1 项里检查站内链接（.html → .html）。
 set -uo pipefail
@@ -34,7 +34,7 @@ while IFS= read -r f; do
       esac
     fi
   done < <(grep -oE '\]\([^)#][^)]*\)' "$f" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//')
-done < <(find . -name '*.md' -type f -not -path './ai-kb/*' -not -path './_site_src/*' -not -path './_site/*')
+done < <(find . -name '*.md' -type f -not -path './ai-kb/*' -not -path './site/*')
 # tech-doc HTML：跳过 http/锚点；相对链接必须存在，且不得指向 .md（阅读版链到 .html）。
 if [ -d ./tech-doc ]; then
   while IFS= read -r f; do
@@ -64,7 +64,7 @@ unbalanced=0
 while IFS= read -r f; do
   n=$(grep -c '^```' "$f")
   if [ $((n % 2)) -ne 0 ]; then echo "  未闭合: $f"; unbalanced=$((unbalanced+1)); fi
-done < <(find . -name '*.md' -type f -not -path './ai-kb/*' -not -path './_site_src/*' -not -path './_site/*')
+done < <(find . -name '*.md' -type f -not -path './ai-kb/*' -not -path './site/*')
 [ "$unbalanced" -eq 0 ] && echo "  通过" || rc=1
 
 echo "== 3/11 图谱引用完整性（实体 docs 与边 evidence 必须真实存在） =="

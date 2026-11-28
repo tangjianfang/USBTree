@@ -1,0 +1,102 @@
+# 学习路线（首页与 /guide/learning-paths/ 共用）。pages 写仓库内路径，标题/简介/难度由 prepare 从正文读取。
+stages:
+  - id: s1
+    title: 入门：USB 是什么
+    goal: 建立全局地图：版本代际、分层模型、接口形态与速度命名。
+    hours: 3
+    pages:
+      - 00-知识树总图.md
+      - 10-树干-USB核心/01-概述与版本演进.md
+      - 10-树干-USB核心/02-体系架构与分层模型.md
+      - 30-枝干-接口与供电/01-接口形态演进.md
+      - 40-枝干-高速演进/03-各版本对比速查.md
+  - id: s2
+    title: 协议核心：包、传输、描述符、枚举
+    goal: 能逐字段读懂一次枚举抓包，算清 bInterval 与带宽。
+    hours: 12
+    pages:
+      - 10-树干-USB核心/03-物理层与电气特性.md
+      - 10-树干-USB核心/04-信号编码与比特流.md
+      - 10-树干-USB核心/05-包格式与事务.md
+      - 10-树干-USB核心/06-四种传输类型.md
+      - 10-树干-USB核心/07-描述符详解.md
+      - 10-树干-USB核心/08-枚举流程与标准请求.md
+      - 10-树干-USB核心/09-集线器与连接管理.md
+      - 10-树干-USB核心/10-电源管理与挂起唤醒.md
+      - 10-树干-USB核心/13-总线带宽与调度计算.md
+    labs: [lab1-hid-composite, captures]
+  - id: s3
+    title: 设备类：HID / CDC / MSC / UVC / UAC
+    goal: 会写报告描述符，知道每个类用哪种传输、哪些类请求。
+    hours: 14
+    pages:
+      - 20-枝干-设备类协议/00-设备类索引.md
+      - 20-枝干-设备类协议/HID-人机接口设备/00-HID概述与定位.md
+      - 20-枝干-设备类协议/HID-人机接口设备/02-报告描述符与Item编码.md
+      - 20-枝干-设备类协议/HID-人机接口设备/04-传输与类特定请求.md
+      - 20-枝干-设备类协议/CDC-通信设备类/01-虚拟串口ACM.md
+      - 20-枝干-设备类协议/MSC-大容量存储/00-MSC概述与BOT.md
+      - 20-枝干-设备类协议/Video-UVC/00-UVC详解.md
+      - 20-枝干-设备类协议/Audio-UAC/00-UAC概述.md
+    labs: [lab1-hid-composite, lab2-cdc-dfu, lab3-msc, lab4-uvc-uac]
+  - id: s4
+    title: 接口 · 供电 · 高速：Type-C / PD / USB3 / USB4
+    goal: 讲清 CC 检测、PD 协商时序、LTSSM 与 USB4 隧道。
+    hours: 14
+    pages:
+      - 30-枝干-接口与供电/02-USBType-C详解.md
+      - 30-枝干-接口与供电/03-BC1.2与专有快充.md
+      - 30-枝干-接口与供电/04-USBPD协议.md
+      - 30-枝干-接口与供电/05-AlternateMode与E-marker.md
+      - 40-枝干-高速演进/01-USB3x与SuperSpeed.md
+      - 40-枝干-高速演进/04-USB3x包格式与LTSSM.md
+      - 40-枝干-高速演进/02-USB4与雷电整合.md
+    labs: [lab5-pd-charger, lab7-dock-altmode]
+  - id: s5
+    title: 蓝牙 BLE：从链路层到 HOGP
+    goal: 理解广播/连接、ATT/GATT、SMP 配对，以及 HID 如何跑在 GATT 上。
+    hours: 10
+    pages:
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/00-BLE概述.md
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/02-链路层与物理层.md
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/03-广播与连接.md
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/04-ATT与GATT.md
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/06-SMP安全与配对.md
+      - 50-枝干-无线关联/BLE-低功耗蓝牙/07-HOGP-HIDoverGATT.md
+    labs: [lab6-ble-hid-dongle]
+  - id: s6
+    title: 主机侧与各平台驱动栈
+    goal: 对比 Windows / Linux / macOS / iOS / Android 的 USB 栈与驱动模型。
+    hours: 12
+    pages:
+      - 60-枝干-主机侧与实现/01-主机控制器栈全景.md
+      - 60-枝干-主机侧与实现/08-WindowsUSB驱动开发.md
+      - tech-doc/07-linux-usb-stack.md
+      - tech-doc/09-macos-usb.md
+      - tech-doc/11-android-usb.md
+      - tech-doc/12-cross-platform-comparison.md
+      - 70-枝干-调试测试与安全/02-枚举失败排查手册.md
+    labs: [devstudio, usbtest]
+  - id: s7
+    title: 研究方向：虚拟 USB · 驱动 · 固件
+    goal: 用 Gadget/Raw Gadget/USB/IP 与仿真器在纯软件里造设备，打通固件—驱动全链路。
+    hours: 16
+    pages:
+      - tech-doc/06-linux-virtual-usb.md
+      - 60-枝干-主机侧与实现/07-实战-LinuxGadget与usbip.md
+      - 60-枝干-主机侧与实现/03-设备端固件栈.md
+      - 60-枝干-主机侧与实现/05-实战-TinyUSB设备固件.md
+      - tech-doc/08-arm-embedded-usb.md
+      - 70-枝干-调试测试与安全/04-USB安全与BadUSB.md
+    labs: [usbsim, devstudio]
+  - id: s8
+    title: 规范精读与参考
+    goal: 每条结论都能回溯到规范章节/表号；把速查表当工具用。
+    hours: 0
+    pages:
+      - tech-doc/01-usb2-ch9-control.md
+      - tech-doc/02-hid-class-hogp.md
+      - tech-doc/03-usb-pd-messages-timers.md
+      - tech-doc/04-bc12-charger-detection.md
+      - tech-doc/05-ble-llcp-ifs.md
+      - 90-附录/02-速查表大全.md

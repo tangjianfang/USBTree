@@ -1,0 +1,6 @@
+---
+import Default from '@astrojs/starlight/components/Head.astro';
+const wide = (Astro.locals as any).starlightRoute?.entry?.data?.wide;
+---
+<Default />
+{wide && <style is:global>html:root { --sl-content-width: 72rem; }</style>}

@@ -112,11 +112,11 @@ sequenceDiagram
     A->>B: SET_FEATURE(a_hnp_support) → SET_FEATURE(b_hnp_enable)
     A->>A: 挂起总线 (VBUS 保持)
     B->>B: 想成为主机: 关闭自己的 D+ 上拉
-    Note over A,B: 总线 SE0 (A 的下拉仍在场); VBUS 在 → 不是拔出而是 HNP 请求
+    Note over A,B: 总线 SE0 (A 的下拉仍在场)，VBUS 在 → 不是拔出而是 HNP 请求
     A->>A: 检测到挂起态持续 SE0 → 接受交换: 打开自己的 D+ 上拉 (A 变外设, 呈 J 态)
-    B->>B: 检测 D+ 为高 (J) → A 已就外设位; B 切主机 (上拉改下拉)
+    B->>B: 检测 D+ 为高 (J) → A 已就外设位，B 切主机 (上拉改下拉)
     B->>A: USB 复位 (SE0 ≥ 10 ms) 后枚举 A
-    Note over A,B: B=主机, A=外设; VBUS 仍由 A 供电
+    Note over A,B: B=主机, A=外设，VBUS 仍由 A 供电
     B->>B: 用毕 → B 挂起总线
     A->>A: 想回主机: 关闭自己的 D+ 上拉 → 总线 SE0
     B->>B: 检测挂起态 SE0 (VBUS 在) → 打开自己的 D+ 上拉 (变回外设 J 态)

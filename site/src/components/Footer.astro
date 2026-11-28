@@ -1,0 +1,10 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+import MermaidZoom from './MermaidZoom.astro';
+---
+<Default><slot /></Default>
+<div class="site-foot">
+  <span>USBTree · 内容以 MIT 许可发布 · 第三方规范原文不随站点分发</span>
+  <span><a href="https://github.com/tangjianfang/USBTree">源仓库</a> · <a href="/reference/specs/">规范索引</a> · <a href="/llms.txt">llms.txt</a></span>
+</div>
+<MermaidZoom />

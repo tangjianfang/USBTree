@@ -1,0 +1,21 @@
+---
+// 侧栏：顶部是紧凑的主题切换（两列网格），下面是当前主题的目录树。
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+import { Icon } from '@astrojs/starlight/components';
+import gen from '../generated/topics.json';
+const route = (Astro.locals as any).starlightSidebarTopics;
+const icons = Object.fromEntries(gen.topics.map((t: any) => [t.link, t.icon]));
+const topics = route?.isPageWithTopic ? route.topics : [];
+---
+{topics.length > 0 && (
+  <nav class="topic-switch" aria-label="主题">
+    <ul>
+      {topics.map((t: any) => (
+        <li><a href={t.link} class:list={[{ current: t.isCurrent }]} aria-current={t.isCurrent ? 'true' : undefined}>
+          {icons[t.link] && <Icon name={icons[t.link]} size="1rem" />}<span>{t.label}</span>
+        </a></li>
+      ))}
+    </ul>
+  </nav>
+)}
+<Default><slot /></Default>

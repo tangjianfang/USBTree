@@ -22,7 +22,7 @@ def iter_md():
     for p in ROOT.rglob("*.md"):
         rel = p.relative_to(ROOT)
         # ai-kb/ 与 tech-doc/ 是派生产物，不参与内容页入链/可达性，避免改写入链后掩盖孤页。
-        if rel.parts[:1] in {("ai-kb",), ("tech-doc",), ("_site_src",), ("_site",)} or any(part.startswith(".") for part in rel.parts):
+        if rel.parts[:1] in {("ai-kb",), ("tech-doc",), ("site",)} or any(part.startswith(".") for part in rel.parts):
             continue
         yield p
 

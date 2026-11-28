@@ -1,0 +1,102 @@
+---
+// 知识图谱：graph/entities.yaml + relations.yaml → Cytoscape 力导向图（全部自托管，无 CDN）
+import graph from '../generated/graph.json';
+const TYPES: Record<string, string> = {
+  protocol: '协议', 'device-class': '设备类', profile: 'Profile', 'transfer-type': '传输类型',
+  mechanism: '机制', standard: '标准', tool: '工具', 'external-protocol': '外部协议',
+};
+const REL: Record<string, string> = {
+  'part-of': '组成', carries: '承载', 'runs-on': '运行于', uses: '使用', specifies: '规定', reuses: '复用',
+  supersedes: '取代', enables: '使能', prerequisite: '前置', tunnels: '隧道化', 'similar-to': '对照', extends: '扩展',
+};
+const counts = Object.fromEntries(Object.keys(TYPES).map((t) => [t, graph.nodes.filter((n: any) => n.type === t).length]));
+---
+<div class="kg" data-types={JSON.stringify(TYPES)} data-rels={JSON.stringify(REL)}>
+  <div class="kg-toolbar">
+    <input class="kg-search" type="search" placeholder="搜索实体，如 HID、PD、xHCI…" aria-label="搜索图谱实体" />
+    <div class="kg-filters" role="group" aria-label="按类型筛选">
+      {Object.entries(TYPES).filter(([t]) => counts[t]).map(([t, l]) => (
+        <button type="button" class="kg-chip on" data-type={t} aria-pressed="true"><i class={`kg-dot t-${t}`}></i>{l}<small>{counts[t]}</small></button>
+      ))}
+    </div>
+    <button type="button" class="kg-fit">适应窗口</button>
+  </div>
+  <div class="kg-body">
+    <div class="kg-canvas" role="img" aria-label={`USBTree 知识图谱：${graph.nodes.length} 个实体、${graph.edges.length} 条关系`}></div>
+    <aside class="kg-panel" aria-live="polite">
+      <div class="kg-empty">
+        <p><b>{graph.nodes.length}</b> 个实体 · <b>{graph.edges.length}</b> 条关系</p>
+        <p>点选节点查看定义文档与上下游关系；拖动画布平移，滚轮或双指缩放。</p>
+        <p class="muted">数据源：<a href="/graph/entities.yaml">entities.yaml</a> · <a href="/graph/relations.yaml">relations.yaml</a></p>
+      </div>
+    </aside>
+  </div>
+  <script type="application/json" class="kg-data" set:html={JSON.stringify(graph)} />
+</div>
+<script>
+  import cytoscape from 'cytoscape';
+  const root = document.querySelector<HTMLElement>('.kg')!;
+  const data = JSON.parse(root.querySelector('.kg-data')!.textContent!);
+  const TYPES = JSON.parse(root.dataset.types!); const REL = JSON.parse(root.dataset.rels!);
+  const PALETTE: Record<string, string> = { protocol: '#0f766e', 'device-class': '#7c3aed', profile: '#db2777', 'transfer-type': '#ea580c',
+    mechanism: '#2563eb', standard: '#64748b', tool: '#ca8a04', 'external-protocol': '#059669' };
+  const css = (v: string) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const deg: Record<string, number> = {};
+  for (const e of data.edges) { deg[e.from] = (deg[e.from] || 0) + 1; deg[e.to] = (deg[e.to] || 0) + 1; }
+  const elements = [
+    ...data.nodes.map((n: any) => ({ data: { id: n.id, label: n.name.replace(/（.*?）/g, ''), type: n.type, color: PALETTE[n.type] || '#888', size: 14 + Math.min(26, (deg[n.id] || 0) * 3) } })),
+    ...data.edges.map((e: any) => ({ data: { id: e.id, source: e.from, target: e.to, rel: REL[e.type] || e.type } })),
+  ];
+  const style = (): any[] => [
+    { selector: 'node', style: { 'background-color': 'data(color)', width: 'data(size)', height: 'data(size)', label: 'data(label)', color: css('--sl-color-white'),
+      'font-size': 11, 'text-valign': 'bottom', 'text-margin-y': 4, 'text-wrap': 'wrap', 'text-max-width': '110px', 'text-outline-color': css('--sl-color-bg'), 'text-outline-width': 2,
+      'font-family': 'system-ui, "PingFang SC", "Microsoft YaHei", sans-serif' } },
+    { selector: 'edge', style: { width: 1.2, 'line-color': css('--sl-color-gray-5'), 'target-arrow-color': css('--sl-color-gray-5'), 'target-arrow-shape': 'triangle', 'arrow-scale': 0.8, 'curve-style': 'bezier', opacity: 0.8 } },
+    { selector: '.faded', style: { opacity: 0.12 } },
+    { selector: 'edge.hl', style: { 'line-color': css('--sl-color-accent'), 'target-arrow-color': css('--sl-color-accent'), width: 2, label: 'data(rel)', 'font-size': 10, color: css('--sl-color-gray-2'), 'text-background-color': css('--sl-color-bg'), 'text-background-opacity': 1, 'text-background-padding': '2px', opacity: 1 } },
+    { selector: 'node.sel', style: { 'border-width': 3, 'border-color': css('--sl-color-accent-high') } },
+    { selector: '.hidden', style: { display: 'none' } },
+  ];
+  const cy = cytoscape({ container: root.querySelector<HTMLElement>('.kg-canvas'), elements, style: style(), wheelSensitivity: 0.25, minZoom: 0.2, maxZoom: 3,
+    layout: { name: 'cose', animate: false, nodeRepulsion: () => 12000, idealEdgeLength: () => 80, gravity: 0.8, componentSpacing: 60, nestingFactor: 1.2, numIter: 1500, randomize: false } as any });
+  new MutationObserver(() => cy.style(style())).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  const panel = root.querySelector<HTMLElement>('.kg-panel')!;
+  const empty = panel.innerHTML;
+  const byId = Object.fromEntries(data.nodes.map((n: any) => [n.id, n]));
+  const esc = (s: string) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  function select(id: string | null) {
+    cy.elements().removeClass('faded hl sel');
+    if (!id) { panel.innerHTML = empty; return; }
+    const node = cy.getElementById(id); const hood = node.closedNeighborhood();
+    cy.elements().not(hood).addClass('faded'); hood.edges().addClass('hl'); node.addClass('sel');
+    const n = byId[id];
+    const rels = data.edges.filter((e: any) => e.from === id || e.to === id).map((e: any) => {
+      const out = e.from === id; const other = byId[out ? e.to : e.from];
+      return `<li><span class="kg-rel">${out ? '' : '← '}${esc(REL[e.type] || e.type)}${out ? ' →' : ''}</span> <a href="#" data-id="${other.id}">${esc(other.name)}</a>${e.note ? `<small>${esc(e.note)}</small>` : ''}${e.evidence ? ` <a class="kg-ev" href="${e.evidence.url}" title="陈述此关系的文档">依据</a>` : ''}</li>`;
+    }).join('');
+    panel.innerHTML = `<p class="kg-type"><i class="kg-dot t-${n.type}"></i>${esc(TYPES[n.type] || n.type)}${n.code ? ` · <code>${esc(n.code)}</code>` : ''}</p>
+      <h3>${esc(n.name)}</h3>${n.doc ? `<p><a class="kg-doc" href="${n.doc.url}">阅读：${esc(n.doc.title)} →</a></p>` : ''}
+      <h4>关系（${data.edges.filter((e: any) => e.from === id || e.to === id).length}）</h4><ul class="kg-rels">${rels}</ul>
+      <button type="button" class="kg-clear">清除选择</button>`;
+  }
+  cy.on('tap', 'node', (e) => select(e.target.id()));
+  cy.on('tap', (e) => { if (e.target === cy) select(null); });
+  panel.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest('a[data-id]') as HTMLElement | null;
+    if (a) { e.preventDefault(); select(a.dataset.id!); cy.animate({ center: { eles: cy.getElementById(a.dataset.id!) }, duration: 250 }); }
+    if ((e.target as HTMLElement).closest('.kg-clear')) select(null);
+  });
+  root.querySelector('.kg-fit')!.addEventListener('click', () => cy.animate({ fit: { eles: cy.elements(':visible'), padding: 30 }, duration: 250 }));
+  root.querySelectorAll<HTMLButtonElement>('.kg-chip').forEach((b) => b.addEventListener('click', () => {
+    const on = b.classList.toggle('on'); b.setAttribute('aria-pressed', String(on));
+    cy.nodes(`[type = "${b.dataset.type}"]`).toggleClass('hidden', !on);
+  }));
+  const search = root.querySelector<HTMLInputElement>('.kg-search')!;
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    if (!q) { select(null); return; }
+    const hit = data.nodes.find((n: any) => n.name.toLowerCase().includes(q) || n.id.includes(q) || (n.code || '').toLowerCase().includes(q));
+    if (hit) { select(hit.id); cy.animate({ center: { eles: cy.getElementById(hit.id) }, zoom: 1.4, duration: 250 }); }
+  });
+  const q = new URLSearchParams(location.search).get('node'); if (q && byId[q]) select(q);
+</script>

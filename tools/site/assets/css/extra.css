@@ -1,6 +1,0 @@
-/* 中文排版：系统字体栈 + 宽表格横向滚动（手机友好） */
-:root { --md-text-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Segoe UI", Roboto, sans-serif;
-        --md-code-font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
-.md-typeset { line-height: 1.75; }
-.md-typeset pre.mermaid, .md-typeset .mermaid { overflow-x: auto; }
-.md-typeset .mermaid svg { max-width: 100%; height: auto; }
